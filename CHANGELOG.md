@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.1
+- The line under the header is thinner: 2px instead of 3px.
+
 ## 1.0.0
 - First release of Claret, a theme for framed art prints, built on Folio's engine and product page.
 - Atelier's type: Newsreader at its lightest weight for names and headings, Red Hat Text for text, small capitals for labels and buttons.
