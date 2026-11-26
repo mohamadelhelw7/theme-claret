@@ -346,6 +346,10 @@
   .folio-header__wordmark em {
     font-style: italic;
   }
+  /* Newsreader keeps room for descenders under the letters; this brings the name onto the same centre line as the menu */
+  .folio-header__wordmark {
+    translate: 0 0.13em;
+  }
   .folio-header__nav .site-nav__list {
     gap: 4px calc(var(--d) * 2.2);
   }

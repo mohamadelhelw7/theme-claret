@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.2
+- The store name in the header sits on the same centre line as the menu and the Search and Bag links. Newsreader leaves room for descenders under its letters, which made the name sit about 5px higher.
+
 ## 1.0.1
 - The line under the header is thinner: 2px instead of 3px.
 
