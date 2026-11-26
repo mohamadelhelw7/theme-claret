@@ -1,0 +1,13 @@
+{% doc %}
+  Five small dots for the frames a painting comes in: oak, umber, espresso, black and no frame.
+  Shown on product cards when Theme settings → Claret → Show frame dots on cards is on.
+
+  @example
+  {% render 'frame-dots' %}
+{% enddoc %}
+
+{%- if settings.card_frame_dots -%}
+  <span class="frame-dots" aria-label="{{ 'products.product.frames_available' | t }}" role="img">
+    <i class="frame-dots__oak"></i><i class="frame-dots__umber"></i><i class="frame-dots__espresso"></i><i class="frame-dots__black"></i><i class="frame-dots__none"></i>
+  </span>
+{%- endif -%}

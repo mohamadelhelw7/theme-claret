@@ -1,0 +1,162 @@
+{%- comment -%}
+  A quiet band of up to four promises on the wall colour, each with a thin line icon, a light serif title and a
+  short note. Claret uses it for seven sizes, five frames and ready to hang.
+{%- endcomment -%}
+
+<section
+  class="section cband color-{{ section.settings.color_scheme }}"
+  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }}); --cols: {{ section.blocks.size | at_least: 1 }};"
+>
+  <div class="page-width">
+    <ul class="cband__grid" role="list">
+      {%- for block in section.blocks -%}
+        <li class="cband__item" {{ block.shopify_attributes }}>
+          <svg class="cband__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            {%- case block.settings.icon -%}
+              {%- when 'sizes' -%}
+                <rect x="4" y="3" width="10" height="14"/><rect x="9" y="8" width="11" height="13"/>
+              {%- when 'frame' -%}
+                <rect x="3" y="3" width="18" height="18"/><rect x="7" y="7" width="10" height="10"/><path d="M3 3l4 4M21 3l-4 4M3 21l4-4M21 21l-4-4"/>
+              {%- when 'hook' -%}
+                <path d="M12 3v3"/><path d="M12 6c-2 0-3 1.5-3 3s1 2 3 2 3 1 3 3-1.5 3-3 3"/><rect x="5" y="15" width="14" height="6"/>
+              {%- when 'texture' -%}
+                <rect x="3.5" y="3.5" width="17" height="17"/><path d="M6.5 9c2-1.6 3.6 1.6 5.5 0s3.5 1.6 5.5 0M6.5 13c2-1.6 3.6 1.6 5.5 0s3.5 1.6 5.5 0M6.5 17c2-1.6 3.6 1.6 5.5 0s3.5 1.6 5.5 0"/>
+              {%- when 'truck' -%}
+                <path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/>
+              {%- when 'gift' -%}
+                <rect x="4" y="9" width="16" height="11"/><path d="M3 9h18v-3H3zM12 6v14"/><path d="M12 6c-1.5-3-5-3-5-1s3 1 5 1c2 0 5 1 5-1s-3.5-2-5 1"/>
+              {%- else -%}
+                <path d="M12 3l2.6 5.6 6 .6-4.5 4.1 1.3 6L12 16.4 6.6 19.3l1.3-6L3.4 9.2l6-.6z"/>
+            {%- endcase -%}
+          </svg>
+          {%- if block.settings.title != blank -%}<h3 class="cband__title">{{ block.settings.title | escape }}</h3>{%- endif -%}
+          {%- if block.settings.text != blank -%}<div class="cband__text">{{ block.settings.text }}</div>{%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% stylesheet %}
+  .cband {
+    padding-top: var(--pt, 0px);
+    padding-bottom: var(--pb, 0px);
+  }
+  .cband__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+    gap: calc(var(--d) * 3);
+    margin: 0;
+    padding: calc(var(--d) * 3.6) 0;
+    list-style: none;
+  }
+  .cband__item {
+    display: grid;
+    align-content: start;
+    gap: calc(var(--d) * 0.8);
+  }
+  .cband__icon {
+    width: calc(var(--d) * 2.6);
+    height: calc(var(--d) * 2.6);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.05;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .cband__title {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    font-size: calc(var(--d) * 1.9);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .cband__text {
+    max-width: 22em;
+    font-size: calc(var(--d) * 0.82);
+    line-height: 1.85;
+    color: color-mix(in srgb, var(--color-text) 72%, var(--color-bg));
+  }
+  .cband__text p {
+    margin: 0;
+  }
+  @media (max-width: 749px) {
+    .cband__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: calc(var(--d) * 2);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Promise band",
+  "tag": "div",
+  "class": "craft-band-section",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Promise",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "sizes", "label": "Sizes" },
+            { "value": "frame", "label": "Frame" },
+            { "value": "hook", "label": "Hook" },
+            { "value": "texture", "label": "Canvas texture" },
+            { "value": "truck", "label": "Delivery" },
+            { "value": "gift", "label": "Gift" },
+            { "value": "star", "label": "Star" }
+          ],
+          "default": "sizes"
+        },
+        { "type": "text", "id": "title", "label": "Title", "default": "Seven sizes" },
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p>From 20 × 30 to 70 × 100 cm. The size guide shows every size in centimetres and inches.</p>" }
+      ]
+    }
+  ],
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "label": "Top spacing",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "label": "Bottom spacing",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "none"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promise band",
+      "blocks": [
+        { "type": "item", "settings": { "icon": "sizes", "title": "Seven sizes", "text": "<p>From 20 × 30 to 70 × 100 cm. The size guide shows every size in centimetres and inches.</p>" } },
+        { "type": "item", "settings": { "icon": "frame", "title": "Five frames", "text": "<p>Oak, umber, espresso or black, or no frame. Pick one on any painting to see it.</p>" } },
+        { "type": "item", "settings": { "icon": "hook", "title": "Ready to hang", "text": "<p>Add a hanging kit with picture hooks and nails, right under the buttons.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

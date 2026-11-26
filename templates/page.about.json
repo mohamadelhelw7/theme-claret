@@ -1,0 +1,80 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "statement": {
+      "type": "scroll-text",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "Our story",
+        "text": "We frame the great paintings so they can hang in *your rooms.*",
+        "size": "large",
+        "alignment": "center",
+        "length": "medium"
+      }
+    },
+    "styles": {
+      "type": "style-list",
+      "settings": {
+        "frame": "mixed",
+        "color_scheme": "scheme-1",
+        "heading": "Shop by style",
+        "link_label": "All styles",
+        "show_counts": true,
+        "interval": 3,
+        "padding_top": "large",
+        "padding_bottom": "large"
+      }
+    },
+    "support": {
+      "type": "customer-support",
+      "blocks": {
+        "whatsapp": {
+          "type": "_support-channel",
+          "settings": {
+            "channel": "whatsapp"
+          }
+        },
+        "email": {
+          "type": "_support-channel",
+          "settings": {
+            "channel": "email",
+            "title": "Email us",
+            "text": "Send us your question or your order number",
+            "link_label": "Send an email"
+          }
+        },
+        "help": {
+          "type": "_support-channel",
+          "settings": {
+            "channel": "link",
+            "icon": "truck",
+            "title": "Delivery and returns",
+            "text": "Add a link to your shipping or returns page",
+            "link_label": "Read more"
+          }
+        }
+      },
+      "block_order": [
+        "whatsapp",
+        "email",
+        "help"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "layout": "cards",
+        "card_style": "outline",
+        "eyebrow": "Customer care",
+        "heading": "Help choosing a *painting?*"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "statement",
+    "styles",
+    "support"
+  ]
+}

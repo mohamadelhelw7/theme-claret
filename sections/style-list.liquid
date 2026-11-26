@@ -1,0 +1,323 @@
+{%- comment -%}
+  Shop by style: your collections as big serif names, each with a small count. The chosen one turns dark
+  and one of its paintings hangs in its frame on the wall beside the list, swinging gently into place.
+  It moves through the styles on its own until a shopper points at one, and the names sweep up into
+  place when the section comes into view.
+{%- endcomment -%}
+
+{%- liquid
+  assign heading_id = 'StyleListHeading-' | append: section.id
+  assign sl_collections = section.settings.collections
+  assign woods = 'oak,umber,espresso,none,oak,umber,espresso,black' | split: ','
+  if section.settings.frame != 'mixed'
+    assign woods = section.settings.frame | append: ',' | append: section.settings.frame | split: ','
+  endif
+  assign sl_names = ''
+  assign sl_arts = ''
+  assign sl_caps = ''
+-%}
+
+{%- comment -%} Names, paintings and links, built in one pass over the picked collections (or sample styles) {%- endcomment -%}
+{%- if sl_collections != blank -%}
+  {%- for s_collection in sl_collections -%}
+    {%- liquid
+      assign idx = forloop.index0
+      assign on_class = ''
+      if forloop.first
+        assign on_class = ' is-on'
+      endif
+      assign wood_index = idx | modulo: woods.size
+      assign art_class = 'slist__art' | append: on_class
+      assign s_image = s_collection.featured_image | default: s_collection.products.first.featured_media
+    -%}
+    {%- capture sl_names -%}{{ sl_names }}<li class="slist__item{{ on_class }}" data-si="{{ idx }}" style="--i: {{ idx }};"><a class="slist__name" href="{{ s_collection.url }}">{{ s_collection.title | escape }}{%- if section.settings.show_counts and s_collection.products_count > 0 -%}<sup>{{ s_collection.products_count }}</sup>{%- endif -%}</a></li>{%- endcapture -%}
+    {%- capture sl_arts -%}{{ sl_arts }}{% render 'folio-frame', image: s_image, wood: woods[wood_index], box_hw: 1.05, max_w: 62, max_h: 66, sizes: '(min-width: 990px) 30vw, 70vw', index: forloop.index, class: art_class, attributes: 'data-si' %}{%- endcapture -%}
+    {%- capture sl_caps -%}{{ sl_caps }}<a class="slist__cap{{ on_class }}" href="{{ s_collection.url }}">{{ 'sections.style_list.shop' | t: name: s_collection.title }}</a>{%- endcapture -%}
+  {%- endfor -%}
+{%- else -%}
+  {%- assign sample_names = 'sections.style_list.samples' | t | split: ',' -%}
+  {%- for sample in sample_names -%}
+    {%- liquid
+      assign idx = forloop.index0
+      assign on_class = ''
+      if forloop.first
+        assign on_class = ' is-on'
+      endif
+      assign wood_index = idx | modulo: woods.size
+      assign art_class = 'slist__art' | append: on_class
+      assign s_name = sample | strip
+    -%}
+    {%- capture sl_names -%}{{ sl_names }}<li class="slist__item{{ on_class }}" data-si="{{ idx }}" style="--i: {{ idx }};"><a class="slist__name" href="{{ routes.collections_url }}">{{ s_name | escape }}</a></li>{%- endcapture -%}
+    {%- capture sl_arts -%}{{ sl_arts }}{% render 'folio-frame', wood: woods[wood_index], box_hw: 1.05, max_w: 62, max_h: 66, index: forloop.index, class: art_class, attributes: 'data-si' %}{%- endcapture -%}
+    {%- capture sl_caps -%}{{ sl_caps }}<a class="slist__cap{{ on_class }}" href="{{ routes.collections_url }}">{{ 'sections.style_list.shop' | t: name: s_name }}</a>{%- endcapture -%}
+  {%- endfor -%}
+{%- endif -%}
+
+<section
+  class="section color-{{ section.settings.color_scheme }}"
+  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }}); --head-scale: {{ section.settings.heading_size | divided_by: 100.0 }}; --name-scale: {{ section.settings.name_size | divided_by: 100.0 }}; --frame-scale: {{ section.settings.painting_size | divided_by: 100.0 }};"
+  {% if section.settings.heading != blank %}
+    aria-labelledby="{{ heading_id }}"
+  {% endif %}
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank or section.settings.link_label != blank -%}
+      <div class="plate-head">
+        {%- if section.settings.heading != blank -%}
+          <h2 id="{{ heading_id }}" class="plate-head__title">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.link_label != blank -%}
+          <a class="plate-head__link" href="{{ section.settings.link | default: routes.collections_url }}">{{ section.settings.link_label | escape }}</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    <style-list class="slist" data-interval="{{ section.settings.interval }}">
+      <ul class="slist__names" role="list">
+        {{- sl_names -}}
+      </ul>
+      <div class="slist__side">
+        <div class="slist__wall wall">
+          {{- sl_arts -}}
+        </div>
+        {{- sl_caps -}}
+      </div>
+    </style-list>
+  </div>
+</section>
+
+{% javascript %}
+  if (!customElements.get('style-list')) {
+    class StyleList extends HTMLElement {
+      connectedCallback() {
+        this.items = Array.from(this.querySelectorAll('.slist__item'));
+        this.arts = Array.from(this.querySelectorAll('.slist__art'));
+        this.caps = Array.from(this.querySelectorAll('.slist__cap'));
+        this.arts.forEach((art, i) => art.classList.toggle('is-on', i === 0));
+        this.on = 0;
+        this.hovering = false;
+        this.visible = false;
+        this.items.forEach((item, i) => {
+          item.addEventListener('mouseenter', () => {
+            this.hovering = true;
+            this.show(i);
+          });
+          item.addEventListener('focusin', () => this.show(i));
+        });
+        this.querySelector('.slist__names').addEventListener('mouseleave', () => {
+          this.hovering = false;
+        });
+        const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const every = (Number(this.dataset.interval) || 0) * 1000;
+        if ('IntersectionObserver' in window) {
+          if (!still && this.getBoundingClientRect().top > window.innerHeight) this.classList.add('is-waiting');
+          this.io = new IntersectionObserver(
+            (entries) => {
+              this.visible = entries[0].isIntersecting;
+              if (this.visible) this.classList.remove('is-waiting');
+            },
+            { threshold: 0.2 }
+          );
+          this.io.observe(this);
+        }
+        if (!still && every > 0) {
+          this.timer = setInterval(() => {
+            if (this.visible && !this.hovering && !document.hidden) this.show((this.on + 1) % this.items.length);
+          }, every);
+        }
+      }
+
+      disconnectedCallback() {
+        clearInterval(this.timer);
+        this.io?.disconnect();
+      }
+
+      show(i) {
+        if (i === this.on || !this.items[i]) return;
+        this.on = i;
+        this.items.forEach((item, j) => item.classList.toggle('is-on', j === i));
+        this.caps.forEach((cap, j) => cap.classList.toggle('is-on', j === i));
+        this.arts.forEach((art, j) => {
+          art.classList.remove('is-on');
+          if (j === i) {
+            void art.offsetWidth;
+            art.classList.add('is-on');
+          }
+        });
+      }
+    }
+    customElements.define('style-list', StyleList);
+  }
+{% endjavascript %}
+
+{% stylesheet %}
+  .slist {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    gap: calc(var(--d) * 3);
+    align-items: center;
+  }
+  .slist__names {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .slist__item {
+    overflow: hidden;
+    padding-block: 0.04em;
+  }
+  .slist__name {
+    display: inline-block;
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: calc(var(--d) * 5.2 * var(--heading-scale, 1) * var(--name-scale, 1));
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: color-mix(in srgb, var(--color-text) 22%, var(--color-bg));
+    text-decoration: none;
+    transition: color 0.6s ease, translate 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: 0s, calc(var(--i, 0) * 90ms);
+  }
+  .slist__name sup {
+    position: relative;
+    top: -0.2em;
+    margin-inline-start: 0.22em;
+    font-size: 0.3em;
+    letter-spacing: 0;
+    color: color-mix(in srgb, var(--color-text) 20%, var(--color-bg));
+    vertical-align: top;
+    transition: color 0.6s ease;
+  }
+  .slist__item.is-on .slist__name {
+    color: var(--color-text);
+  }
+  .slist__item.is-on sup {
+    color: var(--color-muted);
+  }
+  .slist.is-waiting .slist__name {
+    translate: 0 105%;
+  }
+  .slist__side {
+    display: grid;
+    gap: calc(var(--d) * 1.2);
+  }
+  .slist__wall {
+    aspect-ratio: 1 / 1.05;
+    max-height: calc(var(--d) * 34);
+  }
+  .slist__art {
+    grid-area: 1 / 1;
+    opacity: 0;
+    translate: 0 1em;
+    transform-origin: 50% -3em;
+    transition: opacity 0.7s ease, translate 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .slist__art.is-on {
+    opacity: 1;
+    translate: 0 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slist__art.is-on {
+      animation: folio-settle 1.6s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+    }
+  }
+  @keyframes folio-settle {
+    0% {
+      rotate: 1.6deg;
+    }
+    45% {
+      rotate: -0.7deg;
+    }
+    75% {
+      rotate: 0.25deg;
+    }
+    100% {
+      rotate: 0deg;
+    }
+  }
+  .slist__cap {
+    display: none;
+    justify-self: start;
+    padding-bottom: 0.2em;
+    border-bottom: 1px solid currentColor;
+    color: inherit;
+    font-size: calc(var(--d) * 0.82);
+    text-decoration: none;
+  }
+  .slist__cap.is-on {
+    display: inline-block;
+  }
+  @media (max-width: 749px) {
+    .slist {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .slist__name {
+      font-size: calc(var(--d) * 2.6 * var(--heading-scale, 1) * var(--name-scale, 1));
+    }
+    .slist__side {
+      order: -1;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Shop by style",
+  "tag": "div",
+  "class": "style-list-section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "collection_list", "id": "collections", "label": "Collections", "info": "Each collection shows by its name, with its image (or first painting) on the wall", "limit": 8 },
+    {
+      "type": "select",
+      "id": "frame",
+      "label": "Frames",
+      "options": [
+        { "value": "mixed", "label": "A different wood for each" },
+        { "value": "oak", "label": "Oak" },
+        { "value": "umber", "label": "Umber" },
+        { "value": "espresso", "label": "Espresso" },
+        { "value": "black", "label": "Black" },
+        { "value": "none", "label": "No frame" }
+      ],
+      "default": "mixed"
+    },
+    { "type": "text", "id": "heading", "label": "Small title", "default": "Shop by style" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "All styles" },
+    { "type": "url", "id": "link", "label": "Link" },
+    { "type": "checkbox", "id": "show_counts", "label": "Show how many paintings each style has", "default": true },
+    { "type": "range", "id": "interval", "label": "Move to the next style every", "info": "0 waits for shoppers to point at a style", "min": 0, "max": 8, "step": 1, "unit": "s", "default": 3 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "heading_size", "label": "Small title size", "min": 70, "max": 200, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "name_size", "label": "Style name size", "min": 40, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "painting_size", "label": "Painting size", "min": 60, "max": 125, "step": 5, "unit": "%", "default": 100 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Spacing" },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "label": "Top spacing",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "large"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "label": "Bottom spacing",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "large"
+    }
+  ],
+  "presets": [{ "name": "Shop by style" }]
+}
+{% endschema %}

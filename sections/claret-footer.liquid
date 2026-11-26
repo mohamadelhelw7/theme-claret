@@ -1,0 +1,297 @@
+{%- comment -%}
+  Claret footer: on the wall colour under a black line. The store's name in the light serif (or the logo) beside
+  an email signup, then menu columns, then a fine line with the copyright and policies.
+{%- endcomment -%}
+
+{%- liquid
+  assign footer_logo = section.settings.logo
+  assign footer_word = section.settings.wordmark | default: shop.name
+-%}
+
+<footer class="cfoot color-{{ section.settings.color_scheme }}" style="--footer-mt: var(--space-{{ section.settings.margin_top }}); --footer-cols: {{ section.settings.columns }};">
+  <div class="page-width">
+    <div class="cfoot__top">
+      <a class="cfoot__brand" href="{{ routes.root_url }}">
+        {%- if footer_logo -%}
+          {{ footer_logo | image_url: width: 600 | image_tag: alt: shop.name, class: 'cfoot__logo', widths: '200, 400, 600', sizes: '300px', loading: 'lazy' }}
+        {%- else -%}
+          <span class="cfoot__word">{% render 'accent-text', text: footer_word %}</span>
+        {%- endif -%}
+      </a>
+      {%- if section.settings.show_signup -%}
+        <div class="cfoot__sign">
+          {%- if section.settings.signup_heading != blank -%}<h2 class="cfoot__sign-title caps">{{ section.settings.signup_heading | escape }}</h2>{%- endif -%}
+          {%- if section.settings.signup_text != blank -%}<div class="cfoot__sign-text">{{ section.settings.signup_text }}</div>{%- endif -%}
+          {%- form 'customer', id: 'ClaretFooterNewsletter', class: 'cfoot__form' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            {%- if form.posted_successfully? -%}
+              <p class="cfoot__message" role="status">{{ 'newsletter.success' | t }}</p>
+            {%- else -%}
+              {%- if form.errors -%}
+                <p class="cfoot__message" role="alert">
+                  {{ form.errors.translated_fields.email | capitalize }}
+                  {{ form.errors.messages.email }}
+                </p>
+              {%- endif -%}
+              <div class="cfoot__row">
+                <label for="ClaretFooterEmail-{{ section.id }}" class="visually-hidden">{{ 'newsletter.label' | t }}</label>
+                <input
+                  id="ClaretFooterEmail-{{ section.id }}"
+                  type="email"
+                  name="contact[email]"
+                  class="cfoot__input"
+                  value="{{ form.email }}"
+                  placeholder="{{ 'newsletter.placeholder' | t }}"
+                  autocomplete="email"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  required
+                >
+                <button type="submit" class="cfoot__button caps">{{ 'newsletter.button' | t }}</button>
+              </div>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="cfoot__cols">
+      {% content_for 'blocks' %}
+    </div>
+
+    <div class="cfoot__bottom caps">
+      <p class="cfoot__copyright">
+        &copy; {{ 'now' | date: '%Y' }} {{ shop.name | escape }}
+        {%- if section.settings.show_powered_by %} · {{ powered_by_link }}{% endif -%}
+      </p>
+      {%- if section.settings.show_localization -%}
+        <div class="cfoot__locale">
+          {% render 'localization-form', id_prefix: 'Footer', show_language: true, show_country: section.settings.show_country %}
+        </div>
+      {%- endif -%}
+      {%- if section.settings.show_social -%}
+        {% render 'social-icons' %}
+      {%- endif -%}
+      {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+        <ul class="cfoot__payments" role="list">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag: class: 'cfoot__payment-icon' }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      {%- if section.settings.show_policies and shop.policies.size > 0 -%}
+        <ul class="cfoot__policies" role="list">
+          {%- for policy in shop.policies -%}
+            <li><a href="{{ policy.url }}">{{ policy.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% stylesheet %}
+  .cfoot {
+    margin-top: var(--footer-mt);
+    padding: calc(var(--d) * 4.4) 0 calc(var(--d) * 1.6);
+    border-top: 3px solid var(--color-text);
+    background: var(--color-bg);
+  }
+  .cfoot a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .cfoot__top {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(var(--d) * 3);
+    padding-bottom: calc(var(--d) * 3);
+  }
+  .cfoot__brand {
+    align-self: start;
+    justify-self: start;
+  }
+  .cfoot__word {
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    font-size: calc(var(--d) * 3.4);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .cfoot__word em {
+    font-style: italic;
+  }
+  .cfoot__logo {
+    display: block;
+    width: auto;
+    max-width: 300px;
+    max-height: calc(var(--d) * 5);
+    height: auto;
+  }
+  .cfoot__sign {
+    display: grid;
+    gap: calc(var(--d) * 0.9);
+    align-content: start;
+  }
+  .cfoot__sign-title {
+    margin: 0;
+  }
+  .cfoot__sign-text {
+    font-size: calc(var(--d) * 0.82);
+    line-height: 1.85;
+  }
+  .cfoot__sign-text p {
+    margin: 0;
+  }
+  .cfoot__row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--color-text);
+  }
+  .cfoot__row:focus-within {
+    border-bottom-width: 2px;
+  }
+  .cfoot__input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.8em 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    font-size: calc(var(--d) * 0.82);
+  }
+  .cfoot__input:focus {
+    outline: none;
+  }
+  .cfoot__input::placeholder {
+    color: var(--color-muted);
+  }
+  .cfoot__button {
+    padding: 0.8em 0 0.8em 1em;
+    border: 0;
+    background: none;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+  .cfoot__message {
+    margin: 0;
+    font-size: calc(var(--d) * 0.82);
+  }
+  .cfoot__cols {
+    display: grid;
+    grid-template-columns: repeat(var(--footer-cols, 4), minmax(0, 1fr));
+    gap: calc(var(--d) * 2);
+    padding: calc(var(--d) * 1.6) 0 calc(var(--d) * 2.4);
+    border-top: 1px solid var(--color-border);
+  }
+  .cfoot__cols .footer-menu,
+  .cfoot__cols .footer-text {
+    gap: 0.6em;
+    font-size: calc(var(--d) * 0.82);
+  }
+  .cfoot__cols .footer-menu__heading,
+  .cfoot__cols .footer-text__heading {
+    font: 500 calc(var(--d) * 0.66) / 1.3 var(--font-body);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text);
+  }
+  .cfoot__cols .footer-menu__list {
+    gap: 0;
+    line-height: 2;
+  }
+  .cfoot__cols .footer-menu__link,
+  .cfoot__cols .footer-text__body {
+    color: var(--color-text);
+  }
+  .cfoot__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding-top: calc(var(--d) * 1.2);
+    border-top: 1px solid var(--color-border);
+    color: var(--color-muted);
+  }
+  .cfoot__copyright {
+    margin: 0;
+  }
+  .cfoot__policies {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cfoot__policies li + li::before {
+    content: '·';
+    margin-inline: 0.6em;
+  }
+  .cfoot__payments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cfoot__payment-icon {
+    display: block;
+    width: 38px;
+    height: 24px;
+  }
+  @media (max-width: 749px) {
+    .cfoot__top {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .cfoot__cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .cfoot__word {
+      font-size: calc(var(--d) * 2.6);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Claret footer",
+  "tag": "div",
+  "class": "claret-footer-section",
+  "max_blocks": 6,
+  "blocks": [{ "type": "_footer-brand" }, { "type": "_footer-menu" }, { "type": "_footer-text" }],
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "label": "Space above",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "none"
+    },
+    { "type": "header", "content": "Name" },
+    { "type": "text", "id": "wordmark", "label": "Store name", "info": "Defaults to the store's name. Wrap a word in *asterisks* to set it in italics." },
+    { "type": "image_picker", "id": "logo", "label": "Logo image", "info": "Shows instead of the name" },
+    { "type": "header", "content": "Email signup" },
+    { "type": "checkbox", "id": "show_signup", "label": "Show the email signup", "default": true },
+    { "type": "text", "id": "signup_heading", "label": "Heading", "default": "Join the list" },
+    { "type": "richtext", "id": "signup_text", "label": "Text", "default": "<p>New paintings and offers, by email.</p>" },
+    { "type": "header", "content": "Menus" },
+    { "type": "range", "id": "columns", "label": "Columns on computers", "min": 2, "max": 6, "step": 1, "default": 4 },
+    { "type": "header", "content": "Bottom line" },
+    { "type": "checkbox", "id": "show_policies", "label": "Show policy links", "default": true },
+    { "type": "checkbox", "id": "show_localization", "label": "Show the language selector", "default": false },
+    { "type": "checkbox", "id": "show_country", "label": "Also show country and currency", "default": false },
+    { "type": "checkbox", "id": "show_social", "label": "Show social links", "default": false },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": false },
+    { "type": "checkbox", "id": "show_powered_by", "label": "Show Powered by Shopify", "default": false }
+  ]
+}
+{% endschema %}

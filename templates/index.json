@@ -1,0 +1,109 @@
+{
+  "sections": {
+    "hero": {
+      "type": "colour-spectrum",
+      "settings": {
+        "limit": 20,
+        "frame": "mixed",
+        "auto_sweep": true,
+        "kicker": "Shop by colour",
+        "heading": "A painting in *your colour*",
+        "text": "<p>Every colour below comes from a painting in the shop. Move along them, and the painting that carries the colour comes onto the wall.</p>",
+        "button_label": "Shop this painting",
+        "button2_label": "All paintings",
+        "heading_size": 100,
+        "wall_height": 100,
+        "painting_size": 100,
+        "color_scheme": "scheme-1",
+        "padding_top": "none",
+        "padding_bottom": "none"
+      }
+    },
+    "styles": {
+      "type": "style-rooms",
+      "settings": {
+        "frame": "mixed",
+        "heading": "Shop by *style*",
+        "side_label": "Collections",
+        "link_label": "Shop the room",
+        "columns": 4,
+        "heading_size": 100,
+        "painting_size": 100,
+        "color_scheme": "scheme-1",
+        "padding_top": "large",
+        "padding_bottom": "none"
+      }
+    },
+    "spotlight": {
+      "type": "spotlight",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "heading": "New on the wall",
+        "limit": 5,
+        "frame": "mixed"
+      }
+    },
+    "promises": {
+      "type": "craft-band",
+      "blocks": {
+        "p1": {
+          "type": "item",
+          "settings": {
+            "icon": "sizes",
+            "title": "Seven sizes",
+            "text": "<p>From 20 × 30 to 70 × 100 cm. The size guide shows every size in centimetres and inches.</p>"
+          }
+        },
+        "p2": {
+          "type": "item",
+          "settings": {
+            "icon": "frame",
+            "title": "Five frames",
+            "text": "<p>Oak, umber, espresso or black, or no frame. Pick one on any painting to see it.</p>"
+          }
+        },
+        "p3": {
+          "type": "item",
+          "settings": {
+            "icon": "hook",
+            "title": "Ready to hang",
+            "text": "<p>Add a hanging kit with picture hooks and nails, right under the buttons.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "padding_top": "none",
+        "padding_bottom": "none"
+      }
+    },
+    "collection": {
+      "type": "collection-grid",
+      "settings": {
+        "heading": "From *the collection*",
+        "link_label": "View all",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "heading_size": 100,
+        "painting_size": 100,
+        "text_size": 100,
+        "color_scheme": "scheme-1",
+        "padding_top": "large",
+        "padding_bottom": "large"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "styles",
+    "spotlight",
+    "promises",
+    "collection"
+  ]
+}

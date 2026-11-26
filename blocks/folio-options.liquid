@@ -1,0 +1,667 @@
+{% doc %}
+  The painting's choices. A frame option shows as small white tiles, each with a corner of the real frame.
+  A size option is a small dropdown that lists every size with its price and a little shape drawn to scale,
+  with an underlined Size guide link beside it that opens a popup. Other options show as buttons.
+  When frames come from a product options app instead, the tiles can still show: picking one changes
+  the frame on the wall and picks the same frame in the app.
+
+  @example
+  {% content_for 'block', type: 'folio-options', id: 'options' %}
+{% enddoc %}
+
+{%- liquid
+  assign frame_names = settings.frame_option_names | downcase | split: ','
+  assign size_names = settings.size_option_names | downcase | split: ','
+  assign id_prefix = 'FolioOptions-' | append: block.id
+  assign guide_id = 'SizeGuide-' | append: block.id
+  assign has_frame_option = false
+  assign size_option = nil
+  for option in product.options_with_values
+    assign option_down = option.name | downcase | strip
+    for n in frame_names
+      assign n_clean = n | strip
+      if option_down == n_clean
+        assign has_frame_option = true
+      endif
+    endfor
+    for n in size_names
+      assign n_clean = n | strip
+      if option_down == n_clean
+        assign size_option = option
+      endif
+    endfor
+  endfor
+  assign app_tiles = false
+  if block.settings.app_frames and has_frame_option == false
+    assign app_tiles = true
+  endif
+-%}
+
+<div class="fopt" style="--swatch: {{ block.settings.swatch_size }}px; --opt-text: {{ block.settings.text_size | divided_by: 100.0 }};" {{ block.shopify_attributes }}>
+  {%- if app_tiles -%}
+    <div class="fopt__group" data-app-frames>
+      <span class="fopt__label">{{ block.settings.frame_label | escape }} <b data-app-frame-name>{{ 'products.frames.oak' | t }}</b></span>
+      <div class="fopt__tiles">
+        {%- assign woods = block.settings.app_woods | default: 'oak,umber,espresso,black,none' | remove: ' ' | split: ',' -%}
+        {%- for wood in woods -%}
+          {%- assign wood_key = 'products.frames.' | append: wood -%}
+          <button type="button" class="fopt__tile" data-wood="{{ wood }}" data-wood-name="{{ wood_key | t }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">
+            <span class="fopt__corner"><span class="frame frame--{{ wood }}"><span></span></span></span>
+            <span class="fopt__name">{{ wood_key | t }}</span>
+          </button>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- unless product.has_only_default_variant -%}
+    <variant-picker class="fopt__picker">
+      {%- for option in product.options_with_values -%}
+        {%- liquid
+          assign option_down = option.name | downcase | strip
+          assign option_id = id_prefix | append: '-' | append: option.position
+          assign is_frame = false
+          for n in frame_names
+            assign n_clean = n | strip
+            if option_down == n_clean
+              assign is_frame = true
+            endif
+          endfor
+          assign is_size = false
+          if size_option and option.position == size_option.position
+            assign is_size = true
+          endif
+          assign option_index = option.position | minus: 1
+        -%}
+
+        {%- if is_frame -%}
+          <fieldset class="fopt__group" data-option data-option-name="{{ option_down | escape }}">
+            <legend class="fopt__label">{{ option.name | escape }} <b data-selected-value>{{ option.selected_value | escape }}</b></legend>
+            <div class="fopt__tiles">
+              {%- for value in option.values -%}
+                {%- liquid
+                  assign input_id = option_id | append: '-' | append: forloop.index0
+                  assign v = value | downcase
+                  assign wood = 'oak'
+                  if v contains 'umber' or v contains 'caramel' or v contains 'honey'
+                    assign wood = 'umber'
+                  elsif v contains 'black' or v contains 'noir' or v contains 'ebony' or v contains 'أسود'
+                    assign wood = 'black'
+                  elsif v contains 'espresso' or v contains 'dark' or v contains 'walnut'
+                    assign wood = 'espresso'
+                  elsif v contains 'no frame' or v contains 'unframed' or v contains 'none' or v contains 'without'
+                    assign wood = 'none'
+                  endif
+                -%}
+                <input type="radio" class="visually-hidden" id="{{ input_id }}" name="{{ option_id }}" value="{{ value | escape }}" {% if value.selected %}checked{% endif %}>
+                <label for="{{ input_id }}" class="fopt__tile{% unless value.available %} is-unavailable{% endunless %}">
+                  <span class="fopt__corner"><span class="frame frame--{{ wood }}"><span></span></span></span>
+                  <span class="fopt__name">{{ value | escape }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- elsif is_size -%}
+          <div class="fopt__group" data-option data-option-name="{{ option_down | escape }}">
+            <div class="fopt__label">
+              <label for="{{ option_id }}">{{ option.name | escape }}</label>
+              {%- if block.settings.show_guide -%}
+                <button type="button" class="fopt__guide" data-modal-open="{{ guide_id }}" aria-haspopup="dialog">{{ block.settings.guide_label | escape }}</button>
+              {%- endif -%}
+            </div>
+            <size-select class="fsize">
+              <select id="{{ option_id }}" name="{{ option_id }}" class="fsize__native" tabindex="-1" aria-hidden="true">
+                {%- for value in option.values -%}
+                  <option value="{{ value | escape }}" {% if value.selected %}selected{% endif %}>{{ value | escape }}</option>
+                {%- endfor -%}
+              </select>
+              <button type="button" class="fsize__button" aria-haspopup="listbox" aria-expanded="false" aria-controls="{{ option_id }}-list" data-size-button>
+                <span class="fsize__shape" data-size-shape aria-hidden="true"></span>
+                <span data-size-name>{{ option.selected_value | escape }}</span>
+                <span class="fsize__price" data-size-price></span>
+                <span class="fsize__chev" aria-hidden="true"></span>
+              </button>
+              <ul class="fsize__list" id="{{ option_id }}-list" role="listbox" hidden>
+                {%- for value in option.values -%}
+                  {%- liquid
+                    assign value_price = ''
+                    for variant in product.variants
+                      if variant.options[option_index] == value
+                        assign value_price = variant.price | money
+                        break
+                      endif
+                    endfor
+                  -%}
+                  <li role="option" class="fsize__option{% unless value.available %} is-unavailable{% endunless %}" data-value="{{ value | escape }}" data-price="{{ value_price | escape }}" aria-selected="{% if value.selected %}true{% else %}false{% endif %}" tabindex="-1">
+                    <span class="fsize__shape" aria-hidden="true"></span>
+                    <span>{{ value | escape }}{% unless value.available %} · {{ 'products.product.sold_out' | t }}{% endunless %}</span>
+                    <span class="fsize__price">{{ value_price }}</span>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </size-select>
+          </div>
+        {%- else -%}
+          <fieldset class="fopt__group" data-option data-option-name="{{ option_down | escape }}">
+            <legend class="fopt__label">{{ option.name | escape }} <b data-selected-value>{{ option.selected_value | escape }}</b></legend>
+            <div class="fopt__pills">
+              {%- for value in option.values -%}
+                {%- assign input_id = option_id | append: '-' | append: forloop.index0 -%}
+                <input type="radio" class="visually-hidden" id="{{ input_id }}" name="{{ option_id }}" value="{{ value | escape }}" {% if value.selected %}checked{% endif %}>
+                <label for="{{ input_id }}" class="fopt__pill{% unless value.available %} is-unavailable{% endunless %}">{{ value | escape }}</label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- endif -%}
+      {%- endfor -%}
+    </variant-picker>
+  {%- endunless -%}
+
+  {%- if block.settings.show_guide and size_option -%}
+    {%- assign size_index = size_option.position | minus: 1 -%}
+    <dialog id="{{ guide_id }}" class="modal fguide" aria-labelledby="{{ guide_id }}-title">
+      <div class="fguide__in">
+        <div class="fguide__head">
+          <div>
+            <h2 id="{{ guide_id }}-title" class="fguide__title">{{ block.settings.guide_heading | escape }}</h2>
+            {%- if block.settings.guide_intro != blank -%}<div class="fguide__intro rte">{{ block.settings.guide_intro }}</div>{%- endif -%}
+          </div>
+          <button type="button" class="fguide__close" data-modal-close aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', icon: 'close' %}</button>
+        </div>
+        <table class="fguide__table">
+          <thead>
+            <tr><th>{{ 'products.size_guide.cm' | t }}</th><th>{{ 'products.size_guide.inches' | t }}</th><th>{{ 'products.size_guide.price' | t }}</th></tr>
+          </thead>
+          <tbody>
+            {%- for value in size_option.values -%}
+              {%- liquid
+                assign clean = value | downcase | replace: '×', 'x' | replace: '*', 'x' | remove: 'cm' | remove: ' '
+                assign parts = clean | split: 'x'
+                assign inch_text = ''
+                if parts.size == 2
+                  assign w_in = parts[0] | times: 1.0 | divided_by: 2.54 | round: 1
+                  assign h_in = parts[1] | times: 1.0 | divided_by: 2.54 | round: 1
+                  assign inch_text = w_in | append: ' × ' | append: h_in | append: ' in'
+                endif
+                assign value_price = ''
+                for variant in product.variants
+                  if variant.options[size_index] == value
+                    assign value_price = variant.price | money
+                    break
+                  endif
+                endfor
+              -%}
+              <tr{% if value.selected %} class="is-on"{% endif %}><td>{{ value | escape }}</td><td>{{ inch_text }}</td><td>{{ value_price }}</td></tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+        {%- if block.settings.guide_tips != blank -%}
+          <div class="fguide__tips rte">{{ block.settings.guide_tips }}</div>
+        {%- endif -%}
+      </div>
+    </dialog>
+  {%- endif -%}
+</div>
+
+{% javascript %}
+  if (!customElements.get('size-select')) {
+    const dims = (value) => {
+      const m = String(value || '').replace(/,/g, '.').match(/(\d+(?:\.\d+)?)\s*(?:x|×|\*|X)\s*(\d+(?:\.\d+)?)/);
+      return m ? [Number(m[1]), Number(m[2])] : null;
+    };
+    // A small outline of the print, to the same scale for every size
+    const drawShapes = (root) => {
+      const options = Array.from(root.querySelectorAll('[data-value]'));
+      const all = options.map((o) => dims(o.dataset.value)).filter(Boolean);
+      const biggest = all.reduce((m, [w, h]) => Math.max(m, w, h), 0) || 1;
+      const shape = (el, value) => {
+        const d = dims(value);
+        el.innerHTML = d ? `<i style="width:${((d[0] / biggest) * 100).toFixed(1)}%;height:${((d[1] / biggest) * 100).toFixed(1)}%"></i>` : '';
+      };
+      options.forEach((o) => shape(o.querySelector('.fsize__shape'), o.dataset.value));
+      return shape;
+    };
+
+    class SizeSelect extends HTMLElement {
+      connectedCallback() {
+        this.select = this.querySelector('select');
+        this.button = this.querySelector('[data-size-button]');
+        this.list = this.querySelector('[role="listbox"]');
+        this.options = Array.from(this.list.querySelectorAll('[role="option"]'));
+        this.shape = drawShapes(this);
+        this.button.addEventListener('click', () => this.toggle(this.list.hidden));
+        this.list.addEventListener('click', (event) => {
+          const option = event.target.closest('[role="option"]');
+          if (option) this.choose(option);
+        });
+        this.addEventListener('keydown', (event) => this.onKey(event));
+        this.onOutside = (event) => {
+          if (!this.contains(event.target)) this.toggle(false);
+        };
+        document.addEventListener('click', this.onOutside);
+        this.paint();
+      }
+
+      disconnectedCallback() {
+        document.removeEventListener('click', this.onOutside);
+      }
+
+      toggle(open) {
+        this.list.hidden = !open;
+        this.classList.toggle('is-open', open);
+        this.button.setAttribute('aria-expanded', String(open));
+        if (open) (this.list.querySelector('[aria-selected="true"]') || this.options[0])?.focus();
+      }
+
+      choose(option) {
+        this.select.value = option.dataset.value;
+        this.paint();
+        this.toggle(false);
+        this.button.focus();
+        this.select.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      paint() {
+        const current = this.options.find((o) => o.dataset.value === this.select.value) || this.options[0];
+        if (!current) return;
+        this.options.forEach((o) => o.setAttribute('aria-selected', String(o === current)));
+        this.querySelector('[data-size-name]').textContent = current.dataset.value;
+        this.querySelector('[data-size-price]').textContent = current.dataset.price || '';
+        this.shape(this.querySelector('[data-size-shape]'), current.dataset.value);
+      }
+
+      onKey(event) {
+        if (this.list.hidden) {
+          if (event.key === 'ArrowDown' && event.target === this.button) {
+            event.preventDefault();
+            this.toggle(true);
+          }
+          return;
+        }
+        const at = this.options.indexOf(document.activeElement);
+        if (event.key === 'Escape') {
+          this.toggle(false);
+          this.button.focus();
+        } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault();
+          const step = event.key === 'ArrowDown' ? 1 : -1;
+          this.options[(at + step + this.options.length) % this.options.length].focus();
+        } else if ((event.key === 'Enter' || event.key === ' ') && at > -1) {
+          event.preventDefault();
+          this.choose(this.options[at]);
+        }
+      }
+    }
+    customElements.define('size-select', SizeSelect);
+  }
+
+  // Frame tiles for frames that come from a product options app
+  document.addEventListener('click', (event) => {
+    const tile = event.target.closest('[data-app-frames] [data-wood]');
+    if (!tile) return;
+    const group = tile.closest('[data-app-frames]');
+    const wood = tile.dataset.wood;
+    group.querySelectorAll('[data-wood]').forEach((b) => b.setAttribute('aria-pressed', String(b === tile)));
+    const label = group.querySelector('[data-app-frame-name]');
+    if (label) label.textContent = tile.dataset.woodName;
+    const info = tile.closest('product-info');
+    info?.dispatchEvent(new CustomEvent('frame:pick', { detail: { wood } }));
+    // Pick the same frame in the app, if its swatches are on the page
+    const names = { oak: /oak|بلوط/i, umber: /umber/i, espresso: /espresso/i, black: /black|أسود|اسود/i, none: /no frame|unframed|none|بدون/i };
+    const scope = info || document;
+    const swatch = Array.from(scope.querySelectorAll('.po-imageOption-swatch')).find((s) => names[wood].test(s.getAttribute('alt') || s.title || ''));
+    if (swatch && !swatch.contains(event.target)) swatch.click();
+  });
+{% endjavascript %}
+
+{% stylesheet %}
+  .fopt {
+    display: grid;
+    gap: calc(var(--d) * 2.2);
+  }
+  .fopt__picker {
+    display: grid;
+    gap: calc(var(--d) * 2.2);
+  }
+  .fopt__group {
+    display: grid;
+    gap: calc(var(--d) * 0.75);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .fopt__label {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6em;
+    padding: 0;
+    font-size: calc(var(--d) * 0.66 * var(--opt-text, 1));
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .fopt__label b {
+    font-size: 1.25em;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--color-text);
+  }
+  .fopt__guide {
+    margin-inline-start: auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-text);
+    font: inherit;
+    font-size: 1.2em;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 1px;
+    cursor: pointer;
+  }
+
+  /* Frame tiles: a white square with the top-left corner of the real frame running off its edges */
+  .fopt__tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--d) * 0.8);
+  }
+  .fopt__tile {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: calc(0.75rem * var(--opt-text, 1));
+    cursor: pointer;
+  }
+  .fopt__corner {
+    position: relative;
+    display: block;
+    width: var(--swatch, 48px);
+    height: var(--swatch, 48px);
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e3e3e1;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .fopt__corner .frame {
+    --fw: calc(var(--swatch, 48px) * 0.146);
+    --gap: max(1px, calc(var(--swatch, 48px) * 0.042));
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    right: -40%;
+    bottom: -40%;
+  }
+  .fopt__corner .frame--none {
+    --fw: 0px;
+    --gap: 0px;
+  }
+  .fopt__corner .frame > span {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #f1f0ee;
+  }
+  .fopt__corner .frame--none > span {
+    background: #f4f3f1;
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+  }
+  .fopt__tile[aria-pressed='true'] .fopt__corner,
+  input:checked + .fopt__tile .fopt__corner {
+    border-color: var(--color-text);
+    box-shadow: inset 0 0 0 1px var(--color-text);
+  }
+  input:focus-visible + .fopt__tile .fopt__corner,
+  .fopt__tile:focus-visible .fopt__corner {
+    outline: 2px solid var(--color-text);
+    outline-offset: 3px;
+  }
+  .fopt__tile.is-unavailable {
+    opacity: 0.45;
+  }
+
+  /* Other options as buttons */
+  .fopt__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .fopt__pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--input-radius);
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+  input:checked + .fopt__pill {
+    border-color: var(--color-text);
+    background: var(--color-text);
+    color: var(--color-bg);
+  }
+  input:focus-visible + .fopt__pill {
+    outline: 2px solid var(--color-text);
+    outline-offset: 2px;
+  }
+  .fopt__pill.is-unavailable {
+    text-decoration: line-through;
+    opacity: 0.5;
+  }
+
+  /* The size dropdown */
+  .fsize {
+    position: relative;
+    display: block;
+  }
+  .fsize__native {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .fsize__button {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    width: 100%;
+    min-height: 0;
+    padding: 0.6em 0.85em;
+    border: 1px solid #dadad8;
+    border-radius: var(--input-radius);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font: inherit;
+    font-size: calc(var(--d) * 0.8 * var(--opt-text, 1));
+    text-align: start;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+  }
+  .fsize__price {
+    margin-inline-start: auto;
+    color: var(--color-muted);
+  }
+  .fsize__chev {
+    width: 7px;
+    height: 7px;
+    border-right: 1px solid var(--color-muted);
+    border-bottom: 1px solid var(--color-muted);
+    rotate: 45deg;
+    translate: 0 -2px;
+    transition: rotate 0.2s ease, translate 0.2s ease;
+  }
+  .fsize.is-open .fsize__chev {
+    rotate: 225deg;
+    translate: 0 2px;
+  }
+  .fsize__shape {
+    display: inline-grid;
+    place-items: end start;
+    flex: none;
+    width: 18px;
+    height: 18px;
+  }
+  .fsize__shape i {
+    display: block;
+    border: 1px solid currentColor;
+  }
+  .fsize__list {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    list-style: none;
+    background: var(--color-bg);
+    border: 1px solid color-mix(in srgb, var(--color-text) 12%, var(--color-bg));
+    border-radius: var(--input-radius);
+    box-shadow: 0 18px 36px -18px rgb(0 0 0 / 0.28);
+  }
+  .fsize__option {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    padding: 0.55em 0.85em;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-text) 6%, var(--color-bg));
+    font-size: calc(var(--d) * 0.78 * var(--opt-text, 1));
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    outline: none;
+  }
+  .fsize__option:last-child {
+    border-bottom: 0;
+  }
+  .fsize__option:hover,
+  .fsize__option:focus {
+    background: color-mix(in srgb, var(--color-text) 5%, var(--color-bg));
+  }
+  .fsize__option[aria-selected='true'] {
+    font-weight: 600;
+  }
+  .fsize__option[aria-selected='true'] .fsize__price {
+    color: var(--color-text);
+  }
+  .fsize__option.is-unavailable {
+    color: var(--color-muted);
+  }
+
+  /* The size guide popup */
+  .fguide {
+    width: min(620px, calc(100vw - 32px));
+    max-height: calc(100dvh - 48px);
+    margin: auto;
+    border-radius: 16px;
+    overflow: auto;
+  }
+  .fguide__in {
+    display: grid;
+    gap: 18px;
+    padding: 28px 30px 30px;
+  }
+  .fguide__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .fguide__title {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 2.2rem;
+    line-height: 1;
+  }
+  .fguide__intro {
+    margin-top: 6px;
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+  .fguide__intro p {
+    margin: 0;
+  }
+  .fguide__close {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-text) 6%, var(--color-bg));
+    color: var(--color-text);
+    cursor: pointer;
+  }
+  .fguide__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .fguide__table th {
+    padding: 0 10px 8px;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    text-align: start;
+  }
+  .fguide__table td {
+    padding: 9px 10px;
+    border-top: 1px solid color-mix(in srgb, var(--color-text) 6%, var(--color-bg));
+  }
+  .fguide__table :is(td, th):last-child {
+    text-align: end;
+  }
+  .fguide__table tr.is-on td {
+    font-weight: 600;
+    background: color-mix(in srgb, var(--color-text) 4%, var(--color-bg));
+  }
+  .fguide__tips {
+    padding-top: 14px;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.875rem;
+    color: var(--color-body);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Frame and size",
+  "tag": null,
+  "settings": [
+    { "type": "paragraph", "content": "A Frame option shows as frame tiles and a Size option as a dropdown with prices. The option names are set in Theme settings → Folio." },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "swatch_size", "label": "Frame tile size", "min": 32, "max": 80, "step": 2, "unit": "px", "default": 48 },
+    { "type": "range", "id": "text_size", "label": "Text size", "info": "Labels, tile names and the size menu", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "header", "content": "Frames from an app" },
+    { "type": "checkbox", "id": "app_frames", "label": "Show frame tiles when frames come from an app", "info": "For a product options app such as Easify. Picking a tile changes the frame on the wall and picks the same frame in the app.", "default": true },
+    { "type": "text", "id": "frame_label", "label": "Label", "default": "Frame" },
+    { "type": "text", "id": "app_woods", "label": "Frames to show", "info": "Separate with commas, in order: oak, umber, espresso, black, none", "default": "oak,umber,espresso,black,none" },
+    { "type": "header", "content": "Size guide" },
+    { "type": "checkbox", "id": "show_guide", "label": "Show a Size guide link beside the sizes", "default": true },
+    { "type": "text", "id": "guide_label", "label": "Link label", "default": "Size guide" },
+    { "type": "text", "id": "guide_heading", "label": "Popup heading", "default": "Size guide" },
+    { "type": "richtext", "id": "guide_intro", "label": "Intro", "default": "<p>Sizes are the painting itself, width × height.</p>" },
+    { "type": "richtext", "id": "guide_tips", "label": "Tips under the table", "default": "<p><strong>Measure the wall.</strong> Mark the space with tape before you choose, and look at it from across the room.</p><p><strong>Above a sofa or bed.</strong> A painting about two thirds the width of the furniture usually looks balanced.</p>" }
+  ]
+}
+{% endschema %}

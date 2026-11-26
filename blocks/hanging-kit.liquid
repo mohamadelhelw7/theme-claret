@@ -1,0 +1,163 @@
+{% doc %}
+  A simple upsell, made for hanging material: one quiet line with a picture, a name, a short note and a
+  small round Add button with the price. Pressing it adds the kit to the painting; it turns black and
+  says Added. The kit goes to the bag with the painting, with Add to bag or Buy it now.
+
+  @example
+  {% content_for 'block', type: 'hanging-kit', id: 'kit' %}
+{% enddoc %}
+
+{%- assign kit = block.settings.product -%}
+{%- if kit != blank -%}
+  {%- liquid
+    assign kit_variant = kit.selected_or_first_available_variant
+    assign kit_price = kit_variant.price | money
+    assign kit_title = block.settings.title | default: kit.title
+    assign kit_id = 'Kit-' | append: block.id
+  -%}
+  <label class="fkit" for="{{ kit_id }}" style="--kit: {{ block.settings.size | divided_by: 100.0 }};" {{ block.shopify_attributes }}>
+    <input
+      type="checkbox"
+      id="{{ kit_id }}"
+      class="fkit__input"
+      data-upsell-addon
+      value="{{ kit_variant.id }}"
+      data-price="{{ kit_variant.price }}"
+      {% unless kit_variant.available %}
+        disabled
+      {% endunless %}
+    >
+    <span class="fkit__img">
+      {%- if block.settings.image != blank -%}
+        {{ block.settings.image | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}
+      {%- elsif kit.featured_media -%}
+        {{ kit.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}
+      {%- else -%}
+        {% render 'hook-art' %}
+      {%- endif -%}
+    </span>
+    <span class="fkit__text">
+      <b>{{ kit_title | escape }}</b>
+      {%- if block.settings.note != blank -%}<span>{{ block.settings.note | escape }}</span>{%- endif -%}
+    </span>
+    <span class="fkit__add" aria-hidden="true">
+      <span class="fkit__off">
+        {%- if kit_variant.available -%}
+          {{ 'products.kit.add' | t: price: kit_price }}
+        {%- else -%}
+          {{ 'products.product.sold_out' | t }}
+        {%- endif -%}
+      </span>
+      <span class="fkit__on">{{ 'products.kit.added' | t }}</span>
+    </span>
+  </label>
+{%- elsif request.design_mode -%}
+  <div class="fkit fkit--empty" style="--kit: {{ block.settings.size | divided_by: 100.0 }};" {{ block.shopify_attributes }}>
+    <span class="fkit__img">{% render 'hook-art' %}</span>
+    <span class="fkit__text"><b>{{ block.settings.title | default: 'Hanging kit' | escape }}</b><span>{{ 'products.kit.pick' | t }}</span></span>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .fkit {
+    position: relative;
+    display: grid;
+    grid-template-columns: calc(var(--d) * 2.6 * var(--kit, 1)) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: calc(var(--d) * 0.8 * var(--kit, 1));
+    padding: calc(var(--d) * 0.55 * var(--kit, 1)) calc(var(--d) * 0.8 * var(--kit, 1));
+    border-radius: var(--input-radius);
+    background: color-mix(in srgb, var(--color-text) 4%, var(--color-bg));
+    cursor: pointer;
+  }
+  .fkit--empty {
+    cursor: default;
+  }
+  .fkit__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .fkit__img {
+    display: block;
+    width: calc(var(--d) * 2.6 * var(--kit, 1));
+    height: calc(var(--d) * 2.6 * var(--kit, 1));
+    overflow: hidden;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--color-text) 6%, var(--color-bg));
+  }
+  .fkit__img img,
+  .fkit__img svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .fkit__text {
+    display: grid;
+    font-size: calc(var(--d) * 0.8 * var(--kit, 1));
+    line-height: 1.35;
+  }
+  .fkit__text b {
+    font-weight: 600;
+  }
+  .fkit__text span {
+    color: var(--color-muted);
+  }
+  .fkit__add {
+    display: inline-grid;
+    place-items: center;
+    min-width: 7.6em;
+    padding: 0.45em 0.9em;
+    border: 1px solid var(--color-text);
+    border-radius: 999px;
+    background: var(--color-bg);
+    font-size: calc(var(--d) * 0.76 * var(--kit, 1));
+    font-weight: 500;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  .fkit__add > * {
+    grid-area: 1 / 1;
+    transition: opacity 0.2s ease;
+  }
+  .fkit__on {
+    opacity: 0;
+  }
+  .fkit:has(.fkit__input:checked) .fkit__add {
+    background: var(--color-text);
+    color: var(--color-bg);
+  }
+  .fkit:has(.fkit__input:checked) .fkit__off {
+    opacity: 0;
+  }
+  .fkit:has(.fkit__input:checked) .fkit__on {
+    opacity: 1;
+  }
+  .fkit:has(.fkit__input:focus-visible) .fkit__add {
+    outline: 2px solid var(--color-text);
+    outline-offset: 2px;
+  }
+  .fkit:has(.fkit__input:disabled) {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hanging kit",
+  "tag": null,
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product", "info": "For example your hanging kit: hooks, nails or adhesive strips" },
+    { "type": "text", "id": "title", "label": "Name", "info": "Defaults to the product's name", "default": "Hanging kit" },
+    { "type": "text", "id": "note", "label": "Short note", "default": "Picture hooks and nails for one frame" },
+    { "type": "range", "id": "size", "label": "Size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "image_picker", "id": "image", "label": "Picture", "info": "Defaults to the product's photo, then a drawn hook" }
+  ]
+}
+{% endschema %}

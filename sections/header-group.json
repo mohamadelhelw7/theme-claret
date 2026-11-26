@@ -1,0 +1,65 @@
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "a_1": {
+          "type": "_announcement",
+          "settings": {
+            "text": "Seven sizes, from 20 × 30 to 70 × 100 cm · English · العربية"
+          }
+        }
+      },
+      "block_order": [
+        "a_1"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "show_country": false,
+        "show_language": false,
+        "mode": "static",
+        "speed": 40,
+        "direction": "forward",
+        "rotate_seconds": 4,
+        "label_font": true,
+        "rule_below": false,
+        "text_scale": 100
+      }
+    },
+    "header": {
+      "type": "folio-header",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "logo_width": 120,
+        "logo_width_mobile": 95,
+        "logo_position": "start",
+        "height": "standard",
+        "sticky": "scroll_up",
+        "show_border": true,
+        "transparent_home": false,
+        "menu": "main-menu",
+        "menu_style": "mega",
+        "action_style": "words",
+        "show_search": true,
+        "search_hints": "Monet, Van Gogh, landscapes, botanical",
+        "show_account": false,
+        "show_saved": false,
+        "show_language": true,
+        "show_country": false,
+        "drawer_show_whatsapp": true,
+        "drawer_show_localization": true,
+        "drawer_show_social": true,
+        "logo_height": 52,
+        "wordmark_size": 100,
+        "menu_size": 100,
+        "wordmark": "Art *Cellar*"
+      }
+    }
+  },
+  "order": [
+    "announcement",
+    "header"
+  ]
+}

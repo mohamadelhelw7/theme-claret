@@ -1,0 +1,96 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "claret-footer",
+      "blocks": {
+        "menu_shop": {
+          "type": "_footer-menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        "menu_help": {
+          "type": "_footer-menu",
+          "settings": {
+            "heading": "Help",
+            "menu": "footer"
+          }
+        },
+        "follow": {
+          "type": "_footer-text",
+          "settings": {
+            "heading": "Follow",
+            "text": "<p><a href=\"https://www.instagram.com/artcellareg\">Instagram</a></p>"
+          }
+        },
+        "language": {
+          "type": "_footer-text",
+          "settings": {
+            "heading": "Language",
+            "text": "<p>English · العربية</p>"
+          }
+        }
+      },
+      "block_order": [
+        "menu_shop",
+        "menu_help",
+        "follow",
+        "language"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "margin_top": "none",
+        "wordmark": "Art *Cellar*",
+        "show_signup": true,
+        "signup_heading": "Join the list",
+        "signup_text": "<p>New paintings and offers, by email.</p>",
+        "columns": 4,
+        "show_policies": true,
+        "show_localization": false,
+        "show_country": false,
+        "show_social": false,
+        "show_payment_icons": false,
+        "show_powered_by": false
+      }
+    },
+    "popup": {
+      "type": "popup",
+      "settings": {
+        "enable": false,
+        "color_scheme": "scheme-2",
+        "content": "newsletter",
+        "trigger": "scroll",
+        "delay": 8,
+        "scroll_percent": 40,
+        "frequency": 7,
+        "pages": "all",
+        "show_mobile": true,
+        "position": "corner",
+        "layout": "stacked",
+        "image_position": "start",
+        "image_shape": "square",
+        "eyebrow": "The club",
+        "heading": "New pieces,\n*first*",
+        "text": "<p>New arrivals, restocks and the journal, by email.</p>",
+        "button_label": "Shop now",
+        "dismiss_label": "Not now"
+      }
+    },
+    "tab_bar": {
+      "type": "tab-bar",
+      "settings": {
+        "enable": false,
+        "color_scheme": "scheme-2",
+        "show_labels": true
+      }
+    }
+  },
+  "order": [
+    "footer",
+    "popup",
+    "tab_bar"
+  ]
+}

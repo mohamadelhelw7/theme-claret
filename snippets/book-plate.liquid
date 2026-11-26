@@ -1,0 +1,22 @@
+{% doc %}
+  A painting printed as a plate on a page of Turn of the page: the image on white paper with its plate
+  number underneath. Without a product it shows a drawn painting.
+
+  @param {product} [product] - The product whose image is the plate
+  @param {number} [number] - The plate number
+
+  @example
+  {% render 'book-plate', product: product, number: 7 %}
+{% enddoc %}
+
+<figure class="book__plate">
+  {%- if product.featured_media -%}
+    {%- assign plate_alt = product.featured_media.alt | default: product.title | escape -%}
+    {{ product.featured_media | image_url: width: 900 | image_tag: loading: 'lazy', widths: '400, 600, 900', sizes: '(min-width: 990px) 30vw, 80vw', alt: plate_alt }}
+  {%- else -%}
+    {% render 'painting-art', variant: number %}
+  {%- endif -%}
+  {%- if number -%}
+    <figcaption>{{ 'sections.book.plate_short' | t: number: number }}</figcaption>
+  {%- endif -%}
+</figure>

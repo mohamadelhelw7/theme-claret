@@ -1,0 +1,306 @@
+{%- comment -%}
+  Spotlight: the section stays in place while the page scrolls, and paintings from a collection slide up
+  onto a lit wall one at a time, each in its frame. Beside the wall, the painting's title, artist and
+  price change with it, with a counter and a thin progress line. On phones the painting sits above its title.
+{%- endcomment -%}
+
+{%- liquid
+  assign heading_id = 'SpotlightHeading-' | append: section.id
+  assign sp_collection = section.settings.collection
+  assign sp_count = section.settings.limit
+  if sp_collection != blank and sp_collection.products.size < sp_count
+    assign sp_count = sp_collection.products.size
+  endif
+  assign woods = 'espresso,oak,umber,black,none,umber,espresso,oak' | split: ','
+  if section.settings.frame != 'mixed'
+    assign woods = section.settings.frame | append: ',' | append: section.settings.frame | split: ','
+  endif
+-%}
+
+<section
+  class="spot color-{{ section.settings.color_scheme }}"
+  style="--n: {{ sp_count | at_least: 1 }}; --head-scale: {{ section.settings.heading_size | divided_by: 100.0 }}; --title-scale: {{ section.settings.title_size | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }}; --wall-scale: {{ section.settings.wall_height | divided_by: 100.0 }}; --frame-scale: {{ section.settings.painting_size | divided_by: 100.0 }};"
+  aria-labelledby="{{ heading_id }}"
+  data-no-reveal
+>
+  <spot-light class="spot__sticky page-width">
+    <div class="spot__text">
+      <div class="plate-head">
+        <h2 id="{{ heading_id }}" class="plate-head__title">{{ section.settings.heading | escape }}</h2>
+        <span class="spot__count" data-spot-count>01 / {% if sp_count < 10 %}0{% endif %}{{ sp_count | at_least: 1 }}</span>
+      </div>
+      <div class="spot__titles">
+        {%- if sp_collection != blank and sp_count > 0 -%}
+          {%- for product in sp_collection.products limit: sp_count -%}
+            <div class="spot__t{% if forloop.first %} is-on{% endif %}">
+              <h3 class="spot__title"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
+              {%- if product.vendor != blank and product.vendor != shop.name -%}<p class="spot__by">{{ product.vendor | escape }}</p>{%- endif -%}
+              <div class="spot__row">
+                <span>{%- assign from_price = product.price_min | money -%}{{ 'products.product.price_from' | t: price: from_price }}</span>
+                {% render 'frame-dots' %}
+              </div>
+              <a class="spot__link" href="{{ product.url }}">{{ 'sections.spotlight.view' | t }}</a>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <div class="spot__t is-on">
+            <h3 class="spot__title">{{ 'products.product.placeholder_title' | t }}</h3>
+            <p class="spot__by">{{ 'sections.spotlight.empty' | t }}</p>
+          </div>
+        {%- endif -%}
+      </div>
+      <span class="spot__bar" aria-hidden="true"><i></i></span>
+    </div>
+    <div class="spot__wall wall">
+      {%- if sp_collection != blank and sp_count > 0 -%}
+        {%- for product in sp_collection.products limit: sp_count -%}
+          {%- liquid
+            assign wood_index = forloop.index0 | modulo: woods.size
+            assign item_class = 'spot__item'
+            if forloop.first
+              assign item_class = 'spot__item is-on'
+            endif
+          -%}
+          {% render 'folio-frame',
+            image: product.featured_media,
+            wood: woods[wood_index],
+            box_hw: 0.92,
+            max_w: 62,
+            max_h: 70,
+            sizes: '(min-width: 990px) 34vw, 80vw',
+            index: forloop.index,
+            class: item_class
+          %}
+        {%- endfor -%}
+      {%- else -%}
+        {% render 'folio-frame', wood: 'oak', box_hw: 0.92, max_w: 56, max_h: 70, class: 'spot__item is-on' %}
+      {%- endif -%}
+    </div>
+  </spot-light>
+</section>
+
+{% javascript %}
+  if (!customElements.get('spot-light')) {
+    class SpotLight extends HTMLElement {
+      connectedCallback() {
+        this.section = this.closest('.spot');
+        this.items = Array.from(this.querySelectorAll('.spot__item'));
+        this.titles = Array.from(this.querySelectorAll('.spot__t'));
+        this.count = this.querySelector('[data-spot-count]');
+        this.total = this.items.length;
+        this.on = -1;
+        this.update = this.update.bind(this);
+        window.addEventListener('scroll', this.update, { passive: true });
+        window.addEventListener('resize', this.update, { passive: true });
+        this.update();
+      }
+
+      disconnectedCallback() {
+        window.removeEventListener('scroll', this.update);
+        window.removeEventListener('resize', this.update);
+      }
+
+      update() {
+        if (!this.section || !this.total) return;
+        const box = this.section.getBoundingClientRect();
+        const room = box.height - this.offsetHeight;
+        const p = room > 0 ? Math.max(0, Math.min(1, -box.top / room)) : 0;
+        const idx = Math.min(this.total - 1, Math.floor(p * this.total * 0.999));
+        this.section.style.setProperty('--sp', p.toFixed(3));
+        if (idx === this.on) return;
+        this.on = idx;
+        [this.items, this.titles].forEach((list) =>
+          list.forEach((el, i) => {
+            el.classList.toggle('is-on', i === idx);
+            el.classList.toggle('is-before', i < idx);
+          })
+        );
+        const pad = (n) => (n < 10 ? `0${n}` : String(n));
+        if (this.count) this.count.textContent = `${pad(idx + 1)} / ${pad(this.total)}`;
+      }
+    }
+    customElements.define('spot-light', SpotLight);
+  }
+{% endjavascript %}
+
+{% stylesheet %}
+  .spot {
+    position: relative;
+    height: calc(var(--d) * (32 * var(--wall-scale, 1) + 4) + var(--n) * var(--d) * 14);
+  }
+  .spot__sticky {
+    position: sticky;
+    top: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    gap: calc(var(--d) * 3);
+    align-items: center;
+    height: calc(var(--d) * (32 * var(--wall-scale, 1) + 4));
+    padding-block: calc(var(--d) * 1.6);
+  }
+  .spot__text {
+    display: grid;
+    gap: calc(var(--d) * 2);
+    align-content: center;
+  }
+  .spot__text .plate-head {
+    margin-bottom: 0;
+  }
+  .spot__count {
+    font-size: calc(var(--d) * 0.66 * var(--head-scale, 1));
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    font-variant-numeric: tabular-nums;
+  }
+  .spot__titles {
+    display: grid;
+    overflow: hidden;
+  }
+  .spot__t {
+    grid-area: 1 / 1;
+    display: grid;
+    gap: 0.7em;
+    align-content: start;
+    translate: 0 110%;
+    opacity: 0;
+    transition: translate 0.8s cubic-bezier(0.6, 0, 0.2, 1), opacity 0.6s ease;
+  }
+  .spot__t.is-before {
+    translate: 0 -110%;
+  }
+  .spot__t.is-on {
+    translate: 0 0;
+    opacity: 1;
+  }
+  .spot__title {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-style: normal;
+    font-weight: var(--font-heading-weight);
+    font-size: calc(var(--d) * 3.4 * var(--heading-scale, 1) * var(--title-scale, 1));
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+  }
+  .spot__title a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .spot__by {
+    margin: 0;
+    font-size: calc(var(--d) * 0.86 * var(--text-scale, 1));
+    color: color-mix(in srgb, var(--color-text) 78%, var(--color-bg));
+  }
+  .spot__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: calc(var(--d) * 16.4);
+    padding-top: 0.8em;
+    border-top: 1px solid var(--color-border);
+    font-size: calc(var(--d) * 0.82 * var(--text-scale, 1));
+  }
+  .spot__link {
+    justify-self: start;
+    margin-top: 0.4em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid currentColor;
+    color: inherit;
+    font-size: calc(var(--d) * 0.66 * var(--text-scale, 1));
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .spot__bar {
+    display: block;
+    height: 1px;
+    background: var(--color-border);
+  }
+  .spot__bar i {
+    display: block;
+    width: calc(var(--sp, 0) * 100%);
+    height: 100%;
+    background: var(--color-text);
+  }
+  .spot__wall {
+    height: calc(var(--d) * 32 * var(--wall-scale, 1));
+  }
+  .spot__wall .frame--in {
+    --fx: calc(min(calc(var(--fn, 58) * 1cqi), calc(68cqh * var(--ratio, 0.8))) * var(--frame-scale, 1));
+  }
+  .spot__item {
+    grid-area: 1 / 1;
+    translate: 0 110cqh;
+    transition: translate 1s cubic-bezier(0.6, 0, 0.2, 1);
+  }
+  .spot__wall.wall {
+    container-type: size;
+  }
+  .spot__item.is-before {
+    translate: 0 -110cqh;
+  }
+  .spot__item.is-on {
+    translate: 0 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spot__t,
+    .spot__item {
+      transition: none;
+    }
+  }
+  @media (max-width: 749px) {
+    .spot {
+      height: calc(100svh + var(--n) * 38svh);
+    }
+    .spot__sticky {
+      grid-template-columns: minmax(0, 1fr);
+      align-content: center;
+      gap: 18px;
+      height: 100svh;
+    }
+    .spot__wall {
+      order: -1;
+      height: calc(50svh * var(--wall-scale, 1));
+    }
+    .spot__title {
+      font-size: calc(2rem * var(--title-scale, 1));
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Spotlight",
+  "tag": "div",
+  "class": "spotlight-section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "text", "id": "heading", "label": "Small title", "default": "New on the wall" },
+    { "type": "collection", "id": "collection", "label": "Paintings from" },
+    { "type": "range", "id": "limit", "label": "Paintings", "min": 2, "max": 8, "step": 1, "default": 5 },
+    {
+      "type": "select",
+      "id": "frame",
+      "label": "Frames",
+      "options": [
+        { "value": "mixed", "label": "A different wood for each" },
+        { "value": "oak", "label": "Oak" },
+        { "value": "umber", "label": "Umber" },
+        { "value": "espresso", "label": "Espresso" },
+        { "value": "black", "label": "Black" },
+        { "value": "none", "label": "No frame" }
+      ],
+      "default": "mixed"
+    },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "heading_size", "label": "Small title size", "min": 70, "max": 200, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "title_size", "label": "Painting name size", "min": 50, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "text_size", "label": "Text size", "min": 70, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "wall_height", "label": "Wall height", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "painting_size", "label": "Painting size", "min": 60, "max": 125, "step": 5, "unit": "%", "default": 100 },
+    { "type": "paragraph", "content": "The section stays in place while shoppers scroll, and each painting slides onto the wall in turn. On phones the painting sits above its title." }
+  ],
+  "presets": [{ "name": "Spotlight" }]
+}
+{% endschema %}

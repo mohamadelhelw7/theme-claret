@@ -1,0 +1,251 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-folio",
+      "blocks": {
+        "options": {
+          "type": "folio-options",
+          "settings": {
+            "app_frames": true,
+            "frame_label": "Frame",
+            "show_guide": true,
+            "guide_label": "Size guide",
+            "guide_heading": "Size guide",
+            "swatch_size": 48
+          }
+        },
+        "buy": {
+          "type": "folio-buy",
+          "settings": {
+            "show_price": true,
+            "show_buy_now": true,
+            "button_height": 36,
+            "text_size": 11
+          }
+        },
+        "kit": {
+          "type": "hanging-kit",
+          "settings": {
+            "title": "Hanging kit",
+            "note": "Picture hooks and nails for one frame"
+          }
+        },
+        "promises": {
+          "type": "promises",
+          "settings": {
+            "icon_1": "texture",
+            "text_1": "Textured painting feel",
+            "icon_2": "frame",
+            "text_2": "Handmade wooden frame",
+            "icon_3": "offer",
+            "text_3": "Buy 2, get 1 free"
+          }
+        },
+        "about": {
+          "type": "painting-about",
+          "settings": {
+            "heading": "About the painting",
+            "open": false
+          }
+        },
+        "details": {
+          "type": "accordion",
+          "settings": {
+            "style": "lines",
+            "single_open": true
+          },
+          "blocks": {
+            "sizes": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Sizes and frames",
+                "icon": "none",
+                "content": "<p>Every painting comes in several sizes, framed or unframed. Open the Size guide for every size in centimetres and inches.</p>"
+              }
+            }
+          },
+          "block_order": [
+            "sizes"
+          ]
+        },
+        "delivery": {
+          "type": "delivery-progress",
+          "settings": {
+            "label_order": "Order today",
+            "label_ship": "We ship it",
+            "label_arrive": "Delivered",
+            "ship_min": 1,
+            "ship_max": 4,
+            "arrive_min": 5,
+            "arrive_max": 7,
+            "skip_friday": false,
+            "skip_saturday": false,
+            "skip_sunday": false
+          }
+        }
+      },
+      "block_order": [
+        "options",
+        "buy",
+        "kit",
+        "promises",
+        "about",
+        "details",
+        "delivery"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "default_frame": "oak",
+        "gallery_light": true,
+        "show_thumbs": true,
+        "media_position": "start",
+        "sticky_info": true
+      }
+    },
+    "reviews": {
+      "type": "product-reviews",
+      "blocks": {
+        "review_1": {
+          "type": "_review",
+          "settings": {}
+        },
+        "review_2": {
+          "type": "_review",
+          "settings": {}
+        },
+        "review_3": {
+          "type": "_review",
+          "settings": {}
+        },
+        "review_4": {
+          "type": "_review",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3",
+        "review_4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "Reviews",
+        "heading": "What customers say",
+        "layout": "slider",
+        "button_label": "Write a review",
+        "anchor": "reviews",
+        "padding_top": "large",
+        "padding_bottom": "large"
+      }
+    },
+    "reels": {
+      "type": "reels",
+      "blocks": {
+        "r1": {
+          "type": "_reel"
+        },
+        "r2": {
+          "type": "_reel"
+        },
+        "r3": {
+          "type": "_reel"
+        },
+        "r4": {
+          "type": "_reel"
+        },
+        "r5": {
+          "type": "_reel"
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "In your homes",
+        "heading": "On *your* walls",
+        "padding_bottom": "large",
+        "chip_scheme": "scheme-1",
+        "padding_top": "large"
+      }
+    },
+    "recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "heading": "You may also like",
+        "header_alignment": "start",
+        "intent": "related",
+        "limit": 4,
+        "mobile_layout": "swipe",
+        "padding_top": "large",
+        "padding_bottom": "large"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q_1": {
+          "type": "_faq-item",
+          "settings": {
+            "question": "Which size should I choose?",
+            "answer": "<p>Open the size guide next to the sizes. Add your own fit notes here, for example whether a piece runs large.</p>",
+            "open": true
+          }
+        },
+        "q_2": {
+          "type": "_faq-item",
+          "settings": {
+            "question": "How do I care for my clothes?",
+            "answer": "<p>Add washing and care instructions for your pieces.</p>",
+            "open": false
+          }
+        },
+        "q_3": {
+          "type": "_faq-item",
+          "settings": {
+            "question": "How long does delivery take?",
+            "answer": "<p>Add your delivery times and the areas you ship to.</p>",
+            "open": false
+          }
+        },
+        "q_4": {
+          "type": "_faq-item",
+          "settings": {
+            "question": "Can I return or exchange an item?",
+            "answer": "<p>Add your return and exchange policy, or link to your refund policy page.</p>",
+            "open": false
+          }
+        }
+      },
+      "block_order": [
+        "q_1",
+        "q_2",
+        "q_3",
+        "q_4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "layout": "split",
+        "style": "lines",
+        "heading": "Questions and answers",
+        "button_label": "Chat on WhatsApp",
+        "show_whatsapp_icon": true,
+        "padding_top": "large",
+        "padding_bottom": "large"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "reviews",
+    "reels",
+    "recommendations",
+    "faq"
+  ]
+}

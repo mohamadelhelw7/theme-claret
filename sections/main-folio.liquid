@@ -1,0 +1,532 @@
+{%- comment -%}
+  Folio's product page. The painting hangs on a softly lit wall in a floating frame drawn around the
+  product photo: a thin wooden face (oak, umber or espresso, from the store's own frame photos), a warm
+  shadow gap and the canvas floating inside. Picking a frame changes the wood, and picking a size changes
+  the print's shape and how large it hangs, at a true scale. The frame can come from a product option
+  called Frame or from a product options app. Extra photos sit under the wall as small thumbnails.
+  Beside it, a column that stays in view holds the title, the artist, the price and every block.
+{%- endcomment -%}
+
+{%- liquid
+  assign art = product.featured_media
+  assign art_ratio = art.aspect_ratio | default: 0.75
+  assign rating = product.metafields.reviews.rating.value
+  assign rating_count = product.metafields.reviews.rating_count.value | default: 0
+  assign artist_note = product.metafields.custom.artist_note.value
+-%}
+
+<product-info
+  class="fpro fpro--media-{{ section.settings.media_position }}{% if section.settings.sticky_info %} fpro--sticky{% endif %} color-{{ section.settings.color_scheme }}"
+  style="--stage-scale: {{ section.settings.wall_height | divided_by: 100.0 }}; --title-scale: {{ section.settings.title_size | divided_by: 100.0 }}; --price-scale: {{ section.settings.price_size | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }};"
+  data-section="{{ section.id }}"
+  data-url="{{ product.url }}"
+  data-update-url="true"
+>
+  <div class="fpro__grid page-width">
+    <div class="fpro__media">
+      <frame-preview
+        class="fpro__stage{% if section.settings.gallery_light %} is-lit{% endif %}"
+        data-handle="{{ product.handle }}"
+        data-ratio="{{ art_ratio }}"
+        data-frame-names="{{ settings.frame_option_names | escape }}"
+        data-size-names="{{ settings.size_option_names | escape }}"
+        data-default-wood="{{ section.settings.default_frame }}"
+        data-art-size="{{ section.settings.painting_size }}"
+      >
+        <figure class="frame frame--{{ section.settings.default_frame }} fpro__frame{% if section.settings.gallery_light %} is-lit{% endif %}">
+          {%- if art -%}
+            {%- assign art_alt = art.alt | default: product.title | escape -%}
+            {{ art | image_url: width: 1800 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '600, 900, 1200, 1500, 1800', sizes: '(min-width: 990px) 50vw, 90vw', alt: art_alt, class: 'frame__art', data-art: '' }}
+          {%- else -%}
+            <span class="frame__art frame__art--drawn" data-art>{% render 'painting-art', variant: 1 %}</span>
+          {%- endif -%}
+          <span class="glow-art" aria-hidden="true"></span>
+          <span class="frame__grain frame__grain--h"></span><span class="frame__grain frame__grain--v"></span>
+        </figure>
+        <img class="fpro__photo" alt="" width="1600" height="1600" hidden data-photo>
+      </frame-preview>
+      {%- if section.settings.show_thumbs and product.media.size > 1 -%}
+        <ul class="fpro__thumbs" role="list">
+          {%- for media in product.media limit: 6 -%}
+            {%- if media.media_type != 'image' -%}{%- continue -%}{%- endif -%}
+            <li>
+              <button
+                type="button"
+                class="fpro__thumb"
+                {% if forloop.first %}
+                  data-thumb="art" aria-pressed="true"
+                {% else %}
+                  data-thumb="{{ media | image_url: width: 1600 }}" aria-pressed="false"
+                {% endif %}
+                aria-label="{{ 'products.product.zoom' | t: number: forloop.index }}"
+              >
+                {{ media | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+              </button>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    <div class="fpro__info">
+      <div class="fpro__head">
+        <h1 class="fpro__title">{{ product.title | escape }}</h1>
+        {%- assign show_vendor = false -%}
+        {%- if product.vendor != blank and product.vendor != shop.name -%}{%- assign show_vendor = true -%}{%- endif -%}
+        {%- if show_vendor or artist_note != blank -%}
+          <p class="fpro__by">
+            {%- if show_vendor -%}<span>{{ product.vendor | escape }}</span>{%- endif -%}
+            {%- if artist_note != blank -%}<span class="fpro__note"> · {{ artist_note | escape }}</span>{%- endif -%}
+          </p>
+        {%- endif -%}
+      </div>
+      <div class="fpro__priceline">
+        {% content_for 'block', type: 'product-price', id: 'price' %}
+        {%- if rating != blank -%}
+          <a class="fpro__rating" href="#reviews">
+            {% render 'stars', rating: rating.rating, scale: rating.scale_max %}
+            <span><bdi dir="ltr">{{ rating.rating | round: 1 }}</bdi>{% if rating_count > 0 %} · {{ rating_count }}{% endif %}</span>
+          </a>
+        {%- endif -%}
+      </div>
+      <div class="fpro__blocks">
+        {% content_for 'blocks' %}
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" data-product-variants>
+    {{ product.variants | json }}
+  </script>
+  <script type="application/ld+json">
+    {{ product | structured_data }}
+  </script>
+</product-info>
+
+{% javascript %}
+  if (!customElements.get('frame-preview')) {
+    const WOODS = ['oak', 'umber', 'espresso', 'black', 'none'];
+    const list = (text) => String(text || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
+    // A frame option value or an app swatch name to one of the four woods
+    const woodOf = (name) => {
+      const n = String(name || '').toLowerCase();
+      if (!n) return null;
+      if (/no frame|unframed|without|none|بدون/.test(n)) return 'none';
+      if (/black|noir|ebony|أسود|اسود/.test(n)) return 'black';
+      if (/espresso|dark|walnut|wenge|غامق/.test(n)) return 'espresso';
+      if (/umber|caramel|honey|brown|بني/.test(n)) return 'umber';
+      if (/oak|light|natural|بلوط|فاتح/.test(n)) return 'oak';
+      return null;
+    };
+    // "30 x 40 cm", "30×40", "30*40" to [30, 40]
+    const dims = (value) => {
+      const m = String(value || '').replace(/,/g, '.').match(/(\d+(?:\.\d+)?)\s*(?:x|×|\*|X)\s*(\d+(?:\.\d+)?)/);
+      return m ? [Number(m[1]), Number(m[2])] : null;
+    };
+    const store = (handle, wood) => {
+      try {
+        const all = JSON.parse(window.localStorage.getItem('folio:frames') || '{}');
+        all[handle] = wood;
+        window.localStorage.setItem('folio:frames', JSON.stringify(all));
+      } catch (error) {}
+    };
+
+    class FramePreview extends HTMLElement {
+      connectedCallback() {
+        this.info = this.closest('product-info');
+        this.frame = this.querySelector('.fpro__frame');
+        this.art = this.querySelector('[data-art]');
+        this.photo = this.querySelector('[data-photo]');
+        this.frameNames = list(this.dataset.frameNames);
+        this.sizeNames = list(this.dataset.sizeNames);
+        this.ratio = Number(this.dataset.ratio) || 0.75;
+        this.fill = Math.min(0.95, 0.8 * ((Number(this.dataset.artSize) || 100) / 100));
+        this.wood = this.dataset.defaultWood || 'oak';
+        this.size = null;
+        this.readOptions();
+
+        this.render = this.render.bind(this);
+        this.onVariant = (event) => {
+          this.readOptions(event.detail && event.detail.variant);
+          this.render();
+        };
+        this.info?.addEventListener('variant:change', this.onVariant);
+        // Frame tiles that do not change the variant (frames from an app)
+        this.info?.addEventListener('frame:pick', (event) => {
+          this.setWood(event.detail.wood);
+        });
+        // Swatches drawn by a product options app: their name says which frame was picked
+        this.onAppClick = (event) => {
+          const swatch = event.target.closest('.po-imageOption-swatch, [data-frame-swatch]');
+          if (!swatch) return;
+          const wood = woodOf(swatch.getAttribute('alt') || swatch.dataset.frameSwatch || swatch.title || swatch.textContent);
+          if (wood) {
+            this.setWood(wood);
+            this.info?.querySelectorAll('[data-wood]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.wood === wood)));
+          }
+        };
+        document.addEventListener('click', this.onAppClick);
+        this.closest('.fpro__media')?.addEventListener('click', (event) => {
+          const thumb = event.target.closest('[data-thumb]');
+          if (thumb) this.showThumb(thumb);
+        });
+        this.ro = new ResizeObserver(() => this.render());
+        this.ro.observe(this);
+        this.render();
+      }
+
+      disconnectedCallback() {
+        this.info?.removeEventListener('variant:change', this.onVariant);
+        document.removeEventListener('click', this.onAppClick);
+        this.ro?.disconnect();
+      }
+
+      // Read the frame and size from the chosen options
+      readOptions(variant) {
+        const picker = this.info?.querySelectorAll('variant-picker [data-option]') || [];
+        picker.forEach((option) => {
+          const name = (option.dataset.optionName || '').trim();
+          const select = option.querySelector('select');
+          const value = select ? select.value : option.querySelector('input:checked')?.value;
+          if (this.frameNames.includes(name)) {
+            const wood = woodOf(value);
+            if (wood) this.wood = wood;
+          }
+          if (this.sizeNames.includes(name)) this.size = dims(value);
+        });
+        if (!this.size && variant && variant.options) {
+          for (const value of variant.options) {
+            const d = dims(value);
+            if (d) {
+              this.size = d;
+              break;
+            }
+          }
+        }
+      }
+
+      setWood(wood) {
+        if (!WOODS.includes(wood)) return;
+        this.wood = wood;
+        store(this.dataset.handle, wood);
+        this.render();
+      }
+
+      showThumb(thumb) {
+        this.closest('.fpro__media').querySelectorAll('[data-thumb]').forEach((b) => b.setAttribute('aria-pressed', String(b === thumb)));
+        const isArt = thumb.dataset.thumb === 'art';
+        this.frame.hidden = !isArt;
+        this.photo.hidden = isArt;
+        if (!isArt) this.photo.src = thumb.dataset.thumb;
+      }
+
+      // The painting's own shape, hung at the chosen size: the size's longer side becomes the painting's
+      // longer side, so a wide painting stays wide whatever the size is called
+      shape() {
+        const r = this.ratio;
+        const long = this.size ? Math.max(this.size[0], this.size[1]) : 30 / Math.min(r, 1);
+        return r >= 1 ? [long, long / r] : [long * r, long];
+      }
+
+      // Draw the frame at a true scale: 1 cm of wood and 0.3 cm of gap, the print at 80% of the wall
+      render() {
+        const W = this.clientWidth;
+        const H = this.clientHeight;
+        if (!W || !H) return;
+        const [w, h] = this.shape();
+        const none = this.wood === 'none';
+        const cm = Math.min((W - 64) / (w + 2.6), (H - 64) / (h + 2.6)) * this.fill;
+        const face = none ? 0 : Math.max(2, cm);
+        const gap = none ? 0 : Math.max(1.5, 0.3 * cm);
+        const fullW = w * cm + (face + gap) * 2;
+        const fullH = h * cm + (face + gap) * 2;
+        WOODS.forEach((wood) => this.frame.classList.toggle(`frame--${wood}`, wood === this.wood));
+        this.frame.style.setProperty('--fw', `${face}px`);
+        this.frame.style.setProperty('--gap', `${gap}px`);
+        this.frame.style.setProperty('--ratio', (w / h).toFixed(4));
+        this.frame.style.width = `${fullW}px`;
+        this.style.setProperty('--pool-w', `${Math.max(fullW * 1.25, 160)}px`);
+        this.style.setProperty('--pool-h', `${Math.max(fullH * 1.05, 200)}px`);
+      }
+    }
+    customElements.define('frame-preview', FramePreview);
+  }
+{% endjavascript %}
+
+{% stylesheet %}
+  .fpro {
+    display: block;
+    padding-block: calc(var(--d) * 1.6) calc(var(--d) * 4);
+  }
+  .fpro__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: calc(var(--d) * 3.2);
+    align-items: start;
+  }
+  .fpro--media-end .fpro__media {
+    order: 2;
+  }
+  .fpro__media {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+  }
+  .fpro--sticky .fpro__info {
+    position: sticky;
+    top: calc(var(--header-height, 72px) + 20px);
+  }
+
+  /* The wall and the gallery light: a pool of light around the frame, the painting brightest in the middle */
+  .fpro__stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: max(calc(460px * var(--stage-scale, 1)), calc(var(--d) * 38 * var(--stage-scale, 1)));
+    overflow: hidden;
+    background: radial-gradient(120% 90% at 50% 30%, var(--stage-1), var(--stage-3));
+  }
+  .fpro__stage.is-lit {
+    background:
+      radial-gradient(var(--pool-w, 520px) var(--pool-h, 620px) at 50% 46%, rgb(255 252 246 / 0.6), rgb(250 249 246 / 0.3) 38%, rgb(240 240 238 / 0) 72%),
+      radial-gradient(140% 110% at 50% 45%, var(--stage-1) 0%, var(--stage-2) 60%, var(--stage-3) 100%);
+  }
+  .fpro__frame {
+    z-index: 1;
+    transition: width 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.6s ease, border-width 0.6s ease, padding 0.6s ease, box-shadow 0.6s ease;
+  }
+  .fpro__frame[hidden] {
+    display: none;
+  }
+  .fpro__frame.is-lit:not(.frame--none) {
+    box-shadow:
+      inset 0 0 0 1px rgb(0 0 0 / 0.18),
+      inset 0 0 calc(var(--gap) * 1.2) rgb(40 20 5 / 0.35),
+      0 1px 2px rgb(0 0 0 / 0.14),
+      0 10px 16px -8px rgb(0 0 0 / 0.24),
+      0 26px 40px -22px rgb(0 0 0 / 0.22);
+  }
+  .fpro__frame.is-lit.frame--none {
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.14), 0 10px 16px -8px rgb(0 0 0 / 0.24), 0 26px 40px -22px rgb(0 0 0 / 0.22);
+  }
+  .fpro__frame.is-lit::after {
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), inset 0 0 0 1px rgb(255 255 255 / 0.12), inset 0 -1px 0 rgb(0 0 0 / 0.25);
+  }
+  .glow-art {
+    position: absolute;
+    z-index: 2;
+    inset: var(--gap, 0px);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.7s ease;
+    background:
+      radial-gradient(70% 60% at 50% 42%, rgb(255 250 240 / 0.12), rgb(255 250 240 / 0) 62%),
+      radial-gradient(120% 105% at 50% 44%, rgb(0 0 0 / 0) 60%, rgb(0 0 0 / 0.09) 100%);
+  }
+  .frame--none .glow-art {
+    inset: 0;
+  }
+  .is-lit .glow-art {
+    opacity: 1;
+  }
+  .fpro__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .fpro__thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .fpro__thumb {
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    cursor: pointer;
+  }
+  .fpro__thumb[aria-pressed='true'] {
+    border-color: var(--color-text);
+  }
+  .fpro__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* The details column */
+  .fpro__info {
+    display: grid;
+    gap: calc(var(--d) * 2.2);
+    align-content: start;
+    min-width: 0;
+    padding-top: calc(var(--d) * 0.4);
+  }
+  .fpro__head {
+    display: grid;
+    gap: calc(var(--d) * 0.6);
+  }
+  .fpro__title {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-style: normal;
+    font-weight: var(--font-heading-weight);
+    font-size: calc(var(--d) * 3.9 * var(--heading-scale, 1) * var(--title-scale, 1));
+    line-height: 1;
+    letter-spacing: -0.025em;
+  }
+  .fpro__by {
+    margin: 0;
+    font-size: calc(var(--d) * 0.9 * var(--text-scale, 1));
+  }
+  .fpro__note {
+    color: var(--color-muted);
+  }
+  .fpro__priceline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 18px;
+  }
+  .fpro__priceline .price {
+    font-family: var(--font-heading);
+    font-size: calc(var(--d) * 1.55 * var(--price-scale, 1));
+    line-height: 1;
+  }
+  .fpro__priceline .price__current {
+    font-weight: 300;
+  }
+  .fpro__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: inherit;
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+  .fpro__blocks {
+    --blocks-gap: calc(var(--d) * 2.2);
+    display: grid;
+    gap: var(--blocks-gap);
+  }
+  .fpro__blocks > .fabout {
+    border-top: 1px solid var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .fpro__blocks > .fabout:has(+ .accordion) {
+    border-bottom: 0;
+  }
+  .fpro__blocks > .fabout + .accordion {
+    margin-top: calc(var(--blocks-gap) * -1);
+  }
+  .fpro__blocks > .fbuy + .fkit {
+    margin-top: calc(var(--blocks-gap) * -1 + var(--d) * 0.9);
+  }
+  .fpro__blocks > .accordion--lines > .accordion-row:first-child {
+    border-top-color: var(--color-text);
+  }
+  .fpro__blocks > .fabout + .accordion--lines > .accordion-row:first-child {
+    border-top-color: var(--color-border);
+  }
+  /* Rows that fold open: thin lines, a plus sign */
+  .fpro .accordion-row__summary {
+    min-height: calc(var(--d) * 2.4);
+    font-size: calc(var(--d) * 0.74 * var(--text-scale, 1));
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .fpro .accordion-row__toggle .icon {
+    width: 14px;
+    height: 14px;
+  }
+  .fpro .accordion-row__content {
+    font-size: calc(var(--d) * 0.82 * var(--text-scale, 1));
+    color: #3e3e3e;
+  }
+  .fpro .accordion-row__icon {
+    display: none;
+  }
+  @media (max-width: 989px) {
+    .fpro__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .fpro--media-end .fpro__media {
+      order: 0;
+    }
+    .fpro--sticky .fpro__info {
+      position: static;
+    }
+    .fpro__stage {
+      height: calc(min(108vw, 620px) * var(--stage-scale, 1));
+      margin-inline: calc(var(--gutter) * -1);
+    }
+  }
+  @media (max-width: 749px) {
+    .fpro__stage {
+      height: calc(var(--d) * 21 * var(--stage-scale, 1));
+    }
+    .fpro__info,
+    .fpro__blocks {
+      --blocks-gap: calc(var(--d) * 1.3);
+      gap: calc(var(--d) * 1.3);
+    }
+    .fpro__title {
+      font-size: calc(var(--d) * 2.6 * var(--heading-scale, 1) * var(--title-scale, 1));
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product on the wall",
+  "tag": "section",
+  "class": "folio-product-section",
+  "blocks": [{ "type": "@theme" }, { "type": "@app" }],
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "header", "content": "The wall" },
+    {
+      "type": "select",
+      "id": "default_frame",
+      "label": "Frame shown first",
+      "info": "Used until a shopper picks a frame, or when frames come from an app",
+      "options": [
+        { "value": "oak", "label": "Oak" },
+        { "value": "umber", "label": "Umber" },
+        { "value": "espresso", "label": "Espresso" },
+        { "value": "black", "label": "Black" },
+        { "value": "none", "label": "No frame" }
+      ],
+      "default": "oak"
+    },
+    { "type": "checkbox", "id": "gallery_light", "label": "Gallery light on the painting", "info": "A soft light from the front: a pool of light on the wall and the painting brightest in the middle", "default": true },
+    { "type": "checkbox", "id": "show_thumbs", "label": "Show extra photos as thumbnails", "info": "Extra photos (for example in a room) show without a frame", "default": true },
+    {
+      "type": "select",
+      "id": "media_position",
+      "label": "Wall on computers",
+      "options": [
+        { "value": "start", "label": "At the start" },
+        { "value": "end", "label": "At the end" }
+      ],
+      "default": "start"
+    },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "wall_height", "label": "Wall height", "min": 60, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "painting_size", "label": "Painting size on the wall", "min": 60, "max": 118, "step": 2, "unit": "%", "default": 100 },
+    { "type": "range", "id": "title_size", "label": "Title size", "min": 50, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "price_size", "label": "Price size", "min": 70, "max": 180, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "text_size", "label": "Artist line and rows text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "checkbox", "id": "sticky_info", "label": "Keep the details in view while the page scrolls", "default": true },
+    { "type": "paragraph", "content": "Sizes are read from a product option called Size (for example 30 x 40 cm), and frames from an option called Frame or from a product options app. Change the option names in Theme settings → Folio." }
+  ]
+}
+{% endschema %}

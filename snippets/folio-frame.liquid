@@ -1,0 +1,48 @@
+{% doc %}
+  A painting in Folio's floating frame: a thin wooden face, a warm shadow gap and the canvas floating
+  inside, with a soft shadow on the wall. It must sit inside a container (a wall, a card photo or a slot)
+  because its size is a share of the container's width, kept small enough to fit the container's height.
+
+  @param {object} [image] - An image or media object; a drawn painting shows when it is empty
+  @param {string} [wood] - oak, umber, espresso, black or none
+  @param {number} [max_w] - Widest the frame may be, as a share of the container's width (default 58)
+  @param {number} [max_h] - Tallest the frame may be, as a share of the container's height (default 70)
+  @param {number} [box_hw] - The container's height divided by its width (default 1.25)
+  @param {string} [sizes] - The sizes attribute for the image
+  @param {string} [loading] - lazy (default) or eager
+  @param {number} [index] - Position in a list, used to vary the drawn painting
+  @param {string} [class] - Extra classes for the frame
+  @param {string} [attributes] - Extra attributes for the frame
+
+  @example
+  {% render 'folio-frame', image: product.featured_media, wood: 'oak', box_hw: 1.25 %}
+{% enddoc %}
+
+{%- liquid
+  assign ff_wood = wood | default: 'oak'
+  assign ff_max_w = max_w | default: 58 | times: 1.0
+  assign ff_max_h = max_h | default: 70 | times: 1.0
+  assign ff_box = box_hw | default: 1.25 | times: 1.0
+  assign ff_ratio = 0.8
+  if image != blank
+    assign ff_ratio = image.aspect_ratio | default: image.preview_image.aspect_ratio | default: 0.8 | times: 1.0
+  endif
+  assign ff_n = ff_max_h | times: ff_box | times: ff_ratio
+  if ff_n > ff_max_w
+    assign ff_n = ff_max_w
+  endif
+  assign ff_n = ff_n | round: 2
+  assign ff_alt = image.alt | default: '' | escape
+  assign ff_loading = loading | default: 'lazy'
+  assign ff_sizes = sizes | default: '(min-width: 990px) 25vw, 50vw'
+  assign ff_index = index | default: 1
+-%}
+
+<span class="frame frame--{{ ff_wood }} frame--in {{ class }}" style="--fn: {{ ff_n }}; --ratio: {{ ff_ratio | round: 4 }};" {{ attributes }}>
+  {%- if image != blank -%}
+    {{ image | image_url: width: 1200 | image_tag: loading: ff_loading, widths: '300, 450, 600, 900, 1200', sizes: ff_sizes, alt: ff_alt, class: 'frame__art' }}
+  {%- else -%}
+    <span class="frame__art frame__art--drawn">{% render 'painting-art', variant: ff_index %}</span>
+  {%- endif -%}
+  <span class="frame__grain frame__grain--h"></span><span class="frame__grain frame__grain--v"></span>
+</span>

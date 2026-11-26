@@ -1,0 +1,529 @@
+{%- comment -%}
+  Shop by colour: a spectrum made of every painting's own colours. The theme reads five colours from each
+  painting's photo (or uses the colours saved in the product's custom.colours metafield), sorts them into reds,
+  golds, greens, blues and neutrals, and lays them out as one long band. Moving along it brings the painting that
+  carries the colour onto the wall, with its five colours under it. A marker sweeps along on its own until a
+  shopper takes over.
+{%- endcomment -%}
+
+{%- liquid
+  assign cs_collection = section.settings.collection
+  assign cs_limit = section.settings.limit
+  assign heading_id = 'ColourSpectrumHeading-' | append: section.id
+  assign woods = 'black,oak,umber,espresso,oak,espresso,black,umber' | split: ','
+  if section.settings.frame != 'mixed'
+    assign woods = section.settings.frame | append: ',' | append: section.settings.frame | split: ','
+  endif
+  assign cs_first = cs_collection.products.first
+-%}
+
+<section
+  class="cspec color-{{ section.settings.color_scheme }}"
+  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }}); --head-scale: {{ section.settings.heading_size | divided_by: 100.0 }}; --wall-scale: {{ section.settings.wall_height | divided_by: 100.0 }}; --frame-scale: {{ section.settings.painting_size | divided_by: 100.0 }};"
+  aria-labelledby="{{ heading_id }}"
+>
+  <colour-spectrum class="cspec__in" data-auto="{{ section.settings.auto_sweep }}">
+    <div class="cspec__hero">
+      <div class="cspec__copy">
+        {%- if section.settings.kicker != blank -%}<span class="cspec__kicker">{{ section.settings.kicker | escape }}</span>{%- endif -%}
+        <h2 id="{{ heading_id }}" class="cspec__heading">{% render 'accent-text', text: section.settings.heading %}</h2>
+        {%- if section.settings.text != blank -%}<div class="cspec__text">{{ section.settings.text }}</div>{%- endif -%}
+        <div class="cspec__read">
+          <span class="cspec__sw" data-sw></span>
+          <span class="cspec__readtxt">
+            <b data-name>
+              {%- if cs_first -%}{{ cs_first.title | escape }}{%- else -%}{{ 'products.product.placeholder_title' | t }}{%- endif -%}
+            </b>
+            <span data-meta></span>
+          </span>
+        </div>
+        <div class="cspec__btns">
+          {%- if section.settings.button_label != blank -%}
+            <a class="button button--primary" href="{{ cs_first.url | default: routes.all_products_collection_url }}" data-link>{{ section.settings.button_label | escape }}</a>
+          {%- endif -%}
+          {%- if section.settings.button2_label != blank -%}
+            <a class="button button--secondary" href="{{ section.settings.button2_link | default: routes.all_products_collection_url }}">{{ section.settings.button2_label | escape }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+      <div class="cspec__wall wall">
+        {%- if cs_collection != blank and cs_collection.products_count > 0 -%}
+          {%- for product in cs_collection.products limit: cs_limit -%}
+            {%- liquid
+              assign wood_index = forloop.index0 | modulo: woods.size
+              assign fig_class = 'cspec__fig'
+              if forloop.first
+                assign fig_class = 'cspec__fig is-on'
+              endif
+              assign fig_attrs = 'data-k="' | append: forloop.index0 | append: '"'
+              assign fig_loading = 'lazy'
+              if forloop.first
+                assign fig_loading = 'eager'
+              endif
+            -%}
+            {% render 'folio-frame',
+              image: product.featured_media,
+              wood: woods[wood_index],
+              box_hw: 0.9,
+              max_w: 64,
+              max_h: 62,
+              sizes: '(min-width: 990px) 34vw, 80vw',
+              loading: fig_loading,
+              index: forloop.index,
+              class: fig_class,
+              attributes: fig_attrs
+            %}
+          {%- endfor -%}
+        {%- else -%}
+          {%- for i in (1..5) -%}
+            {%- liquid
+              assign wood_index = forloop.index0 | modulo: woods.size
+              assign fig_class = 'cspec__fig'
+              if forloop.first
+                assign fig_class = 'cspec__fig is-on'
+              endif
+              assign fig_attrs = 'data-k="' | append: forloop.index0 | append: '"'
+            -%}
+            {% render 'folio-frame', wood: woods[wood_index], box_hw: 0.9, max_w: 64, max_h: 62, index: i, class: fig_class, attributes: fig_attrs %}
+          {%- endfor -%}
+        {%- endif -%}
+        <span class="cspec__pal" data-pal></span>
+      </div>
+    </div>
+    <div class="cspec__spec" data-spec aria-label="{{ 'sections.colour_spectrum.label' | t }}"><span class="cspec__mark" data-mark></span></div>
+    <div class="cspec__legend" data-legend></div>
+    <script type="application/json" data-family-names>
+      {"reds": {{ 'sections.colour_spectrum.reds' | t | json }}, "golds": {{ 'sections.colour_spectrum.golds' | t | json }}, "greens": {{ 'sections.colour_spectrum.greens' | t | json }}, "blues": {{ 'sections.colour_spectrum.blues' | t | json }}, "neutrals": {{ 'sections.colour_spectrum.neutrals' | t | json }}}
+    </script>
+
+    {%- comment -%} The paintings' details for the script; colours saved on a product win over the ones read from its photo {%- endcomment -%}
+    <script type="application/json" data-items>
+      [
+        {%- if cs_collection != blank and cs_collection.products_count > 0 -%}
+          {%- for product in cs_collection.products limit: cs_limit -%}
+            {%- liquid
+              assign from_price = product.price_min | money
+              assign p_meta = 'products.product.price_from' | t: price: from_price
+              if product.vendor != blank and product.vendor != shop.name
+                assign p_meta = product.vendor | append: ' · ' | append: p_meta
+              endif
+              assign p_image = product.featured_media | image_url: width: 64
+            -%}
+            {"t": {{ product.title | json }}, "m": {{ p_meta | json }}, "u": {{ product.url | json }}, "i": {{ p_image | json }}, "c": [
+              {%- for c in product.metafields.custom.colours.value -%}{{ c | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+            ]}{%- unless forloop.last -%},{%- endunless -%}
+          {%- endfor -%}
+        {%- else -%}
+          {"t": "", "m": "", "u": "", "i": "", "c": ["#3e6f8f", "#d9d2bd", "#28323d", "#8aa0ad", "#efe7d2"]},
+          {"t": "", "m": "", "u": "", "i": "", "c": ["#5d7a45", "#c9b56a", "#2f3a24", "#9db4c4", "#e6dcb0"]},
+          {"t": "", "m": "", "u": "", "i": "", "c": ["#b5482f", "#e0a043", "#41302b", "#7d6a5a", "#d8c9a6"]},
+          {"t": "", "m": "", "u": "", "i": "", "c": ["#c49a35", "#7a5a25", "#d8c48a", "#3b3324", "#9e7b3a"]},
+          {"t": "", "m": "", "u": "", "i": "", "c": ["#b7b2a9", "#e9e5dc", "#5e5a53", "#8c8780", "#d1ccc2"]}
+        {%- endif -%}
+      ]
+    </script>
+  </colour-spectrum>
+</section>
+
+{% javascript %}
+  if (!customElements.get('colour-spectrum')) {
+    const CACHE = 'claret:palettes';
+    const readCache = () => { try { return JSON.parse(window.localStorage.getItem(CACHE) || '{}'); } catch (e) { return {}; } };
+    const writeCache = (all) => { try { window.localStorage.setItem(CACHE, JSON.stringify(all)); } catch (e) {} };
+    const toHex = (c) => '#' + [c.r, c.g, c.b].map((v) => v.toString(16).padStart(2, '0')).join('');
+    const fromHex = (h) => { const x = String(h).replace('#', ''); return { r: parseInt(x.slice(0, 2), 16), g: parseInt(x.slice(2, 4), 16), b: parseInt(x.slice(4, 6), 16) }; };
+    const hsl = (c) => {
+      const r = c.r / 255, g = c.g / 255, b = c.b / 255;
+      const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+      const l = (mx + mn) / 2;
+      let h = 0, s = 0;
+      if (mx !== mn) {
+        const d = mx - mn;
+        s = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn);
+        h = (mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4) * 60;
+      }
+      return { h, s, l };
+    };
+    const FAMILIES = ['reds', 'golds', 'greens', 'blues', 'neutrals'];
+    const family = (c) => {
+      const { h, s, l } = hsl(c);
+      if (s < 0.16 || l < 0.1 || l > 0.92) return 'neutrals';
+      if (h < 18 || h >= 300) return 'reds';
+      if (h < 68) return 'golds';
+      if (h < 165) return 'greens';
+      return 'blues';
+    };
+    // Five colours from a small copy of the photo: a short k-means over its pixels
+    const readPalette = (src) => new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        try {
+          const cv = document.createElement('canvas');
+          cv.width = 48;
+          cv.height = Math.max(1, Math.round((48 * img.naturalHeight) / img.naturalWidth));
+          const cx = cv.getContext('2d', { willReadFrequently: true });
+          cx.drawImage(img, 0, 0, cv.width, cv.height);
+          const d = cx.getImageData(0, 0, cv.width, cv.height).data;
+          const px = [];
+          for (let i = 0; i < d.length; i += 4) px.push([d[i], d[i + 1], d[i + 2]]);
+          px.sort((a, b) => a[0] + a[1] + a[2] - (b[0] + b[1] + b[2]));
+          let cs = [0, 1, 2, 3, 4].map((i) => px[Math.floor(((i + 0.5) * px.length) / 5)].slice());
+          let counts = [];
+          for (let it = 0; it < 9; it++) {
+            const sum = cs.map(() => [0, 0, 0, 0]);
+            for (const p of px) {
+              let best = 0, bd = Infinity;
+              cs.forEach((c, j) => { const dd = (p[0] - c[0]) ** 2 + (p[1] - c[1]) ** 2 + (p[2] - c[2]) ** 2; if (dd < bd) { bd = dd; best = j; } });
+              const s = sum[best];
+              s[0] += p[0]; s[1] += p[1]; s[2] += p[2]; s[3] += 1;
+            }
+            cs = sum.map((s, j) => (s[3] ? [s[0] / s[3], s[1] / s[3], s[2] / s[3]] : cs[j]));
+            counts = sum.map((s) => s[3]);
+          }
+          resolve(cs.map((c, j) => ({ r: Math.round(c[0]), g: Math.round(c[1]), b: Math.round(c[2]), n: counts[j] / px.length })).sort((a, b) => b.n - a.n));
+        } catch (e) {
+          resolve(null);
+        }
+      };
+      img.onerror = () => resolve(null);
+      img.src = src;
+    });
+
+    class ColourSpectrum extends HTMLElement {
+      async connectedCallback() {
+        this.items = JSON.parse(this.querySelector('[data-items]').textContent);
+        this.spec = this.querySelector('[data-spec]');
+        this.mark = this.querySelector('[data-mark]');
+        this.legend = this.querySelector('[data-legend]');
+        this.figs = Array.from(this.querySelectorAll('.cspec__fig'));
+        const cache = readCache();
+        const pals = await Promise.all(this.items.map(async (item) => {
+          if (item.c && item.c.length) return item.c.map((h) => ({ ...fromHex(h), n: 1 / item.c.length }));
+          if (!item.i) return null;
+          if (cache[item.i]) return cache[item.i];
+          const p = await readPalette(item.i.startsWith('//') ? window.location.protocol + item.i : item.i);
+          if (p) cache[item.i] = p;
+          return p;
+        }));
+        writeCache(cache);
+        this.pals = pals;
+        this.all = [];
+        pals.forEach((pal, k) => (pal || []).forEach((c) => this.all.push({ k, c, f: family(c), h: hsl(c) })));
+        if (!this.all.length) return;
+        const order = { reds: 0, golds: 1, greens: 2, blues: 3, neutrals: 4 };
+        this.all.sort((a, b) => order[a.f] - order[b.f] || (a.f === 'neutrals' ? b.h.l - a.h.l : a.h.h - b.h.h));
+        this.spec.insertAdjacentHTML('afterbegin', this.all.map((x) => `<i style="--c:${toHex(x.c)};--g:${(0.4 + x.c.n * 6).toFixed(2)}"></i>`).join(''));
+        this.slivers = Array.from(this.spec.querySelectorAll('i'));
+        this.labels = JSON.parse(this.querySelector('[data-family-names]')?.textContent || '{}');
+        this.placeLegend();
+        this.current = -1;
+        const start = Math.max(0, this.all.findIndex((x) => x.k === 0 && x.f !== 'neutrals'));
+        this.show(start);
+        this.sweep = start;
+        const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        this.auto = this.dataset.auto === 'true' && !still;
+        const take = (e) => { this.auto = false; this.pick(e.clientX); };
+        this.spec.addEventListener('pointermove', take);
+        this.spec.addEventListener('pointerdown', take);
+        this.visible = true;
+        if ('IntersectionObserver' in window) {
+          this.io = new IntersectionObserver((en) => { this.visible = en[0].isIntersecting; });
+          this.io.observe(this);
+        }
+        this.timer = setInterval(() => {
+          if (!this.auto || !this.visible || document.hidden) return;
+          this.sweep = (this.sweep + 1) % this.all.length;
+          this.show(this.sweep);
+        }, 900);
+        this.onResize = () => { this.placeLegend(); const i = this.current; this.current = -1; this.show(i); };
+        window.addEventListener('resize', this.onResize);
+      }
+      disconnectedCallback() {
+        clearInterval(this.timer);
+        this.io?.disconnect();
+        window.removeEventListener('resize', this.onResize);
+      }
+      // One label at the start of each colour group, skipping one that would run into the label before it
+      placeLegend() {
+        let last = -Infinity;
+        this.legend.innerHTML = FAMILIES.map((f) => {
+          const first = this.all.findIndex((x) => x.f === f);
+          if (first < 0) return '';
+          const left = this.slivers[first].offsetLeft;
+          if (left - last < 90) return '';
+          last = left;
+          return `<span style="left:${left}px">${this.labels[f] || f}</span>`;
+        }).join('');
+      }
+      pick(clientX) {
+        const r = this.spec.getBoundingClientRect();
+        const t = Math.min(0.999, Math.max(0, (clientX - r.left) / r.width));
+        const total = this.slivers.reduce((s, el) => s + el.offsetWidth, 0);
+        let acc = 0, idx = 0;
+        for (let j = 0; j < this.slivers.length; j++) {
+          acc += this.slivers[j].offsetWidth / total;
+          if (t <= acc) { idx = j; break; }
+        }
+        this.show(idx);
+      }
+      show(i) {
+        if (i === this.current || !this.all[i]) return;
+        this.current = i;
+        const x = this.all[i];
+        const item = this.items[x.k] || {};
+        this.slivers.forEach((el, j) => el.classList.toggle('is-hot', j === i));
+        this.figs.forEach((fig) => fig.classList.toggle('is-on', Number(fig.dataset.k) === x.k));
+        this.mark.style.left = `${this.slivers[i].offsetLeft + this.slivers[i].offsetWidth / 2}px`;
+        this.querySelector('[data-sw]').style.background = toHex(x.c);
+        if (item.t) this.querySelector('[data-name]').textContent = item.t;
+        const meta = [toHex(x.c).toUpperCase(), this.labels[x.f] || x.f, item.m].filter(Boolean).join(' · ');
+        this.querySelector('[data-meta]').textContent = meta;
+        const link = this.querySelector('[data-link]');
+        if (link && item.u) link.href = item.u;
+        this.querySelector('[data-pal]').innerHTML = (this.pals[x.k] || []).map((c) => `<i style="background:${toHex(c)}"></i>`).join('');
+      }
+    }
+    customElements.define('colour-spectrum', ColourSpectrum);
+  }
+{% endjavascript %}
+
+{% stylesheet %}
+  .cspec {
+    padding-top: var(--pt, 0px);
+    padding-bottom: var(--pb, 0px);
+  }
+  .cspec__in {
+    display: block;
+    padding-bottom: calc(var(--d) * 3);
+  }
+  .cspec__hero {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  }
+  .cspec__copy {
+    display: grid;
+    align-content: center;
+    gap: calc(var(--d) * 1.5);
+    padding: calc(var(--d) * 3) calc(var(--d) * 3) calc(var(--d) * 3) var(--gutter);
+  }
+  .cspec__kicker {
+    font: 500 calc(var(--d) * 0.66) / 1.3 var(--font-body);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .cspec__heading {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    font-size: calc(var(--d) * 5.6 * var(--head-scale, 1));
+    line-height: 0.94;
+    letter-spacing: -0.02em;
+  }
+  .cspec__heading em {
+    font-style: italic;
+  }
+  .cspec__text {
+    max-width: 26em;
+    font-size: calc(var(--d) * 0.82);
+    line-height: 1.85;
+    color: color-mix(in srgb, var(--color-text) 72%, var(--color-bg));
+  }
+  .cspec__text p {
+    margin: 0;
+  }
+  .cspec__read {
+    display: flex;
+    align-items: center;
+    gap: var(--d);
+  }
+  .cspec__sw {
+    flex: none;
+    width: calc(var(--d) * 3.2);
+    height: calc(var(--d) * 3.2);
+    background: var(--color-border);
+    transition: background-color 0.4s ease;
+  }
+  .cspec__readtxt {
+    display: grid;
+    gap: 0.2em;
+  }
+  .cspec__readtxt b {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: var(--font-heading-weight);
+    font-size: calc(var(--d) * 1.7);
+    line-height: 1.1;
+  }
+  .cspec__readtxt span {
+    font: 500 calc(var(--d) * 0.66) / 1.3 var(--font-body);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .cspec__btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em;
+  }
+  .cspec__btns .button {
+    min-height: calc(var(--d) * 2.244);
+    padding-inline: calc(var(--d) * 1.32);
+    font-size: calc(var(--d) * 0.66);
+  }
+  .cspec__wall {
+    height: calc(var(--d) * 34 * var(--wall-scale, 1));
+  }
+  .cspec__fig {
+    grid-area: 1 / 1;
+    opacity: 0;
+    scale: 0.97;
+    transition: opacity 0.6s ease, scale 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .cspec__fig.is-on {
+    opacity: 1;
+    scale: 1;
+  }
+  .cspec__pal {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    bottom: calc(var(--d) * 1.6);
+    translate: -50% 0;
+    display: flex;
+    gap: 0.3em;
+  }
+  .cspec__pal i {
+    width: calc(var(--d) * 1.6);
+    height: calc(var(--d) * 0.55);
+  }
+  .cspec__spec {
+    position: relative;
+    display: flex;
+    height: calc(var(--d) * 6.4);
+    margin: calc(var(--d) * 2.2) var(--gutter) 0;
+    cursor: crosshair;
+    touch-action: pan-y;
+  }
+  .cspec__spec i {
+    flex: var(--g, 1) 1 0;
+    min-width: 0;
+    background: var(--c);
+    transition: flex-grow 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .cspec__spec i.is-hot {
+    flex-grow: calc(var(--g, 1) * 5);
+  }
+  .cspec__mark {
+    position: absolute;
+    top: calc(var(--d) * -0.7);
+    bottom: calc(var(--d) * -0.7);
+    width: 2px;
+    background: var(--color-text);
+    pointer-events: none;
+    transition: left 0.2s ease;
+  }
+  .cspec__legend {
+    position: relative;
+    height: calc(var(--d) * 1.6);
+    margin: calc(var(--d) * 0.9) var(--gutter) 0;
+    font: 500 calc(var(--d) * 0.66) / 1.3 var(--font-body);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .cspec__legend span {
+    position: absolute;
+    top: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cspec__fig,
+    .cspec__spec i {
+      transition: none;
+    }
+  }
+  @media (max-width: 749px) {
+    .cspec__hero {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .cspec__copy {
+      order: 2;
+      padding: calc(var(--d) * 2) var(--gutter);
+    }
+    .cspec__heading {
+      font-size: calc(var(--d) * 2.8 * var(--head-scale, 1));
+    }
+    .cspec__wall {
+      height: calc(var(--d) * 24 * var(--wall-scale, 1));
+    }
+    .cspec__spec {
+      height: calc(var(--d) * 4.4);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Shop by colour",
+  "tag": "div",
+  "class": "colour-spectrum-section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Paintings from", "info": "Each painting's colours are read from its photo. To set them yourself, fill the product metafield custom.colours (a list of colours)." },
+    { "type": "range", "id": "limit", "label": "Paintings", "min": 4, "max": 40, "step": 1, "default": 20 },
+    {
+      "type": "select",
+      "id": "frame",
+      "label": "Frames",
+      "options": [
+        { "value": "mixed", "label": "A different wood for each" },
+        { "value": "oak", "label": "Oak" },
+        { "value": "umber", "label": "Umber" },
+        { "value": "espresso", "label": "Espresso" },
+        { "value": "black", "label": "Black" },
+        { "value": "none", "label": "No frame" }
+      ],
+      "default": "mixed"
+    },
+    { "type": "checkbox", "id": "auto_sweep", "label": "Move along the colours until a shopper takes over", "default": true },
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "kicker", "label": "Small title", "default": "Shop by colour" },
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Wrap words in *asterisks* to set them in italics", "default": "A painting in *your colour*" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Every colour below comes from a painting in the shop. Move along them, and the painting that carries the colour comes onto the wall.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button for the painting on the wall", "default": "Shop this painting" },
+    { "type": "text", "id": "button2_label", "label": "Second button", "default": "All paintings" },
+    { "type": "url", "id": "button2_link", "label": "Second button link" },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 50, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "wall_height", "label": "Wall height", "min": 60, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "painting_size", "label": "Painting size", "min": 60, "max": 125, "step": 5, "unit": "%", "default": 100 },
+    { "type": "header", "content": "Colors and spacing" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    {
+      "type": "select",
+      "id": "padding_top",
+      "label": "Top spacing",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "padding_bottom",
+      "label": "Bottom spacing",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "none"
+    }
+  ],
+  "presets": [{ "name": "Shop by colour" }]
+}
+{% endschema %}

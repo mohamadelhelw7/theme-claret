@@ -1,0 +1,33 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "show_title": true,
+        "show_eyebrow": true,
+        "show_description": true,
+        "show_image": false,
+        "products_per_page": 24,
+        "pagination_style": "button",
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "enable_filtering": true,
+        "filter_layout": "horizontal",
+        "enable_sorting": true,
+        "grid_style": "even",
+        "show_grid_switch": true,
+        "show_promo": false,
+        "promo_heading": "New on the wall",
+        "promo_link_label": "Shop now",
+        "promo_position": 3,
+        "promo_size": "wide",
+        "promo_scheme": "scheme-6",
+        "padding_bottom": "large"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

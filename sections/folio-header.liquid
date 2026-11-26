@@ -1,0 +1,684 @@
+{%- comment -%}
+  Claret header: the store name in the light serif (or your logo) at the start, the menu beside
+  it and the actions written as words (or icons) at the end, over a fine ink rule. Menu links get an ink
+  underline that draws in on hover, and mega menus open with an ink line drawing across their top while
+  the columns rise in.
+{%- endcomment -%}
+
+{%- liquid
+  assign menu = section.settings.menu
+  assign header_logo = section.settings.logo | default: shop.brand.logo
+  assign drawer_id = 'MenuDrawer-' | append: section.id
+  assign wa_number = settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-'
+  assign header_classes = 'site-header folio-header folio-header--' | append: section.settings.height | append: ' folio-header--logo-' | append: section.settings.logo_position | append: ' folio-header--actions-' | append: section.settings.action_style
+  if section.settings.show_border
+    assign header_classes = header_classes | append: ' folio-header--ruled'
+  endif
+  assign is_transparent = false
+  if section.settings.transparent_home and request.page_type == 'index'
+    assign is_transparent = true
+  endif
+-%}
+
+<header
+  class="{{ header_classes }} color-{{ section.settings.color_scheme }}"
+  data-sticky="{{ section.settings.sticky }}"
+  {% if is_transparent %}
+    data-transparent
+  {% endif %}
+  style="--logo-width: {{ section.settings.logo_width }}px; --logo-width-mobile: {{ section.settings.logo_width_mobile }}px; --logo-height: {{ section.settings.logo_height }}px; --wordmark-scale: {{ section.settings.wordmark_size | divided_by: 100.0 }}; --menu-scale: {{ section.settings.menu_size | divided_by: 100.0 }}; --transparent-text: {{ section.settings.transparent_text }};"
+>
+  <div class="folio-header__bar page-width">
+    <div class="folio-header__start">
+      <button
+        type="button"
+        class="icon-button folio-header__toggle"
+        data-modal-open="{{ drawer_id }}"
+        aria-haspopup="dialog"
+        aria-controls="{{ drawer_id }}"
+        aria-label="{{ 'general.header.menu' | t }}"
+      >
+        {% render 'icon', icon: 'menu' %}
+      </button>
+      {%- if request.page_type == 'index' -%}
+        <h1 class="visually-hidden">{{ shop.name | escape }}</h1>
+      {%- endif -%}
+      <a href="{{ routes.root_url }}" class="folio-header__logo site-header__logo">
+        {%- if header_logo -%}
+          {{
+            header_logo
+            | image_url: width: 600
+            | image_tag:
+              alt: shop.name,
+              class: 'site-header__logo-image',
+              widths: '150, 300, 450, 600',
+              sizes: '260px',
+              loading: 'eager'
+          }}
+          {%- if is_transparent and section.settings.transparent_logo -%}
+            {{
+              section.settings.transparent_logo
+              | image_url: width: 600
+              | image_tag:
+                alt: '',
+                class: 'site-header__logo-image site-header__logo-image--transparent',
+                widths: '150, 300, 450, 600',
+                sizes: '260px',
+                loading: 'eager'
+            }}
+          {%- endif -%}
+        {%- else -%}
+          {%- liquid
+            assign wordmark = section.settings.wordmark | default: shop.name | strip
+          -%}
+          <span class="folio-header__wordmark">
+            {%- render 'accent-text', text: wordmark -%}
+          </span>
+        {%- endif -%}
+      </a>
+    </div>
+
+    <div class="folio-header__nav">
+      {% render 'header-nav',
+        menu: menu,
+        menu_style: section.settings.menu_style,
+        mega_image: section.settings.mega_image,
+        mega_image_link: section.settings.mega_image_link,
+        mega_image_caption: section.settings.mega_image_caption
+      %}
+    </div>
+
+    <div class="folio-header__actions">
+      {%- if section.settings.show_language or section.settings.show_country -%}
+        <div class="site-header__localization folio-header__locale">
+          {% render 'localization-form', id_prefix: 'Header', show_language: section.settings.show_language, show_country: section.settings.show_country %}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.show_search -%}
+        <details class="header-search" data-escape-close data-click-outside>
+          <summary class="folio-header__action header-action" aria-label="{{ 'general.search.title' | t }}">
+            {% render 'icon', icon: 'search', class: 'header-action__icon folio-header__icon' %}
+            <span class="folio-header__word" aria-hidden="true">{{ 'general.search.title' | t }}</span>
+          </summary>
+          <div class="header-search__panel color-{{ section.settings.color_scheme }}">
+            <predictive-search class="header-search__inner page-width">
+              <form action="{{ routes.search_url }}" method="get" role="search" class="header-search__form">
+                <label class="visually-hidden" for="HeaderSearch-{{ section.id }}">{{ 'general.search.label' | t }}</label>
+                <input
+                  id="HeaderSearch-{{ section.id }}"
+                  class="field__input"
+                  type="search"
+                  name="q"
+                  placeholder="{{ 'general.search.placeholder' | t }}"
+                  autocomplete="off"
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-autocomplete="list"
+                >
+                <input type="hidden" name="options[prefix]" value="last">
+                <button type="submit" class="button button--primary">{{ 'general.search.submit' | t }}</button>
+              </form>
+              {%- if section.settings.search_hints != blank -%}
+                <typing-hints class="folio-header__hints label-mono" data-hints="{{ section.settings.search_hints | escape }}" aria-hidden="true">
+                  <span>{{ 'general.search.try' | t }}</span>
+                  <span data-typing-text></span>
+                </typing-hints>
+              {%- endif -%}
+              <div id="PredictiveResults-{{ section.id }}" class="header-search__results" data-predictive-results hidden></div>
+              <span class="visually-hidden" role="status" aria-live="polite" data-predictive-status></span>
+            </predictive-search>
+          </div>
+        </details>
+      {%- endif -%}
+
+      {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
+        <a
+          class="folio-header__action header-action folio-header__account"
+          href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
+          aria-label="{{ 'general.header.account' | t }}"
+        >
+          {% render 'icon', icon: 'account', class: 'header-action__icon folio-header__icon' %}
+          <span class="folio-header__word" aria-hidden="true">{{ 'general.header.account' | t }}</span>
+        </a>
+      {%- endif -%}
+
+      {%- if settings.wishlist_enable and section.settings.show_saved -%}
+        <button
+          type="button"
+          class="folio-header__action header-action header-action--saved"
+          data-modal-open="SavedDrawer"
+          aria-haspopup="dialog"
+          aria-label="{{ 'saved.title' | t }}"
+        >
+          {% render 'icon', icon: 'heart', class: 'header-action__icon folio-header__icon' %}
+          <span class="folio-header__word" aria-hidden="true">{{ 'saved.title' | t }}</span>
+          <span class="cart-bubble" data-saved-count data-hide-empty hidden>0</span>
+        </button>
+      {%- endif -%}
+
+      <a href="{{ routes.cart_url }}" class="folio-header__action folio-header__cart" data-cart-open>
+        {% render 'icon', icon: 'cart', class: 'header-action__icon folio-header__icon' %}
+        <span class="folio-header__word">{{ 'general.header.bag' | t }}</span>
+        <span class="folio-header__count"><span class="visually-hidden">{{ 'general.header.cart' | t }}: </span><span data-cart-count-text>{{ cart.item_count }}</span></span>
+      </a>
+    </div>
+  </div>
+</header>
+{%- if is_transparent -%}
+  <script>
+    (function () {
+      var header = document.currentScript && document.currentScript.previousElementSibling;
+      if (header) document.documentElement.style.setProperty('--header-overlap', header.offsetHeight + 'px');
+    })();
+  </script>
+{%- endif -%}
+
+<dialog id="{{ drawer_id }}" class="modal drawer drawer--start menu-drawer folio-drawer color-{{ section.settings.color_scheme }}" aria-label="{{ 'general.header.menu' | t }}">
+  <div class="menu-drawer__inner">
+    <div class="menu-drawer__header">
+      <span class="folio-header__wordmark menu-drawer__brand">{{ section.settings.wordmark | default: shop.name | escape }}</span>
+      <button type="button" class="icon-button" data-modal-close aria-label="{{ 'general.accessibility.close' | t }}">
+        {% render 'icon', icon: 'close' %}
+      </button>
+    </div>
+
+    {%- if menu != blank -%}
+      <nav class="menu-drawer__nav" aria-label="{{ 'general.header.menu' | t }}">
+        <ul class="menu-drawer__list folio-drawer__list" role="list">
+          {%- for link in menu.links -%}
+            <li>
+              {%- if link.links != blank -%}
+                <details class="menu-drawer__details">
+                  <summary class="menu-drawer__link">
+                    <span class="folio-drawer__num label-mono" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+                    {{ link.title | escape }}
+                    {% render 'icon', icon: 'chevron-down' %}
+                  </summary>
+                  <ul class="menu-drawer__sublist" role="list">
+                    <li><a class="menu-drawer__sublink menu-drawer__sublink--all" href="{{ link.url }}">{{ 'general.header.view_all' | t: title: link.title }}</a></li>
+                    {%- for child in link.links -%}
+                      <li>
+                        {%- if child.links != blank -%}
+                          <details class="menu-drawer__details menu-drawer__details--nested">
+                            <summary class="menu-drawer__sublink">
+                              {{ child.title | escape }}
+                              {% render 'icon', icon: 'chevron-down' %}
+                            </summary>
+                            <ul class="menu-drawer__sublist" role="list">
+                              {%- for grandchild in child.links -%}
+                                <li><a class="menu-drawer__sublink" href="{{ grandchild.url }}">{{ grandchild.title | escape }}</a></li>
+                              {%- endfor -%}
+                            </ul>
+                          </details>
+                        {%- else -%}
+                          <a class="menu-drawer__sublink" href="{{ child.url }}">{{ child.title | escape }}</a>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </details>
+              {%- else -%}
+                <a
+                  class="menu-drawer__link"
+                  href="{{ link.url }}"
+                  {% if link.current %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  <span class="folio-drawer__num label-mono" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+                  {{- link.title | escape -}}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    {%- if section.settings.secondary_menu != blank -%}
+      <ul class="menu-drawer__secondary" role="list">
+        {%- for link in section.settings.secondary_menu.links -%}
+          <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <div class="menu-drawer__footer">
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="button button--secondary button--full" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">
+          {% render 'icon', icon: 'account' %}
+          {{ 'general.header.account' | t }}
+        </a>
+      {%- endif -%}
+      {%- if section.settings.drawer_show_whatsapp and wa_number != blank -%}
+        <a class="button button--accent button--full" href="https://wa.me/{{ wa_number }}?text={{ settings.whatsapp_message | url_encode }}" target="_blank" rel="noopener">
+          {% render 'icon', icon: 'whatsapp' %}
+          {{ 'general.whatsapp.chat' | t }}
+        </a>
+      {%- endif -%}
+      {%- if section.settings.drawer_show_localization -%}
+        {% render 'localization-form', id_prefix: 'Drawer', show_language: true, show_country: true %}
+      {%- endif -%}
+      {%- if section.settings.drawer_show_social -%}
+        {% render 'social-icons' %}
+      {%- endif -%}
+    </div>
+  </div>
+</dialog>
+
+{% stylesheet %}
+  .folio-header {
+    background: var(--color-bg);
+  }
+  .folio-header--ruled {
+    border-bottom: 3px solid var(--color-text);
+  }
+  .folio-header__bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 12px calc(var(--d) * 3.4);
+    min-height: calc(var(--d) * 5.4);
+  }
+  .folio-header--logo-start .folio-header__bar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .folio-header--logo-start .site-nav {
+    justify-content: flex-start;
+  }
+  .folio-header--compact .folio-header__bar {
+    min-height: calc(var(--d) * 3.6);
+  }
+  .folio-header--tall .folio-header__bar {
+    min-height: calc(var(--d) * 5.4);
+  }
+  .folio-header--logo-center .folio-header__start {
+    grid-column: 2;
+    grid-row: 1;
+    justify-content: center;
+  }
+  .folio-header--logo-center .folio-header__nav {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+  }
+  .folio-header--logo-center .folio-header__nav .site-nav {
+    justify-content: flex-start;
+  }
+  .folio-header__start {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  .folio-header__toggle {
+    display: none;
+  }
+  .folio-header__logo {
+    display: inline-flex;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+    min-width: 0;
+  }
+  .folio-header__logo .site-header__logo-image {
+    width: auto;
+    max-width: var(--logo-width);
+    height: auto;
+    max-height: var(--logo-height, 52px);
+  }
+  .folio-header__logo .site-header__logo-image--transparent {
+    display: none;
+  }
+  .folio-header__wordmark {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-family: var(--font-heading);
+    font-style: normal;
+    font-weight: var(--font-heading-weight);
+    font-size: calc(var(--d) * 2.4 * var(--wordmark-scale, 1));
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: none;
+  }
+  .folio-header__wordmark em {
+    font-style: italic;
+  }
+  .folio-header__nav .site-nav__list {
+    gap: 4px calc(var(--d) * 2.2);
+  }
+  .folio-header__nav .site-nav__link {
+    font-family: var(--font-body);
+    font-size: calc(var(--d) * 0.66 * var(--menu-scale, 1));
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0 1px;
+    background-position: 0 calc(100% - 14px);
+    background-repeat: no-repeat;
+    transition: background-size 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+    text-decoration: none;
+  }
+  [dir='rtl'] .folio-header__nav .site-nav__link {
+    background-position: 100% calc(100% - 14px);
+  }
+  .folio-header__nav .site-nav__link:hover,
+  .folio-header__nav .site-nav__link[aria-current='page'],
+  .folio-header__nav .site-nav__link--active,
+  .folio-header__nav details[open] > .site-nav__link {
+    background-size: 100% 1px;
+  }
+
+  /* The mega menu: a white panel; an ink line draws across its top as it opens */
+  .folio-header .site-nav__mega {
+    border-top: 0;
+    box-shadow: 0 30px 50px -40px rgb(0 0 0 / 0.35);
+  }
+  .folio-header .site-nav__mega::before {
+    content: '';
+    display: block;
+    height: 1px;
+    background: var(--color-text);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .folio-header details[open] > .site-nav__mega::before {
+      animation: ink-draw 0.7s cubic-bezier(0.65, 0, 0.35, 1) both;
+    }
+    .folio-header details[open] .site-nav__mega-column {
+      animation: mega-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      animation-delay: calc(0.15s + var(--i, 0) * 0.06s);
+    }
+  }
+  @keyframes ink-draw {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0);
+    }
+  }
+  [dir='rtl'] .folio-header details[open] > .site-nav__mega::before {
+    animation-name: ink-draw-rtl;
+  }
+  @keyframes ink-draw-rtl {
+    from {
+      clip-path: inset(0 0 0 100%);
+    }
+    to {
+      clip-path: inset(0);
+    }
+  }
+  @keyframes mega-rise {
+    from {
+      opacity: 0;
+      translate: 0 10px;
+    }
+  }
+  .folio-header .site-nav__mega-title {
+    color: var(--color-accent);
+    font-family: var(--font-label);
+    font-size: 0.75rem;
+    letter-spacing: var(--label-ls);
+    text-transform: var(--label-case);
+  }
+  .folio-header .site-nav__mega .site-nav__sublink:hover {
+    color: var(--color-accent);
+  }
+  .folio-header .site-nav__mega-promo {
+    position: relative;
+  }
+  .folio-header .site-nav__mega-caption {
+    position: absolute;
+    top: 12px;
+    inset-inline-end: 16px;
+    padding: 5px 10px;
+    border-radius: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 0.95rem;
+    font-weight: 400;
+  }
+
+  .folio-header__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2px calc(var(--d) * 2.2);
+  }
+  .folio-header__action {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    list-style: none;
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-size: calc(var(--d) * 0.66 * var(--menu-scale, 1));
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .folio-header__action::-webkit-details-marker {
+    display: none;
+  }
+  .folio-header__icon {
+    width: 20px;
+    height: 20px;
+  }
+  .folio-header--actions-words .folio-header__icon {
+    display: none;
+  }
+  .folio-header--actions-icons .folio-header__word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .folio-header__action:hover .folio-header__word {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .folio-header--actions-words .folio-header__count::before {
+    content: '(';
+  }
+  .folio-header--actions-words .folio-header__count::after {
+    content: ')';
+  }
+  .folio-header--actions-icons .folio-header__count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--color-text);
+    color: var(--color-bg);
+    font-size: 0.625rem;
+  }
+  .folio-header--actions-icons .folio-header__count::before,
+  .folio-header--actions-icons .folio-header__count::after {
+    content: none;
+  }
+  .folio-header__locale .select__input,
+  .folio-header__locale select {
+    font-family: var(--font-body);
+    font-size: calc(var(--d) * 0.78);
+    text-transform: none;
+  }
+  .folio-header__hints {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    color: var(--color-muted);
+  }
+
+  /* Mobile drawer: rows between rules */
+  .folio-drawer__list > li {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .folio-drawer__num {
+    min-width: 2.2em;
+    color: var(--color-muted);
+  }
+
+  @media (max-width: 989px) {
+    .folio-header__bar,
+    .folio-header--logo-start .folio-header__bar {
+      grid-template-columns: minmax(0, 1fr) auto;
+      min-height: 56px;
+    }
+    /* Centred logo on phones: menu button at the start, logo in the middle, actions at the end */
+    .folio-header--logo-center .folio-header__bar {
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      min-height: 56px;
+    }
+    .folio-header--logo-center .folio-header__start {
+      display: contents;
+    }
+    .folio-header--logo-center .folio-header__toggle {
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: start;
+    }
+    .folio-header--logo-center .folio-header__logo {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .folio-header--logo-center .folio-header__actions {
+      grid-column: 3;
+      grid-row: 1;
+    }
+    .folio-header__nav {
+      display: none;
+    }
+    .folio-header__toggle {
+      display: inline-grid;
+      margin-inline-start: -8px;
+    }
+    .folio-header__logo .site-header__logo-image {
+      max-width: var(--logo-width-mobile);
+      max-height: min(var(--logo-height, 52px), 44px);
+    }
+    .folio-header__wordmark {
+      font-size: calc(var(--d) * 1.6 * var(--wordmark-scale, 1));
+    }
+    .folio-header__account,
+    .folio-header__locale,
+    .folio-header__actions .header-action--saved {
+      display: none;
+    }
+    .folio-header__actions {
+      gap: 2px 14px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Claret header",
+  "tag": "div",
+  "class": "header-section",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Logo" },
+    { "type": "image_picker", "id": "logo", "label": "Logo image", "info": "Defaults to the logo in Settings > Brand" },
+    { "type": "range", "id": "logo_width", "label": "Logo width on desktop", "min": 60, "max": 260, "step": 5, "unit": "px", "default": 120 },
+    { "type": "range", "id": "logo_width_mobile", "label": "Logo width on mobile", "min": 40, "max": 200, "step": 5, "unit": "px", "default": 95 },
+    { "type": "range", "id": "logo_height", "label": "Logo height", "info": "The tallest the logo may be. On mobile it stays within 44px.", "min": 30, "max": 100, "step": 2, "unit": "px", "default": 52 },
+    { "type": "text", "id": "wordmark", "label": "Text logo", "info": "Used when no logo image is set. Defaults to store name." },
+    { "type": "range", "id": "wordmark_size", "label": "Text logo size", "min": 60, "max": 200, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "menu_size", "label": "Menu and action text size", "min": 80, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select",
+      "id": "logo_position",
+      "label": "Logo position",
+      "options": [
+        { "value": "center", "label": "Center, menu at the start" },
+        { "value": "start", "label": "Start, menu in the center" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Header height",
+      "options": [
+        { "value": "compact", "label": "Compact" },
+        { "value": "standard", "label": "Standard" },
+        { "value": "tall", "label": "Tall" }
+      ],
+      "default": "standard"
+    },
+    {
+      "type": "select",
+      "id": "sticky",
+      "label": "Sticky header",
+      "options": [
+        { "value": "none", "label": "Off" },
+        { "value": "always", "label": "Always visible" },
+        { "value": "scroll_up", "label": "Hide on scroll down" }
+      ],
+      "default": "scroll_up"
+    },
+    { "type": "checkbox", "id": "show_border", "label": "Line under the header", "default": true },
+    { "type": "header", "content": "Over the first section" },
+    { "type": "checkbox", "id": "transparent_home", "label": "Show header over the homepage's first section", "info": "Use with a full-width image first. The header turns solid when shoppers scroll or hover.", "default": false },
+    { "type": "color", "id": "transparent_text", "label": "Text and icons over the image", "default": "#FFFFFF" },
+    { "type": "image_picker", "id": "transparent_logo", "label": "Logo over the image", "info": "Optional light version of your logo" },
+    { "type": "header", "content": "Menu" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    {
+      "type": "select",
+      "id": "menu_style",
+      "label": "Dropdown style",
+      "options": [
+        { "value": "mega", "label": "Mega menu" },
+        { "value": "dropdown", "label": "Dropdown" }
+      ],
+      "default": "mega",
+      "info": "Mega menu shows each sub-menu as a column in a white panel. An ink line draws across its top as it opens."
+    },
+    { "type": "image_picker", "id": "mega_image", "label": "Mega menu image" },
+    { "type": "url", "id": "mega_image_link", "label": "Mega menu image link" },
+    { "type": "text", "id": "mega_image_caption", "label": "Mega menu image caption" },
+    { "type": "link_list", "id": "secondary_menu", "label": "Extra links in mobile menu" },
+    { "type": "header", "content": "Actions" },
+    {
+      "type": "select",
+      "id": "action_style",
+      "label": "Search, account and bag",
+      "options": [
+        { "value": "words", "label": "Words" },
+        { "value": "icons", "label": "Icons" },
+        { "value": "both", "label": "Icons and words" }
+      ],
+      "default": "words"
+    },
+    { "type": "checkbox", "id": "show_search", "label": "Show search", "default": true },
+    { "type": "text", "id": "search_hints", "label": "Typed search ideas", "info": "Separate with commas", "default": "Monet, Van Gogh, landscapes, botanical" },
+    { "type": "checkbox", "id": "show_account", "label": "Show account", "default": true },
+    { "type": "checkbox", "id": "show_saved", "label": "Show saved items", "info": "Needs Theme settings > Saved items", "default": false },
+    { "type": "checkbox", "id": "show_language", "label": "Show language selector on desktop", "info": "Appears when your store has more than one language", "default": true },
+    { "type": "checkbox", "id": "show_country", "label": "Show country and currency selector on desktop", "info": "Appears when you sell in more than one country", "default": false },
+    { "type": "header", "content": "Mobile menu" },
+    { "type": "checkbox", "id": "drawer_show_whatsapp", "label": "Show WhatsApp", "info": "Uses the number in Theme settings > WhatsApp", "default": true },
+    { "type": "checkbox", "id": "drawer_show_localization", "label": "Show language and country", "default": true },
+    { "type": "checkbox", "id": "drawer_show_social", "label": "Show social icons", "default": true }
+  ]
+}
+{% endschema %}

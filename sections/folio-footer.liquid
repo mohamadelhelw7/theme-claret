@@ -1,0 +1,437 @@
+{%- comment -%}
+  Footer with recently viewed, on the light wall colour. At the top, the paintings a shopper looked at most recently hang
+  in the frames they last chose, beside the email signup. Then the menus and text in columns, the store's
+  name set huge in italics, and a line with the copyright, policies, language, social links and payment
+  icons. The paintings sweep open from the top and the name rises in as the footer comes into view.
+{%- endcomment -%}
+
+<footer class="ffoot color-{{ section.settings.color_scheme }}" style="--footer-mt: var(--space-{{ section.settings.margin_top }}); --footer-cols: {{ section.settings.columns }}; --head-scale: {{ section.settings.heading_size | divided_by: 100.0 }}; --recent-scale: {{ section.settings.painting_size | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }}; --mark-scale: {{ section.settings.wordmark_width | divided_by: 100.0 }};">
+  <div class="page-width">
+    {%- if section.settings.show_recent or section.settings.show_signup -%}
+      <div class="ffoot__top{% unless section.settings.show_recent and section.settings.show_signup %} ffoot__top--one{% endunless %}">
+        {%- if section.settings.show_recent -%}
+          {%- liquid
+            assign recent_ready = false
+            if section.settings.recent_collection != blank or request.design_mode
+              assign recent_ready = true
+            endif
+          -%}
+          <recent-wall class="recent-wall{% if recent_ready %} has-items{% endif %}" data-limit="{{ section.settings.recent_limit }}" data-wood="{{ settings.card_frame }}" data-shop="{{ shop.name | escape }}">
+            <div class="recent-wall__head">
+              <h2 class="recent-wall__heading">{{ section.settings.recent_heading | escape }}</h2>
+              {%- if section.settings.recent_note != blank -%}<span class="recent-wall__note">{{ section.settings.recent_note | escape }}</span>{%- endif -%}
+            </div>
+            <ul class="recent-wall__list" role="list" data-recent-list>
+              {%- if section.settings.recent_collection != blank -%}
+                {%- for product in section.settings.recent_collection.products limit: section.settings.recent_limit -%}
+                  <li>
+                    <a class="recent-wall__item" href="{{ product.url }}">
+                      <span class="recent-wall__slot">{% render 'folio-frame', image: product.featured_media, wood: settings.card_frame, box_hw: 0.8, max_w: 66, max_h: 82, sizes: '160px', index: forloop.index %}</span>
+                      <span class="recent-wall__caption"><i>{{ product.title | escape }}</i>{%- if product.vendor != blank and product.vendor != shop.name -%}<span>{{ product.vendor | escape }}</span>{%- endif -%}</span>
+                    </a>
+                  </li>
+                {%- endfor -%}
+              {%- elsif request.design_mode -%}
+                {%- for i in (1..4) -%}
+                  <li>
+                    <span class="recent-wall__item">
+                      <span class="recent-wall__slot">{% render 'folio-frame', wood: settings.card_frame, box_hw: 0.8, max_w: 66, max_h: 82, index: i %}</span>
+                      <span class="recent-wall__caption"><i>{{ 'sections.recent_wall.placeholder' | t }}</i></span>
+                    </span>
+                  </li>
+                {%- endfor -%}
+              {%- endif -%}
+            </ul>
+          </recent-wall>
+        {%- endif -%}
+
+        {%- if section.settings.show_signup -%}
+          <div class="ffoot__signup">
+            {%- if section.settings.signup_heading != blank -%}
+              <h2 class="ffoot__signup-heading">{{ section.settings.signup_heading | escape }}</h2>
+            {%- endif -%}
+            {%- if section.settings.signup_text != blank -%}
+              <div class="ffoot__signup-text rte">{{ section.settings.signup_text }}</div>
+            {%- endif -%}
+            {%- form 'customer', id: 'FolioFooterNewsletter', class: 'ffoot__form' -%}
+              <input type="hidden" name="contact[tags]" value="newsletter">
+              {%- if form.posted_successfully? -%}
+                <p class="ffoot__message" role="status">{{ 'newsletter.success' | t }}</p>
+              {%- else -%}
+                {%- if form.errors -%}
+                  <p class="ffoot__message" role="alert">
+                    {{ form.errors.translated_fields.email | capitalize }}
+                    {{ form.errors.messages.email }}
+                  </p>
+                {%- endif -%}
+                <div class="ffoot__row">
+                  <label for="FolioFooterEmail-{{ section.id }}" class="visually-hidden">{{ 'newsletter.label' | t }}</label>
+                  <input
+                    id="FolioFooterEmail-{{ section.id }}"
+                    type="email"
+                    name="contact[email]"
+                    class="ffoot__input"
+                    value="{{ form.email }}"
+                    placeholder="{{ 'newsletter.placeholder' | t }}"
+                    autocomplete="email"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    required
+                  >
+                  <button type="submit" class="ffoot__button">{{ 'newsletter.button' | t }}</button>
+                </div>
+              {%- endif -%}
+            {%- endform -%}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="ffoot__cols">
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+
+  {%- if section.settings.show_wordmark -%}
+    {%- assign footer_word = section.settings.wordmark | default: shop.name -%}
+    <div class="ffoot__mark page-width" aria-hidden="true">
+      <fit-text class="fit-mark fit-mark--fit" data-fit="true" data-rise="scroll">
+        <span class="fit-mark__line"><span class="fit-mark__word">{{ footer_word | escape }}</span></span>
+      </fit-text>
+    </div>
+  {%- endif -%}
+
+  <div class="page-width">
+    <div class="ffoot__bottom">
+      <p class="ffoot__copyright">
+        &copy; {{ 'now' | date: '%Y' }}
+        {{ shop.name | link_to: routes.root_url }}
+        {%- if section.settings.show_powered_by %} · {{ powered_by_link }}{% endif -%}
+      </p>
+      {%- if section.settings.show_policies and shop.policies.size > 0 -%}
+        <ul class="ffoot__policies" role="list">
+          {%- for policy in shop.policies -%}
+            <li><a href="{{ policy.url }}">{{ policy.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      {%- if section.settings.show_localization -%}
+        <div class="ffoot__locale">
+          {% render 'localization-form', id_prefix: 'Footer', show_language: true, show_country: section.settings.show_country %}
+        </div>
+      {%- endif -%}
+      {%- if section.settings.show_social -%}
+        {% render 'social-icons' %}
+      {%- endif -%}
+      {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+        <ul class="ffoot__payments" role="list">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag: class: 'ffoot__payment-icon' }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% stylesheet %}
+  .ffoot {
+    margin-top: var(--footer-mt);
+    padding-top: calc(var(--d) * 3.4);
+    background: radial-gradient(60% 40% at 50% 12%, color-mix(in srgb, #ffffff 55%, transparent), transparent 70%), var(--color-bg);
+  }
+  .ffoot a {
+    color: inherit;
+  }
+  .ffoot__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+    gap: calc(var(--d) * 3.2);
+    align-items: center;
+    padding-bottom: calc(var(--d) * 3.2);
+  }
+  .ffoot__top--one,
+  .ffoot__top:has(> .recent-wall:not(.has-items)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .recent-wall:not(.has-items) {
+    display: none;
+  }
+  .ffoot__top:has(> .recent-wall:not(.has-items)) .ffoot__signup {
+    max-width: 460px;
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+
+  /* Recently viewed paintings, hung in a row */
+  .recent-wall__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: calc(var(--d) * 1.8);
+  }
+  .recent-wall__heading,
+  .ffoot__signup-heading {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 400;
+    font-size: calc(var(--d) * 2.1 * var(--head-scale, 1));
+    line-height: 1;
+  }
+  .recent-wall__note {
+    font-size: calc(var(--d) * 0.72 * var(--text-scale, 1));
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .recent-wall__list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.2em;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: calc(var(--d) * var(--recent-scale, 1));
+    --frame-scale: var(--recent-scale, 1);
+  }
+  .recent-wall__item {
+    display: grid;
+    justify-items: center;
+    gap: 1.1em;
+    text-align: center;
+    text-decoration: none;
+  }
+  .recent-wall__slot {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 8em;
+    container-type: inline-size;
+  }
+  .recent-wall__caption {
+    display: grid;
+    gap: 0.1em;
+    font-size: calc(var(--d) * 0.64 * var(--text-scale, 1));
+    color: var(--color-muted);
+  }
+  .recent-wall__caption i {
+    font-family: var(--font-heading);
+    font-size: 1.35em;
+    line-height: 1.1;
+    color: var(--color-text);
+  }
+
+  /* The signup */
+  .ffoot__signup {
+    display: grid;
+    gap: calc(var(--d) * 0.9);
+    align-content: center;
+    align-self: stretch;
+    padding-inline-start: calc(var(--d) * 3);
+    border-inline-start: 1px solid var(--color-border);
+  }
+  .ffoot__top--one .ffoot__signup {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+    max-width: 460px;
+  }
+  .ffoot__signup-text {
+    font-size: calc(var(--d) * 0.8 * var(--text-scale, 1));
+    color: var(--color-muted);
+  }
+  .ffoot__signup-text p {
+    margin: 0;
+  }
+  .ffoot__row {
+    display: flex;
+    align-items: center;
+    margin-top: calc(var(--d) * 0.4);
+    border-bottom: 1px solid var(--color-text);
+  }
+  .ffoot__row:focus-within {
+    border-bottom-width: 2px;
+  }
+  .ffoot__input {
+    flex: 1;
+    min-width: 0;
+    min-height: 40px;
+    padding: 0.7em 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    font-size: calc(var(--d) * 0.86 * var(--text-scale, 1));
+  }
+  .ffoot__input:focus {
+    outline: none;
+  }
+  .ffoot__input::placeholder {
+    color: var(--color-muted);
+  }
+  .ffoot__button {
+    min-height: 40px;
+    padding: 0.7em 0 0.7em 1em;
+    border: 0;
+    background: none;
+    color: var(--color-text);
+    font: inherit;
+    font-size: calc(var(--d) * 0.8 * var(--text-scale, 1));
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+  .ffoot__message {
+    margin: 0;
+    font-size: calc(var(--d) * 0.8 * var(--text-scale, 1));
+  }
+
+  /* Menus */
+  .ffoot__cols {
+    display: grid;
+    grid-template-columns: repeat(var(--footer-cols, 4), minmax(0, 1fr));
+    gap: calc(var(--d) * 2);
+    padding: calc(var(--d) * 1.4) 0 calc(var(--d) * 2.6);
+    border-top: 1px solid var(--color-border);
+    font-size: calc(var(--d) * 0.78 * var(--text-scale, 1));
+  }
+  .ffoot__cols .footer-menu,
+  .ffoot__cols .footer-text {
+    gap: 0.6em;
+    font-size: inherit;
+  }
+  .ffoot__cols .footer-menu__heading {
+    font-size: inherit;
+    font-weight: 500;
+  }
+  .ffoot__cols .footer-menu__list {
+    gap: 0;
+    line-height: 1.9;
+  }
+
+  /* The store's name, huge */
+  .ffoot__mark .fit-mark {
+    display: block;
+    width: calc(100% * var(--mark-scale, 1));
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.035em;
+  }
+
+  .ffoot__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    margin-top: calc(var(--d) * 1.4);
+    padding: calc(var(--d) * 1.2) 0 calc(var(--d) * 1.4);
+    border-top: 1px solid var(--color-border);
+    font-size: calc(var(--d) * 0.7 * var(--text-scale, 1));
+    color: var(--color-muted);
+  }
+  .ffoot__copyright {
+    margin: 0;
+  }
+  .ffoot__policies,
+  .ffoot__payments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ffoot__payments {
+    gap: 6px;
+  }
+  .ffoot__payment-icon {
+    display: block;
+    width: 38px;
+    height: 24px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ffoot .recent-wall__slot {
+      clip-path: inset(-20%);
+    }
+  }
+  @media (max-width: 989px) {
+    .ffoot__top {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .ffoot__signup {
+      padding-inline-start: 0;
+      padding-top: 28px;
+      border-inline-start: 0;
+      border-top: 1px solid var(--color-border);
+    }
+    .recent-wall__list {
+      font-size: calc(var(--d) * var(--recent-scale, 1));
+    }
+  }
+  @media (max-width: 749px) {
+    .ffoot__cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .recent-wall__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 24px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Recently viewed footer",
+  "tag": "div",
+  "class": "folio-footer-section",
+  "max_blocks": 6,
+  "blocks": [{ "type": "_footer-brand" }, { "type": "_footer-menu" }, { "type": "_footer-text" }],
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "label": "Space above the footer",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "medium"
+    },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "painting_size", "label": "Recently viewed painting size", "min": 60, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "text_size", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "wordmark_width", "label": "Store name width", "info": "The huge store name fills this share of the page width", "min": 30, "max": 100, "step": 5, "unit": "%", "default": 100 },
+    { "type": "header", "content": "Recently viewed" },
+    { "type": "checkbox", "id": "show_recent", "label": "Hang recently viewed paintings", "info": "The paintings a shopper looked at last, in the frame they chose. Until they have looked at any, it shows the collection below.", "default": true },
+    { "type": "text", "id": "recent_heading", "label": "Heading", "default": "Recently viewed" },
+    { "type": "text", "id": "recent_note", "label": "Small note", "default": "Your last four paintings" },
+    { "type": "range", "id": "recent_limit", "label": "Paintings", "min": 2, "max": 4, "step": 1, "default": 4 },
+    { "type": "collection", "id": "recent_collection", "label": "Show before a shopper has looked at any", "info": "Leave empty to show drawn paintings in the theme editor only" },
+    { "type": "header", "content": "Email signup" },
+    { "type": "checkbox", "id": "show_signup", "label": "Show the email signup", "default": true },
+    { "type": "text", "id": "signup_heading", "label": "Heading", "default": "Join the list" },
+    { "type": "richtext", "id": "signup_text", "label": "Text", "default": "<p>New paintings and offers, by email.</p>" },
+    { "type": "header", "content": "Menus" },
+    { "type": "range", "id": "columns", "label": "Columns on computers", "min": 2, "max": 6, "step": 1, "default": 4 },
+    { "type": "header", "content": "Store name" },
+    { "type": "checkbox", "id": "show_wordmark", "label": "Set the store name huge across the bottom", "info": "It rises into place as the footer comes into view", "default": true },
+    { "type": "text", "id": "wordmark", "label": "Name", "info": "Defaults to the store's name" },
+    { "type": "header", "content": "Bottom line" },
+    { "type": "checkbox", "id": "show_policies", "label": "Show policy links", "default": true },
+    { "type": "checkbox", "id": "show_localization", "label": "Show the language selector", "default": true },
+    { "type": "checkbox", "id": "show_country", "label": "Also show country and currency", "default": false },
+    { "type": "checkbox", "id": "show_social", "label": "Show social links", "default": true },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true },
+    { "type": "checkbox", "id": "show_powered_by", "label": "Show Powered by Shopify", "default": false }
+  ]
+}
+{% endschema %}

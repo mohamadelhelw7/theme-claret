@@ -1,0 +1,28 @@
+{% doc %}
+  A row that folds open to show the product's description, headed "About the painting" by default.
+  It sits with the other rows under a fine ink line.
+
+  @example
+  {% content_for 'block', type: 'painting-about', id: 'about' %}
+{% enddoc %}
+
+{%- if product.description != blank -%}
+  <details class="accordion-row fabout" {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
+    <summary class="accordion-row__summary">
+      <span class="accordion-row__title">{{ block.settings.heading | escape }}</span>
+      <span class="accordion-row__toggle" aria-hidden="true">{% render 'icon', icon: 'plus' %}</span>
+    </summary>
+    <div class="accordion-row__content rte">{{ product.description }}</div>
+  </details>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "About the painting",
+  "tag": null,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "About the painting" },
+    { "type": "checkbox", "id": "open", "label": "Open at first", "default": false }
+  ]
+}
+{% endschema %}

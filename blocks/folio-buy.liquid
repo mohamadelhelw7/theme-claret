@@ -1,0 +1,182 @@
+{% doc %}
+  The buy buttons: Add to bag as an outlined button with the price, and Buy it now as a black button
+  under it that goes straight to checkout. When a hanging kit (or another add-on) is added on the page,
+  both buttons take it along and Add to bag shows the new total.
+
+  @example
+  {% content_for 'block', type: 'folio-buy', id: 'buy' %}
+{% enddoc %}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign form_id = 'ProductForm-' | append: section.id
+-%}
+
+<div class="fbuy" style="--buy-h: {{ block.settings.button_height }}px; --buy-text: {{ block.settings.text_size }}px;" data-update="folio-buy-{{ block.id }}" {{ block.shopify_attributes }}>
+  {%- form 'product', product, id: form_id, data-product-form: '', novalidate: 'novalidate', class: 'fbuy__form' -%}
+    <input type="hidden" name="id" value="{{ current_variant.id }}">
+    <button
+      type="submit"
+      name="add"
+      class="fbuy__add"
+      data-add-button
+      data-price="{{ current_variant.price }}"
+      {% unless current_variant.available %}
+        disabled
+      {% endunless %}
+    >
+      <span data-add-label>
+        {%- if current_variant.available -%}
+          {{ 'products.product.add_to_cart' | t }}
+        {%- else -%}
+          {{ 'products.product.sold_out' | t }}
+        {%- endif -%}
+      </span>
+      {%- if current_variant.available and block.settings.show_price -%}
+        <span class="fbuy__total" data-buy-total> · {{ current_variant.price | money }}</span>
+      {%- endif -%}
+    </button>
+    {%- if block.settings.show_buy_now -%}
+      <button
+        type="button"
+        class="fbuy__now"
+        data-buy-now
+        {% unless current_variant.available %}
+          disabled
+        {% endunless %}
+      >
+        {{ 'products.product.buy_it_now' | t }}
+      </button>
+    {%- endif -%}
+    <p class="form-message form-message--error" data-form-error role="alert" hidden></p>
+  {%- endform -%}
+</div>
+
+{% javascript %}
+  (() => {
+    if (window.folioBuy) return;
+    window.folioBuy = true;
+    const theme = window.theme || {};
+    const addOns = (info) =>
+      Array.from(info.querySelectorAll('input[data-upsell-addon]:checked'))
+        .filter((input) => input.value)
+        .map((input) => ({ id: Number(input.value), quantity: 1, price: Number(input.dataset.price) || 0 }));
+
+    // Add to bag shows the painting's price plus any add-on that is on
+    const total = (info) => {
+      info.querySelectorAll('[data-add-button][data-price]').forEach((button) => {
+        const out = button.querySelector('[data-buy-total]');
+        if (!out || !theme.formatMoney) return;
+        const sum = Number(button.dataset.price) + addOns(info).reduce((n, item) => n + item.price, 0);
+        out.textContent = ` · ${theme.formatMoney(sum)}`;
+      });
+    };
+    document.addEventListener('change', (event) => {
+      if (!event.target.matches('input[data-upsell-addon]')) return;
+      const info = event.target.closest('product-info');
+      if (info) total(info);
+    });
+    document.addEventListener('variant:change', (event) => {
+      const info = event.target.closest ? event.target.closest('product-info') || event.target : null;
+      if (info && info.querySelectorAll) requestAnimationFrame(() => total(info));
+    });
+
+    // Buy it now: add the painting and its add-ons, then go to checkout
+    document.addEventListener('click', async (event) => {
+      const button = event.target.closest('[data-buy-now]');
+      if (!button) return;
+      const form = button.closest('form');
+      const info = button.closest('product-info');
+      const error = form?.querySelector('[data-form-error]');
+      const id = Number(form?.querySelector('input[name="id"]')?.value);
+      if (!id || !theme.addToCart) return;
+      button.setAttribute('aria-busy', 'true');
+      try {
+        // Keep every field in the form, including the ones a product options app adds (for example the frame)
+        const data = new FormData(form);
+        const item = { id, quantity: Number(data.get('quantity') || 1) };
+        const properties = {};
+        for (const [key, value] of data.entries()) {
+          const match = key.match(/^properties\[(.+)\]$/);
+          if (match && value) properties[match[1]] = value;
+        }
+        if (Object.keys(properties).length) item.properties = properties;
+        const items = [item].concat(info ? addOns(info).map(({ id: addId }) => ({ id: addId, quantity: 1 })) : []);
+        await theme.addToCart(items);
+        const root = ((theme.routes && theme.routes.root) || '/').replace(/\/$/, '');
+        window.location.href = `${root}/checkout`;
+      } catch (err) {
+        if (error) {
+          error.textContent = err.message;
+          error.hidden = false;
+        }
+        button.removeAttribute('aria-busy');
+      }
+    });
+  })();
+{% endjavascript %}
+
+{% stylesheet %}
+  .fbuy__form {
+    display: grid;
+    gap: 8px;
+  }
+  .fbuy__add,
+  .fbuy__now {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3em;
+    width: 100%;
+    min-height: var(--buy-h, var(--button-height, 46px));
+    padding: 0 16px;
+    border: 1px solid var(--color-text);
+    border-radius: var(--button-radius);
+    font-family: var(--font-button);
+    font-size: var(--buy-text, 0.875rem);
+    font-weight: var(--button-weight, 500);
+    letter-spacing: var(--button-ls);
+    text-transform: var(--button-case);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+  }
+  .fbuy__add {
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+  .fbuy__add:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--color-text) 6%, var(--color-bg));
+  }
+  .fbuy__now {
+    background: var(--color-button);
+    border-color: var(--color-button);
+    color: var(--color-button-text);
+  }
+  .fbuy__now:hover:not(:disabled) {
+    opacity: 0.88;
+  }
+  .fbuy__add:disabled,
+  .fbuy__now:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .fbuy__add[aria-busy='true'],
+  .fbuy__now[aria-busy='true'] {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Buy buttons",
+  "tag": null,
+  "settings": [
+    { "type": "checkbox", "id": "show_price", "label": "Show the price on Add to bag", "info": "It adds the hanging kit's price when the kit is added", "default": true },
+    { "type": "range", "id": "button_height", "label": "Button height", "min": 36, "max": 72, "step": 2, "unit": "px", "default": 46 },
+    { "type": "range", "id": "text_size", "label": "Button text size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 14 },
+    { "type": "checkbox", "id": "show_buy_now", "label": "Show Buy it now", "info": "A black button that adds the painting (and the kit, if added) and goes straight to checkout", "default": true }
+  ]
+}
+{% endschema %}

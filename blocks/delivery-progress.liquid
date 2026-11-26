@@ -1,0 +1,176 @@
+{% doc %}
+  A delivery progress bar: three ink circles joined by a fine line, for order today, we ship it and
+  delivered, with real dates counted from today. Each circle sends out a soft ring, one after another.
+  Days you don't ship or deliver can be skipped.
+
+  @example
+  {% content_for 'block', type: 'delivery-progress', id: 'delivery' %}
+{% enddoc %}
+
+<div
+  class="fdeliv"
+  data-delivery-progress
+  data-ship-min="{{ block.settings.ship_min }}"
+  data-ship-max="{{ block.settings.ship_max }}"
+  data-arrive-min="{{ block.settings.arrive_min }}"
+  data-arrive-max="{{ block.settings.arrive_max }}"
+  style="--deliv: {{ block.settings.size | divided_by: 100.0 }};"
+  data-skip="{% if block.settings.skip_friday %}5{% endif %}{% if block.settings.skip_saturday %}6{% endif %}{% if block.settings.skip_sunday %}0{% endif %}"
+  {{ block.shopify_attributes }}
+>
+  <div class="fdeliv__step">
+    <span class="fdeliv__dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/><path d="M9.6 14.2l1.7 1.7 3.2-3.4"/></svg></span>
+    <b>{{ block.settings.label_order | escape }}</b>
+    <span data-day="order"></span>
+  </div>
+  <div class="fdeliv__step">
+    <span class="fdeliv__dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/></svg></span>
+    <b>{{ block.settings.label_ship | escape }}</b>
+    <span data-day="ship"></span>
+  </div>
+  <div class="fdeliv__step">
+    <span class="fdeliv__dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-6-5.5-6-10a6 6 0 0 1 12 0c0 4.5-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg></span>
+    <b>{{ block.settings.label_arrive | escape }}</b>
+    <span data-day="arrive"></span>
+  </div>
+</div>
+
+{% javascript %}
+  (() => {
+    const fill = (root) => {
+      root.querySelectorAll('[data-delivery-progress]').forEach((bar) => {
+        const skip = (bar.dataset.skip || '').split('').map(Number);
+        const lang = document.documentElement.lang || undefined;
+        const fmt = (d) => d.toLocaleDateString(lang, { month: 'short', day: 'numeric' });
+        // Count working days forward, skipping the days that are switched off
+        const add = (n) => {
+          const d = new Date();
+          let left = Number(n) || 0;
+          while (left > 0) {
+            d.setDate(d.getDate() + 1);
+            if (!skip.includes(d.getDay())) left -= 1;
+          }
+          return d;
+        };
+        const range = (a, b) => (Number(a) === Number(b) ? fmt(add(a)) : `${fmt(add(a))} – ${fmt(add(b))}`);
+        bar.querySelector('[data-day="order"]').textContent = fmt(new Date());
+        bar.querySelector('[data-day="ship"]').textContent = range(bar.dataset.shipMin, bar.dataset.shipMax);
+        bar.querySelector('[data-day="arrive"]').textContent = range(bar.dataset.arriveMin, bar.dataset.arriveMax);
+      });
+    };
+    fill(document);
+    document.addEventListener('shopify:section:load', (event) => fill(event.target));
+    document.addEventListener('shopify:block:select', (event) => fill(event.target.closest('section') || document));
+  })();
+{% endjavascript %}
+
+{% stylesheet %}
+  .fdeliv {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding-top: 4px;
+    font-size: calc(var(--d) * 0.8 * var(--deliv, 1));
+  }
+  .fdeliv::before {
+    content: '';
+    position: absolute;
+    top: calc(4px + 1.6em);
+    left: 1.6em;
+    right: 1.6em;
+    border-top: 1px solid color-mix(in srgb, var(--color-text) 20%, var(--color-bg));
+  }
+  .fdeliv__step {
+    position: relative;
+    display: grid;
+    gap: 0.15em;
+    justify-items: center;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .fdeliv__step:first-child {
+    justify-items: start;
+    text-align: start;
+  }
+  .fdeliv__step:last-child {
+    justify-items: end;
+    text-align: end;
+  }
+  .fdeliv__dot {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3.2em;
+    height: 3.2em;
+    margin-bottom: 0.8em;
+    border-radius: 50%;
+    background: var(--color-text);
+    box-shadow: 0 0 0 0.32em var(--color-bg), 0 0 0 calc(0.32em + 1px) color-mix(in srgb, var(--color-text) 10%, var(--color-bg));
+  }
+  .fdeliv__dot svg {
+    width: 1.35em;
+    height: 1.35em;
+    fill: none;
+    stroke: var(--color-bg);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .fdeliv__dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .fdeliv__step b {
+    font-size: 0.84em;
+    font-weight: 500;
+  }
+  .fdeliv__step span:last-child {
+    font-size: 0.76em;
+    color: var(--color-muted);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .fdeliv__dot::after {
+      animation: fdeliv-radiate 4.4s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+    }
+    .fdeliv__step:nth-child(2) .fdeliv__dot::after {
+      animation-delay: 0.7s;
+    }
+    .fdeliv__step:nth-child(3) .fdeliv__dot::after {
+      animation-delay: 1.4s;
+    }
+  }
+  @keyframes fdeliv-radiate {
+    0% {
+      box-shadow: 0 0 0 0.32em color-mix(in srgb, var(--color-text) 18%, transparent);
+    }
+    70%,
+    100% {
+      box-shadow: 0 0 0 0.75em color-mix(in srgb, var(--color-text) 0%, transparent);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Delivery progress",
+  "tag": null,
+  "settings": [
+    { "type": "text", "id": "label_order", "label": "First step", "default": "Order today" },
+    { "type": "text", "id": "label_ship", "label": "Second step", "default": "We ship it" },
+    { "type": "text", "id": "label_arrive", "label": "Third step", "default": "Delivered" },
+    { "type": "range", "id": "size", "label": "Size", "info": "The circles and the text", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "header", "content": "Days" },
+    { "type": "range", "id": "ship_min", "label": "Ships from (days)", "min": 0, "max": 14, "step": 1, "default": 1 },
+    { "type": "range", "id": "ship_max", "label": "Ships by (days)", "min": 0, "max": 21, "step": 1, "default": 4 },
+    { "type": "range", "id": "arrive_min", "label": "Arrives from (days)", "min": 1, "max": 21, "step": 1, "default": 5 },
+    { "type": "range", "id": "arrive_max", "label": "Arrives by (days)", "min": 1, "max": 30, "step": 1, "default": 7 },
+    { "type": "checkbox", "id": "skip_friday", "label": "Skip Fridays", "default": false },
+    { "type": "checkbox", "id": "skip_saturday", "label": "Skip Saturdays", "default": false },
+    { "type": "checkbox", "id": "skip_sunday", "label": "Skip Sundays", "default": false },
+    { "type": "paragraph", "content": "Set these to your real preparation and delivery times." }
+  ]
+}
+{% endschema %}

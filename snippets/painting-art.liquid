@@ -1,0 +1,49 @@
+{% doc %}
+  Draws a simple painting for frames that have no image yet: a landscape, a portrait, a flowering branch or
+  an abstract, in the theme's drawing colors. Used by the media placeholder.
+
+  @param {number} [variant] - 1 landscape, 2 portrait, 3 branch, 4 abstract
+  @param {boolean} [wide] - Draw a wide landscape (for heroes and banners)
+
+  @example
+  {% render 'painting-art', variant: 2 %}
+{% enddoc %}
+
+{%- assign pa = variant | default: 1 | plus: 0 -%}
+{%- if wide -%}
+  <svg class="painting-art" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <rect width="800" height="500" style="fill: var(--garm-1)"/>
+    <circle cx="590" cy="150" r="58" style="fill: var(--garm-3)"/>
+    <path d="M0 330 C 140 250 260 300 380 270 S 620 200 800 260 V500 H0 Z" style="fill: var(--garm-4)" opacity=".75"/>
+    <path d="M0 380 C 160 330 300 390 460 350 S 700 320 800 350 V500 H0 Z" style="fill: var(--garm-2)"/>
+    <path d="M0 450 C 200 420 420 470 800 430 V500 H0 Z" style="fill: var(--garm-2)" opacity=".7"/>
+  </svg>
+{%- else -%}
+  <svg class="painting-art" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    {%- case pa -%}
+      {%- when 2 -%}
+        <rect width="400" height="500" style="fill: var(--garm-2)"/>
+        <ellipse cx="205" cy="215" rx="70" ry="88" style="fill: var(--garm-3)"/>
+        <path d="M60 500 C 70 380 140 330 205 330 S 340 380 350 500 Z" style="fill: var(--garm-4)"/>
+        <path d="M140 180 C 150 110 260 100 278 178 C 250 150 180 150 140 180 Z" style="fill: var(--garm-1)" opacity=".85"/>
+      {%- when 3 -%}
+        <rect width="400" height="500" style="fill: var(--garm-1)"/>
+        <path d="M30 470 C 120 380 160 300 250 240 S 340 120 380 60" fill="none" style="stroke: var(--garm-2)" stroke-width="10" stroke-linecap="round"/>
+        <path d="M170 330 C 120 300 110 250 90 220 M250 240 C 290 250 320 290 350 300 M300 160 C 260 140 240 100 230 60" fill="none" style="stroke: var(--garm-2)" stroke-width="6" stroke-linecap="round"/>
+        <g style="fill: #ffffff" opacity=".92"><circle cx="92" cy="218" r="14"/><circle cx="232" cy="62" r="12"/><circle cx="350" cy="298" r="13"/><circle cx="300" cy="200" r="11"/><circle cx="190" cy="290" r="10"/><circle cx="380" cy="60" r="12"/></g>
+        <g style="fill: var(--garm-3)"><circle cx="92" cy="218" r="4"/><circle cx="232" cy="62" r="4"/><circle cx="350" cy="298" r="4"/></g>
+      {%- when 4 -%}
+        <rect width="400" height="500" style="fill: var(--garm-1)" opacity=".55"/>
+        <circle cx="150" cy="185" r="88" style="fill: var(--garm-2)"/>
+        <circle cx="278" cy="332" r="66" style="fill: var(--garm-2)"/>
+        <path d="M50 430 Q 200 40 362 118" fill="none" style="stroke: var(--garm-4)" stroke-width="13"/>
+        <circle cx="302" cy="136" r="36" style="fill: var(--garm-3)"/>
+        <rect x="198" y="206" width="66" height="66" style="fill: var(--garm-4)" opacity=".85"/>
+      {%- else -%}
+        <rect width="400" height="500" style="fill: var(--garm-1)"/>
+        <circle cx="290" cy="140" r="44" style="fill: var(--garm-3)"/>
+        <path d="M0 320 C 90 260 170 300 240 270 S 340 230 400 250 V500 H0 Z" style="fill: var(--garm-4)" opacity=".8"/>
+        <path d="M0 380 C 110 340 210 390 300 360 S 380 340 400 350 V500 H0 Z" style="fill: var(--garm-2)"/>
+    {%- endcase -%}
+  </svg>
+{%- endif -%}
