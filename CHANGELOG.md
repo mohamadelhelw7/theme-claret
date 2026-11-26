@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+- Padding sliders in pixels: Padding above and below on Shop by colour, Shop by style, Spotlight, the Promise band (plus the padding inside it), the Collection grid and the footer; Padding above, below and Space between the blocks on the product page; Padding above and below on the header (in place of Compact, Standard and Tall) and on the announcement bar. Phones use 60% of each.
+- Hanging kit: pick any product under Product to offer. Its name, photo and price show in the line; the Name and Short note fields are optional and empty by default.
+
 ## 1.0.3
 - Newsreader and Red Hat Text are now bundled with the theme and are the default fonts. The menu, labels and text no longer fall back to a serif when the font library font does not load.
 - Logo in the middle: the menu sits in the column beside the logo when it fits; when it does not, it moves to its own centred row under the logo instead of wrapping. The logo is in the middle by default.

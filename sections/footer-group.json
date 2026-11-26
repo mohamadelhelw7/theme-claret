@@ -53,7 +53,9 @@
         "show_country": false,
         "show_social": false,
         "show_payment_icons": false,
-        "show_powered_by": false
+        "show_powered_by": false,
+        "pad_top": 72,
+        "pad_bottom": 24
       }
     },
     "popup": {

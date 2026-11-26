@@ -70,6 +70,10 @@ The announcement bar moves as a ticker in ink. Edit the messages in **Customize 
 - **Dropdown style → Mega menu** (the default) opens each menu item with sub-links as a white panel, one column per sub-menu. A thin ink line draws across its top as it opens, and the columns rise into place. Create the menu in **Online Store → Navigation**, for example Paintings, Artists, Styles and Sizes.
 - **Show language selector on desktop** is on. It appears once you add a second language in **Settings → Languages**.
 
+## Padding
+
+Padding sliders in pixels sit in each section's settings: Padding above and below on the homepage sections and the footer, Padding above, below and Space between the blocks on the product page, and Padding above and below on the header and the announcement bar. Phones use 60% of each. The space at the sides of the page is in Theme settings → Layout.
+
 ## 8. Homepage
 
 The homepage has five sections, in the design's order. Each one can be moved, hidden or removed, and more sections are under **Add section**.

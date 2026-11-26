@@ -26,7 +26,7 @@
   {% if is_transparent %}
     data-transparent
   {% endif %}
-  style="--logo-width: {{ section.settings.logo_width }}px; --logo-width-mobile: {{ section.settings.logo_width_mobile }}px; --logo-height: {{ section.settings.logo_height }}px; --wordmark-scale: {{ section.settings.wordmark_size | divided_by: 100.0 }}; --menu-scale: {{ section.settings.menu_size | divided_by: 100.0 }}; --transparent-text: {{ section.settings.transparent_text }};"
+  style="--logo-width: {{ section.settings.logo_width }}px; --logo-width-mobile: {{ section.settings.logo_width_mobile }}px; --logo-height: {{ section.settings.logo_height }}px; --header-pad: {{ section.settings.pad_block }}px; --wordmark-scale: {{ section.settings.wordmark_size | divided_by: 100.0 }}; --menu-scale: {{ section.settings.menu_size | divided_by: 100.0 }}; --transparent-text: {{ section.settings.transparent_text }};"
 >
   <div class="folio-header__bar page-width">
     <div class="folio-header__start">
@@ -308,19 +308,13 @@
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
     gap: 12px calc(var(--d) * 3.4);
-    min-height: calc(var(--d) * 5.4);
+    padding-block: var(--header-pad, 20px);
   }
   .folio-header--logo-start .folio-header__bar {
     grid-template-columns: auto minmax(0, 1fr) auto;
   }
   .folio-header--logo-start .site-nav {
     justify-content: flex-start;
-  }
-  .folio-header--compact .folio-header__bar {
-    min-height: calc(var(--d) * 3.6);
-  }
-  .folio-header--tall .folio-header__bar {
-    min-height: calc(var(--d) * 5.4);
   }
   .folio-header--logo-center .folio-header__start {
     grid-column: 2;
@@ -663,17 +657,7 @@
       ],
       "default": "center"
     },
-    {
-      "type": "select",
-      "id": "height",
-      "label": "Header height",
-      "options": [
-        { "value": "compact", "label": "Compact" },
-        { "value": "standard", "label": "Standard" },
-        { "value": "tall", "label": "Tall" }
-      ],
-      "default": "standard"
-    },
+    { "type": "range", "id": "pad_block", "label": "Padding above and below", "min": 0, "max": 60, "step": 4, "unit": "px", "default": 20 },
     {
       "type": "select",
       "id": "sticky",

@@ -3977,3 +3977,20 @@ a.sec-head__side--quiet {
     font-size: calc(var(--d) * 2.2 * var(--head-scale, 1));
   }
 }
+
+/* Padding sliders are set for computers; phones use 60% of them */
+@media (max-width: 749px) {
+  .section[data-pad],
+  .cspec[data-pad],
+  .cfoot[data-pad] {
+    padding-top: calc(var(--pt, 0px) * 0.6);
+    padding-bottom: calc(var(--pb, 0px) * 0.6);
+  }
+  .fpro[data-pad] {
+    padding-block: calc(var(--pt, 0px) * 0.6) calc(var(--pb, 0px) * 0.6);
+  }
+  .spot[data-pad] {
+    margin-top: calc(var(--pt, 0px) * 0.6);
+    margin-bottom: calc(var(--pb, 0px) * 0.6);
+  }
+}

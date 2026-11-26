@@ -25,10 +25,7 @@
         },
         "kit": {
           "type": "hanging-kit",
-          "settings": {
-            "title": "Hanging kit",
-            "note": "Picture hooks and nails for one frame"
-          }
+          "settings": {}
         },
         "promises": {
           "type": "promises",
@@ -99,7 +96,10 @@
         "gallery_light": true,
         "show_thumbs": true,
         "media_position": "start",
-        "sticky_info": true
+        "sticky_info": true,
+        "pad_top": 24,
+        "pad_bottom": 64,
+        "blocks_gap": 36
       }
     },
     "reviews": {

@@ -8,7 +8,7 @@
   assign footer_word = section.settings.wordmark | default: shop.name
 -%}
 
-<footer class="cfoot color-{{ section.settings.color_scheme }}" style="--footer-mt: var(--space-{{ section.settings.margin_top }}); --footer-cols: {{ section.settings.columns }};">
+<footer class="cfoot color-{{ section.settings.color_scheme }}" data-pad style="--footer-mt: var(--space-{{ section.settings.margin_top }}); --footer-cols: {{ section.settings.columns }}; --pt: {{ section.settings.pad_top }}px; --pb: {{ section.settings.pad_bottom }}px;">
   <div class="page-width">
     <div class="cfoot__top">
       <a class="cfoot__brand" href="{{ routes.root_url }}">
@@ -93,7 +93,7 @@
 {% stylesheet %}
   .cfoot {
     margin-top: var(--footer-mt);
-    padding: calc(var(--d) * 4.4) 0 calc(var(--d) * 1.6);
+    padding: var(--pt, 72px) 0 var(--pb, 24px);
     border-top: 3px solid var(--color-text);
     background: var(--color-bg);
   }
@@ -276,6 +276,8 @@
       ],
       "default": "none"
     },
+    { "type": "range", "id": "pad_top", "label": "Padding above", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 72 },
+    { "type": "range", "id": "pad_bottom", "label": "Padding below", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 24 },
     { "type": "header", "content": "Name" },
     { "type": "text", "id": "wordmark", "label": "Store name", "info": "Defaults to the store's name. Wrap a word in *asterisks* to set it in italics." },
     { "type": "image_picker", "id": "logo", "label": "Logo image", "info": "Shows instead of the name" },

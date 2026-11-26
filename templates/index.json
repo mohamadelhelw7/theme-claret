@@ -15,8 +15,8 @@
         "wall_height": 100,
         "painting_size": 100,
         "color_scheme": "scheme-1",
-        "padding_top": "none",
-        "padding_bottom": "none"
+        "pad_top": 0,
+        "pad_bottom": 48
       }
     },
     "styles": {
@@ -30,8 +30,8 @@
         "heading_size": 100,
         "painting_size": 100,
         "color_scheme": "scheme-1",
-        "padding_top": "large",
-        "padding_bottom": "none"
+        "pad_top": 80,
+        "pad_bottom": 0
       }
     },
     "spotlight": {
@@ -40,7 +40,9 @@
         "color_scheme": "scheme-1",
         "heading": "New on the wall",
         "limit": 5,
-        "frame": "mixed"
+        "frame": "mixed",
+        "pad_top": 0,
+        "pad_bottom": 0
       }
     },
     "promises": {
@@ -78,8 +80,9 @@
       ],
       "settings": {
         "color_scheme": "scheme-2",
-        "padding_top": "none",
-        "padding_bottom": "none"
+        "pad_top": 0,
+        "pad_bottom": 0,
+        "inner_pad": 56
       }
     },
     "collection": {
@@ -94,8 +97,8 @@
         "painting_size": 100,
         "text_size": 100,
         "color_scheme": "scheme-1",
-        "padding_top": "large",
-        "padding_bottom": "large"
+        "pad_top": 80,
+        "pad_bottom": 80
       }
     }
   },

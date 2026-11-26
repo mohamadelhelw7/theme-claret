@@ -39,7 +39,8 @@
         "rotate_seconds": 4,
         "label_font": true,
         "rule_below": false,
-        "text_scale": 100
+        "text_scale": 100,
+        "pad_block": 8
       }
     },
     "header": {
@@ -49,7 +50,6 @@
         "logo_width": 120,
         "logo_width_mobile": 95,
         "logo_position": "center",
-        "height": "standard",
         "sticky": "scroll_up",
         "show_border": true,
         "transparent_home": false,
@@ -68,7 +68,8 @@
         "logo_height": 52,
         "wordmark_size": 100,
         "menu_size": 100,
-        "wordmark": "Art *Cellar*"
+        "wordmark": "Art *Cellar*",
+        "pad_block": 20
       }
     }
   },

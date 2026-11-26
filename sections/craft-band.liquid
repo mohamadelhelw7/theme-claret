@@ -5,7 +5,8 @@
 
 <section
   class="section cband color-{{ section.settings.color_scheme }}"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }}); --cols: {{ section.blocks.size | at_least: 1 }};"
+  data-pad
+  style="--pt: {{ section.settings.pad_top }}px; --pb: {{ section.settings.pad_bottom }}px; --cols: {{ section.blocks.size | at_least: 1 }}; --band-pad: {{ section.settings.inner_pad }}px;"
 >
   <div class="page-width">
     <ul class="cband__grid" role="list">
@@ -47,7 +48,7 @@
     grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
     gap: calc(var(--d) * 3);
     margin: 0;
-    padding: calc(var(--d) * 3.6) 0;
+    padding: var(--band-pad, 58px) 0;
     list-style: none;
   }
   .cband__item {
@@ -123,30 +124,9 @@
   "disabled_on": { "groups": ["header", "footer"] },
   "settings": [
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
-    {
-      "type": "select",
-      "id": "padding_top",
-      "label": "Top spacing",
-      "options": [
-        { "value": "none", "label": "None" },
-        { "value": "small", "label": "Small" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "large", "label": "Large" }
-      ],
-      "default": "none"
-    },
-    {
-      "type": "select",
-      "id": "padding_bottom",
-      "label": "Bottom spacing",
-      "options": [
-        { "value": "none", "label": "None" },
-        { "value": "small", "label": "Small" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "large", "label": "Large" }
-      ],
-      "default": "none"
-    }
+    { "type": "range", "id": "inner_pad", "label": "Padding inside the band", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "pad_top", "label": "Padding above", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "range", "id": "pad_bottom", "label": "Padding below", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 }
   ],
   "presets": [
     {
