@@ -9,7 +9,7 @@
         "show_description": true,
         "show_image": false,
         "products_per_page": 24,
-        "pagination_style": "button",
+        "pagination_style": "infinite",
         "columns_desktop": 4,
         "columns_mobile": "2",
         "enable_filtering": true,

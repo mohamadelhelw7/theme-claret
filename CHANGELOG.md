@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.6
+- Infinite scroll on collection pages: more paintings load as shoppers scroll down. Load more button and Page numbers are still in the collection page settings.
+
 ## 1.0.5
 - Recently viewed in the footer: the paintings a shopper looked at last hang in a row in the frames they chose, above the name and the email signup. It stays hidden until they have looked at one (or shows a collection you pick). Settings for the heading, note, number of paintings and painting size.
 
