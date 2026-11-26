@@ -171,6 +171,7 @@ The product template has five sections.
 
 The **Claret footer**, on the wall color under a black line:
 
+- **Recently viewed**: the paintings a shopper looked at last hang in a row in the frames they chose. It stays hidden until they have looked at one, unless you pick a collection to show before then.
 - The store's name in the light serif (wrap a word in *asterisks* to set it in italics), or a logo image.
 - **Email signup**: **Join the list**. Signups are saved in **Customers** with the `newsletter` tag.
 - **Menus** in columns, and a fine line with the copyright and policy links. The language selector, social links and payment icons can be switched on under **Bottom line**.

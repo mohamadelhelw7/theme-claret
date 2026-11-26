@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.5
+- Recently viewed in the footer: the paintings a shopper looked at last hang in a row in the frames they chose, above the name and the email signup. It stays hidden until they have looked at one (or shows a collection you pick). Settings for the heading, note, number of paintings and painting size.
+
 ## 1.0.4
 - Padding sliders in pixels: Padding above and below on Shop by colour, Shop by style, Spotlight, the Promise band (plus the padding inside it), the Collection grid and the footer; Padding above, below and Space between the blocks on the product page; Padding above and below on the header (in place of Compact, Standard and Tall) and on the announcement bar. Phones use 60% of each.
 - Hanging kit: pick any product under Product to offer. Its name, photo and price show in the line; the Name and Short note fields are optional and empty by default.

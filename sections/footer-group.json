@@ -55,7 +55,12 @@
         "show_payment_icons": false,
         "show_powered_by": false,
         "pad_top": 72,
-        "pad_bottom": 24
+        "pad_bottom": 24,
+        "show_recent": true,
+        "recent_heading": "Recently *viewed*",
+        "recent_note": "Your last four paintings",
+        "recent_limit": 4,
+        "recent_size": 100
       }
     },
     "popup": {
