@@ -11,6 +11,12 @@
   assign heading_picker = false
   assign heading_stretch = '100%'
   case settings.heading_font_source
+    when 'newsreader'
+      assign heading_family = "'Theme Newsreader'"
+      assign heading_fallback = "Georgia, 'Times New Roman', serif"
+    when 'red_hat_text'
+      assign heading_family = "'Theme Red Hat Text'"
+      assign heading_fallback = "'Helvetica Neue', Arial, sans-serif"
     when 'instrument_serif'
       assign heading_family = "'Theme Instrument Serif'"
       assign heading_fallback = "Georgia, 'Times New Roman', serif"
@@ -27,6 +33,12 @@
   assign body_picker = false
   assign body_weight = 400
   case settings.body_font_source
+    when 'red_hat_text'
+      assign body_family = "'Theme Red Hat Text'"
+      assign body_fallback = "'Helvetica Neue', Arial, sans-serif"
+    when 'newsreader'
+      assign body_family = "'Theme Newsreader'"
+      assign body_fallback = "Georgia, 'Times New Roman', serif"
     when 'inter_tight'
       assign body_family = "'Theme Inter Tight'"
       assign body_fallback = "'Helvetica Neue', Arial, sans-serif"

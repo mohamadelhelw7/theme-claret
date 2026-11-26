@@ -1,6 +1,5 @@
 # Bundled font licenses
 
-Claret's default fonts, Newsreader and Red Hat Text, are served by Shopify's font library through the font pickers in Theme settings → Typography, so they are not bundled in this theme and need no separate license file.
 
 Folio bundles these typefaces in `assets/`. All of them are published on Google Fonts under the SIL Open Font License, Version 1.1. That license allows bundling and redistribution with software, including commercial themes. The fonts may not be sold on their own.
 
@@ -18,3 +17,11 @@ Full license text: https://openfontlicense.org/open-font-license-official-text/
 ## Frame images
 
 `frame-oak.png`, `frame-umber.png` and `frame-espresso.png` are frame photos supplied by the theme's owner for the floating frame's wooden face.
+
+## Newsreader
+
+Copyright 2020 The Newsreader Project Authors (https://github.com/productiontype/Newsreader). Licensed under the SIL Open Font License, Version 1.1 (https://openfontlicense.org). Files: newsreader-latin.woff2, newsreader-latin-ext.woff2, newsreader-italic-latin.woff2, newsreader-italic-latin-ext.woff2.
+
+## Red Hat Text
+
+Copyright 2021 The Red Hat Project Authors (https://github.com/RedHatOfficial/RedHatFont). Licensed under the SIL Open Font License, Version 1.1 (https://openfontlicense.org). Files: red-hat-text-latin.woff2, red-hat-text-latin-ext.woff2.

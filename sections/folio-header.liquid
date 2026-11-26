@@ -267,6 +267,35 @@
   </div>
 </dialog>
 
+
+{% javascript %}
+  (() => {
+    // With the logo in the middle, the menu needs room in the column beside it. When it doesn't fit, it moves to its own row.
+    const fit = (header) => {
+      if (!header.classList.contains('folio-header--logo-center')) return;
+      const bar = header.querySelector('.folio-header__bar');
+      const list = header.querySelector('.folio-header__nav .site-nav__list');
+      const start = header.querySelector('.folio-header__start');
+      if (!bar || !list || !start || window.innerWidth < 990) {
+        header.classList.remove('is-stacked');
+        return;
+      }
+      const items = Array.from(list.children);
+      const gap = parseFloat(getComputedStyle(list).columnGap) || 0;
+      const need = items.reduce((sum, li) => sum + li.getBoundingClientRect().width, 0) + gap * Math.max(0, items.length - 1);
+      const cs = getComputedStyle(bar);
+      const inner = bar.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const side = (inner - start.getBoundingClientRect().width - (parseFloat(cs.columnGap) || 0) * 2) / 2;
+      header.classList.toggle('is-stacked', need > side);
+    };
+    const run = () => document.querySelectorAll('.folio-header').forEach(fit);
+    run();
+    window.addEventListener('resize', run);
+    if (document.fonts) document.fonts.ready.then(run);
+    document.addEventListener('shopify:section:load', run);
+  })();
+{% endjavascript %}
+
 {% stylesheet %}
   .folio-header {
     background: var(--color-bg);
@@ -305,6 +334,23 @@
   }
   .folio-header--logo-center .folio-header__nav .site-nav {
     justify-content: flex-start;
+  }
+  /* Logo in the middle with a long menu: the menu moves to its own centred row under the logo instead of wrapping */
+  .folio-header--logo-center.is-stacked .folio-header__bar {
+    row-gap: calc(var(--d) * 0.4);
+    padding-block: calc(var(--d) * 1.2) calc(var(--d) * 0.3);
+  }
+  .folio-header--logo-center.is-stacked .folio-header__nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: center;
+  }
+  .folio-header--logo-center.is-stacked .folio-header__actions {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .folio-header--logo-center.is-stacked .folio-header__nav .site-nav {
+    justify-content: center;
   }
   .folio-header__start {
     display: flex;

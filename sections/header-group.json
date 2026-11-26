@@ -8,18 +8,32 @@
         "a_1": {
           "type": "_announcement",
           "settings": {
-            "text": "Seven sizes, from 20 × 30 to 70 × 100 cm · English · العربية"
+            "text": "Seven sizes, from 20 × 30 to 70 × 100 cm"
+          }
+        },
+        "a_2": {
+          "type": "_announcement",
+          "settings": {
+            "text": "Oak, umber, espresso or black frames, or no frame"
+          }
+        },
+        "a_3": {
+          "type": "_announcement",
+          "settings": {
+            "text": "English · العربية"
           }
         }
       },
       "block_order": [
-        "a_1"
+        "a_1",
+        "a_2",
+        "a_3"
       ],
       "settings": {
         "color_scheme": "scheme-2",
         "show_country": false,
         "show_language": false,
-        "mode": "static",
+        "mode": "scroll",
         "speed": 40,
         "direction": "forward",
         "rotate_seconds": 4,
@@ -34,7 +48,7 @@
         "color_scheme": "scheme-1",
         "logo_width": 120,
         "logo_width_mobile": 95,
-        "logo_position": "start",
+        "logo_position": "center",
         "height": "standard",
         "sticky": "scroll_up",
         "show_border": true,

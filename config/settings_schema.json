@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "Claret",
-    "theme_version": "1.0.2",
+    "theme_version": "1.0.3",
     "theme_author": "Mohamed Elhelw",
     "theme_documentation_url": "https://github.com/mohamadelhelw7/theme-claret",
     "theme_support_url": "https://github.com/mohamadelhelw7/theme-claret"
@@ -167,6 +167,14 @@
         "label": "Heading font",
         "options": [
           {
+            "value": "newsreader",
+            "label": "Newsreader"
+          },
+          {
+            "value": "red_hat_text",
+            "label": "Red Hat Text"
+          },
+          {
             "value": "instrument_serif",
             "label": "Instrument Serif"
           },
@@ -179,8 +187,8 @@
             "label": "Choose from font library"
           }
         ],
-        "default": "picker",
-        "info": "Claret uses Newsreader from the font library, as in Atelier. The named fonts are bundled with the theme."
+        "default": "newsreader",
+        "info": "Newsreader and Red Hat Text are Atelier's fonts. The named fonts are bundled with the theme."
       },
       {
         "type": "font_picker",
@@ -291,6 +299,14 @@
         "label": "Body font",
         "options": [
           {
+            "value": "red_hat_text",
+            "label": "Red Hat Text"
+          },
+          {
+            "value": "newsreader",
+            "label": "Newsreader"
+          },
+          {
             "value": "inter_tight",
             "label": "Inter Tight"
           },
@@ -303,7 +319,7 @@
             "label": "Choose from font library"
           }
         ],
-        "default": "picker"
+        "default": "red_hat_text"
       },
       {
         "type": "font_picker",

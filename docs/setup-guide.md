@@ -43,8 +43,8 @@ Go to **Customize → Theme settings → Theme styles**. You can change anything
 
 **Theme settings → Typography**:
 
-- **Heading font**: Newsreader from Shopify's font library at **Extra light** (the default, as in Atelier). Instrument Serif, Inter Tight or any other library font can replace it.
-- **Body font**: Red Hat Text from the font library (the default, as in Atelier).
+- **Heading font**: Newsreader (the default, as in Atelier), bundled with the theme. Red Hat Text, Instrument Serif, Inter Tight or any font from Shopify's library can replace it.
+- **Body font**: Red Hat Text (the default, as in Atelier), bundled with the theme.
 - **Arabic**: Noto Naskh Arabic for headings and Noto Sans Arabic for text. They only load when a page shows Arabic.
 - **Accent words**: wrap words in *asterisks*, for example `The great paintings, *framed for your walls.*`. **Accent words in headings → Italic** sets them in italics.
 
