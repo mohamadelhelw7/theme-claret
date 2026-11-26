@@ -3157,9 +3157,11 @@ if (!customElements.get('fit-text')) {
       );
       const items = products
         .filter((p) => p && p.featured_image)
-        .map((p) => {
+        .map((p, index) => {
           const ratio = (p.media && p.media[0] && p.media[0].aspect_ratio) || 0.8;
-          const wood = ['oak', 'umber', 'espresso', 'black', 'none'].includes(frames[p.handle]) ? frames[p.handle] : fallback;
+          const mixed = ['espresso', 'oak', 'black', 'umber'];
+          const woodBase = fallback === 'mixed' ? mixed[index % mixed.length] : fallback;
+          const wood = ['oak', 'umber', 'espresso', 'black', 'none'].includes(frames[p.handle]) ? frames[p.handle] : woodBase;
           const w = Math.min(8.4, 6.6 * ratio);
           const face = wood === 'none' ? 0 : w / 32;
           const gap = wood === 'none' ? 0 : Math.max(0.07, w / 118);

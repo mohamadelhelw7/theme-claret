@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.7
+- Every frame colour on the collection pages and product grids: Frame on cards has a new default, A different wood for each card, which hangs the paintings in espresso, oak, black and umber in turn. Pick one wood under Theme settings → Claret → Frame on cards to use it for all cards.
+- Recently viewed now sits in the footer where the store name was, beside the email signup, smaller and tighter. The store name shows there until a shopper has looked at a painting. Paintings a shopper has not framed yet take the card frames too.
+
 ## 1.0.6
 - Infinite scroll on collection pages: more paintings load as shoppers scroll down. Load more button and Page numbers are still in the collection page settings.
 

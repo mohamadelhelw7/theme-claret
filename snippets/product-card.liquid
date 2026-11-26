@@ -134,8 +134,16 @@
 <article class="{{ card_classes }}" style="--card-tint: {{ tint_color }};">
   <div class="product-card__media"{% if browse_count > 1 %} data-browse="{{ browse_count }}"{% endif %}>
     {%- if settings.card_layout == 'wall' -%}
-      {%- assign card_box_hw = 1.0 | divided_by: card_ratio_value -%}
-      {% render 'folio-frame', image: product.featured_media, wood: settings.card_frame, box_hw: card_box_hw, max_w: 60, max_h: 68, sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw', index: card_index %}
+      {%- liquid
+        assign card_box_hw = 1.0 | divided_by: card_ratio_value
+        assign card_wood = settings.card_frame
+        if card_wood == 'mixed'
+          assign card_woods = 'espresso,oak,black,umber' | split: ','
+          assign card_wood_index = card_index | minus: 1 | modulo: card_woods.size
+          assign card_wood = card_woods[card_wood_index]
+        endif
+      -%}
+      {% render 'folio-frame', image: product.featured_media, wood: card_wood, box_hw: card_box_hw, max_w: 60, max_h: 68, sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw', index: card_index %}
     {%- elsif product.featured_media -%}
       {{
         product.featured_media

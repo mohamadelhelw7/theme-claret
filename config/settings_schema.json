@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "Claret",
-    "theme_version": "1.0.6",
+    "theme_version": "1.0.7",
     "theme_author": "Mohamed Elhelw",
     "theme_documentation_url": "https://github.com/mohamadelhelw7/theme-claret",
     "theme_support_url": "https://github.com/mohamadelhelw7/theme-claret"
@@ -603,6 +603,10 @@
         "label": "Frame on cards",
         "options": [
           {
+            "value": "mixed",
+            "label": "A different wood for each card"
+          },
+          {
             "value": "oak",
             "label": "Oak"
           },
@@ -623,7 +627,8 @@
             "label": "No frame"
           }
         ],
-        "default": "oak"
+        "default": "mixed",
+        "info": "Also used for recently viewed paintings a shopper has not framed yet"
       },
       {
         "type": "checkbox",

@@ -35,7 +35,7 @@ Go to **Customize → Theme settings → Theme styles**. You can change anything
 **Theme settings → Claret** sets:
 
 - **Wall**: the color behind the paintings on cards, in Shop by style, Spotlight and the product page. It is lit softly from the front, so it looks brighter in the middle.
-- **Frame on cards**: oak, umber, espresso, black or no frame for the paintings on product cards.
+- **Frame on cards**: a different wood for each card (the default: espresso, oak, black and umber in turn), or one wood for all of them (oak, umber, espresso or black), or no frame.
 - **Show frame dots on cards**: four small dots beside the price for the frame woods.
 - **Frame option names**: product option names that show as frame tiles, for example `Frame`.
 
@@ -171,7 +171,7 @@ The product template has five sections.
 
 The **Claret footer**, on the wall color under a black line:
 
-- **Recently viewed**: the paintings a shopper looked at last hang in a row in the frames they chose. It stays hidden until they have looked at one, unless you pick a collection to show before then.
+- **Recently viewed**: the paintings a shopper looked at last hang in the frames they chose, in the store name's place beside the email signup. Until they have looked at one, the store name shows there, unless you pick a collection to show before then.
 - The store's name in the light serif (wrap a word in *asterisks* to set it in italics), or a logo image.
 - **Email signup**: **Join the list**. Signups are saved in **Customers** with the `newsletter` tag.
 - **Menus** in columns, and a fine line with the copyright and policy links. The language selector, social links and payment icons can be switched on under **Bottom line**.
