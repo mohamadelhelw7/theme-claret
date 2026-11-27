@@ -165,9 +165,10 @@
   }
   .cfoot .recent-wall__head {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: baseline;
-    gap: 16px;
+    gap: 0.4em 16px;
     margin-bottom: calc(var(--d) * 1);
   }
   .cfoot .recent-wall__heading {
@@ -377,6 +378,13 @@
   @media (max-width: 749px) {
     .cfoot__top {
       grid-template-columns: minmax(0, 1fr);
+    }
+    .cfoot .recent-wall__caption i {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      font-size: calc(var(--d) * 0.74);
     }
     .cfoot__cols {
       grid-template-columns: repeat(2, minmax(0, 1fr));

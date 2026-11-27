@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.8
+Phones:
+- Product page rows: About the painting and Sizes and frames are the same height again. On phones the space between blocks shrinks to 60%, but the rows were still pulled together by the full space, so the second row covered part of the first. The hanging kit line no longer touches Buy it now.
+- Delivery bar a size smaller, as in the design.
+- Recently viewed in the footer: painting names show at most two lines, a size smaller, and the small note moves under the heading when there is no room beside it.
+- Header: Search shows as an icon on phones and tablets, so only Bag stays in words beside the logo.
+
 ## 1.0.7
 - Every frame colour on the collection pages and product grids: Frame on cards has a new default, A different wood for each card, which hangs the paintings in espresso, oak, black and umber in turn. Pick one wood under Theme settings → Claret → Frame on cards to use it for all cards.
 - Recently viewed now sits in the footer where the store name was, beside the email signup, smaller and tighter. The store name shows there until a shopper has looked at a painting. Paintings a shopper has not framed yet take the card frames too.

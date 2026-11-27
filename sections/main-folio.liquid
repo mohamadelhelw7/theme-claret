@@ -362,10 +362,13 @@
     object-fit: cover;
   }
 
-  /* The details column */
+  /* The details column. --gap-now is the space between blocks on this screen; the rows and the kit line join up by exactly that much */
+  .fpro {
+    --gap-now: var(--blocks-gap, 35px);
+  }
   .fpro__info {
     display: grid;
-    gap: var(--blocks-gap, 35px);
+    gap: var(--gap-now);
     align-content: start;
     min-width: 0;
     padding-top: calc(var(--d) * 0.4);
@@ -414,7 +417,7 @@
   }
   .fpro__blocks {
     display: grid;
-    gap: var(--blocks-gap);
+    gap: var(--gap-now);
   }
   .fpro__blocks > .fabout {
     border-top: 1px solid var(--color-text);
@@ -424,10 +427,10 @@
     border-bottom: 0;
   }
   .fpro__blocks > .fabout + .accordion {
-    margin-top: calc(var(--blocks-gap) * -1);
+    margin-top: calc(var(--gap-now) * -1);
   }
   .fpro__blocks > .fbuy + .fkit {
-    margin-top: calc(var(--blocks-gap) * -1 + var(--d) * 0.9);
+    margin-top: calc(var(--gap-now) * -1 + var(--d) * 0.9);
   }
   .fpro__blocks > .accordion--lines > .accordion-row:first-child {
     border-top-color: var(--color-text);
@@ -473,9 +476,8 @@
     .fpro__stage {
       height: calc(var(--d) * 21 * var(--stage-scale, 1));
     }
-    .fpro__info,
-    .fpro__blocks {
-      gap: calc(var(--blocks-gap, 35px) * 0.6);
+    .fpro {
+      --gap-now: calc(var(--blocks-gap, 35px) * 0.6);
     }
     .fpro__title {
       font-size: calc(var(--d) * 2.6 * var(--heading-scale, 1) * var(--title-scale, 1));
