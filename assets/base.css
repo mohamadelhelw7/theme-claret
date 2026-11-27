@@ -683,6 +683,8 @@ p {
   -webkit-line-clamp: var(--card-title-lines);
   -webkit-box-orient: vertical;
   overflow: hidden;
+  /* Room for every allowed line, so a short name and a long one leave the price on the same line */
+  min-height: calc(var(--card-title-lines, 2) * 1lh);
 }
 
 .product-card__title::after {

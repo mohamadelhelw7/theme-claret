@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.1
+- Product cards: names, artists and prices sit on the same lines across a row, whatever the length of the name. Each name keeps room for the number of lines set in Theme settings → Product cards → Title lines (2 by default), so a one-line name no longer lifts its price above the others.
+
 ## 1.1.0
 Everything on the theme checklist is now in Claret.
 - **Padding on every section:** a Padding heading with Top and Bottom sliders in pixels, on every section, including the header and announcement bar (which had one slider for both before), the footer, the product page, the page templates (collection, cart, search, blog, article, page, 404, password) and the heroes. The old None, Small, Medium and Large spacing became pixels (0, 24, 40 and 80). Phones use 60% of each.
