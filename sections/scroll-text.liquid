@@ -4,10 +4,10 @@
   assign in_accent = false
 -%}
 
-<scroll-progress
+<scroll-progress data-pad-box
   class="scroll-text scroll-text--{{ section.settings.length }} scroll-text--{{ section.settings.alignment }} color-{{ section.settings.color_scheme }}"
   data-static-progress="1"
-  style="--n: {{ word_count }};"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }}; --n: {{ word_count }};"
   data-no-reveal
 >
   <div class="scroll-text__sticky page-width">
@@ -89,11 +89,11 @@
     text-wrap: pretty;
   }
   .scroll-text__body--medium {
-    font-size: calc(clamp(1.75rem, 3.6vw, 3.25rem) * var(--heading-scale));
+    font-size: calc(clamp(1.75rem, 3.6vw, 3.25rem) * var(--heading-scale) * var(--sec-h, 1));
     max-width: 26ch;
   }
   .scroll-text__body--large {
-    font-size: calc(clamp(2.1rem, 4.6vw, 4.25rem) * var(--heading-scale));
+    font-size: calc(clamp(2.1rem, 4.6vw, 4.25rem) * var(--heading-scale) * var(--sec-h, 1));
   }
   .scroll-text__word {
     opacity: clamp(0.14, calc(var(--p) * var(--n) * 1.35 - var(--i)), 1);
@@ -119,9 +119,22 @@
   "tag": "section",
   "class": "scroll-text-section",
   "settings": [
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
-    { "type": "paragraph", "content": "The text stays in view while each word lights up as shoppers scroll. Wrap words in *asterisks* to show them in the accent style." },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our promise" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "paragraph",
+      "content": "The text stays in view while each word lights up as shoppers scroll. Wrap words in *asterisks* to show them in the accent style."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Our promise"
+    },
     {
       "type": "textarea",
       "id": "text",
@@ -133,8 +146,14 @@
       "id": "size",
       "label": "Text size",
       "options": [
-        { "value": "medium", "label": "Medium" },
-        { "value": "large", "label": "Large" }
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
       ],
       "default": "large"
     },
@@ -143,8 +162,14 @@
       "id": "alignment",
       "label": "Alignment",
       "options": [
-        { "value": "start", "label": "Start" },
-        { "value": "center", "label": "Center" }
+        {
+          "value": "start",
+          "label": "Start"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
       ],
       "default": "center"
     },
@@ -153,15 +178,85 @@
       "id": "length",
       "label": "Scroll length",
       "options": [
-        { "value": "short", "label": "Short" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "long", "label": "Long" }
+        {
+          "value": "short",
+          "label": "Short"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "long",
+          "label": "Long"
+        }
       ],
       "default": "medium"
     },
-    { "type": "text", "id": "button_label", "label": "Button label", "info": "Appears once every word is lit" },
-    { "type": "url", "id": "button_link", "label": "Button link" }
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "info": "Appears once every word is lit"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Sizes"
+    },
+    {
+      "type": "range",
+      "id": "size_heading",
+      "label": "Heading size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "size_text",
+      "label": "Text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
   ],
-  "presets": [{ "name": "Words light up" }]
+  "presets": [
+    {
+      "name": "Words light up"
+    }
+  ]
 }
 {% endschema %}

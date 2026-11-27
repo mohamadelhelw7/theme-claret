@@ -51,9 +51,9 @@
   {%- endif -%}
 {%- endcapture -%}
 
-<section
+<section data-pad
   class="section color-{{ section.settings.color_scheme }}"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }});"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};"
   aria-labelledby="FeaturedHeading-{{ section.id }}"
 >
   <card-slider class="page-width featured-products featured-products--tabs-{{ section.settings.tab_style }}">
@@ -190,7 +190,7 @@
     mix-blend-mode: multiply;
   }
   .pill-tabs__image-label {
-    font-size: 0.625rem;
+    font-size: calc(0.625rem * var(--sec-t, 1));
     font-weight: 600;
     letter-spacing: var(--label-ls);
     text-transform: var(--label-case);
@@ -211,7 +211,7 @@
   .pill-tabs__tab {
     border: none;
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     font-weight: 600;
     min-height: 44px;
     padding: 0 22px;
@@ -266,7 +266,7 @@
     font-family: var(--font-heading);
     font-stretch: var(--heading-stretch, 100%);
     font-weight: var(--font-heading-weight);
-    font-size: calc(clamp(1.375rem, 2.6vw, 2.25rem) * var(--heading-scale));
+    font-size: calc(clamp(1.375rem, 2.6vw, 2.25rem) * var(--heading-scale) * var(--sec-h, 1));
     letter-spacing: var(--heading-ls);
     text-transform: var(--heading-case);
     line-height: 1.1;
@@ -306,7 +306,7 @@
     font-weight: 500;
     letter-spacing: calc(var(--label-ls) * 0.6);
     text-transform: var(--label-case);
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     box-shadow: inset 0 -1px 0 transparent;
     transition: color 0.2s, box-shadow 0.2s;
   }
@@ -489,58 +489,12 @@
       ],
       "default": "grid"
     },
-    {
-      "type": "header",
-      "content": "Spacing"
-    },
-    {
-      "type": "select",
-      "id": "padding_top",
-      "label": "Top spacing",
-      "options": [
-        {
-          "value": "none",
-          "label": "None"
-        },
-        {
-          "value": "small",
-          "label": "Small"
-        },
-        {
-          "value": "medium",
-          "label": "Medium"
-        },
-        {
-          "value": "large",
-          "label": "Large"
-        }
-      ],
-      "default": "large"
-    },
-    {
-      "type": "select",
-      "id": "padding_bottom",
-      "label": "Bottom spacing",
-      "options": [
-        {
-          "value": "none",
-          "label": "None"
-        },
-        {
-          "value": "small",
-          "label": "Small"
-        },
-        {
-          "value": "medium",
-          "label": "Medium"
-        },
-        {
-          "value": "large",
-          "label": "Large"
-        }
-      ],
-      "default": "none"
-    }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "blocks": [
     {

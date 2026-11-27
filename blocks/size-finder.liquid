@@ -112,7 +112,7 @@
   .size-finder__field {
     display: grid;
     gap: 6px;
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .size-finder__fit {
@@ -122,13 +122,13 @@
     margin: 0;
     padding: 0;
     border: 0;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
   }
   .size-finder__fit legend {
     width: 100%;
     margin-bottom: 6px;
     color: var(--color-muted);
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
   }
   .size-finder__fit label {
     display: inline-flex;
@@ -156,13 +156,13 @@
     font-family: var(--font-heading);
     font-stretch: var(--heading-stretch, 100%);
     font-weight: var(--font-heading-weight);
-    font-size: 1.375rem;
+    font-size: calc(1.375rem * var(--sec-t, 1));
     text-transform: var(--heading-case);
   }
   .size-finder__note,
   .size-finder__empty {
     margin: 0;
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .size-finder__empty {

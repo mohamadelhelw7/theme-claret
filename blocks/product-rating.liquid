@@ -41,7 +41,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     text-decoration: none;
     color: var(--color-text);
   }
@@ -50,7 +50,7 @@
   }
   .product-rating--empty {
     color: var(--color-muted);
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
   }
 {% endstylesheet %}
 

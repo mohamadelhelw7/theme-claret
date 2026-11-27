@@ -1,6 +1,6 @@
-<section
+<section data-pad
   class="section color-{{ section.settings.color_scheme }}"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }});"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};"
 >
   <hover-list class="page-width hover-list hover-list--{{ section.settings.alignment }} hover-list--{{ section.settings.size }} hover-list--{{ section.settings.photo_shape }}">
     {% render 'section-header',
@@ -57,10 +57,10 @@
     transition: translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
   .hover-list--large .hover-link__label {
-    font-size: calc(clamp(2.25rem, 6vw, 5.5rem) * var(--heading-scale));
+    font-size: calc(clamp(2.25rem, 6vw, 5.5rem) * var(--heading-scale) * var(--sec-h, 1));
   }
   .hover-list--medium .hover-link__label {
-    font-size: calc(clamp(1.75rem, 4vw, 3.5rem) * var(--heading-scale));
+    font-size: calc(clamp(1.75rem, 4vw, 3.5rem) * var(--heading-scale) * var(--sec-h, 1));
   }
   .hover-link:hover .hover-link__label {
     translate: 14px 0;
@@ -74,7 +74,7 @@
     translate: -14px 0;
   }
   .hover-link__count {
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-muted);
     align-self: flex-start;
     margin-top: 0.6em;
@@ -211,9 +211,12 @@
       "default": "arch"
     },
     { "type": "checkbox", "id": "show_counts", "label": "Show product counts", "info": "For links that use a collection", "default": true },
-    { "type": "header", "content": "Spacing" },
-    { "type": "select", "id": "padding_top", "label": "Top spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "large" },
-    { "type": "select", "id": "padding_bottom", "label": "Bottom spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "none" }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [
     {

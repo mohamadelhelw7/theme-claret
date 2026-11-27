@@ -4,9 +4,9 @@
   assign start = section.settings.start
 -%}
 
-<section
+<section data-pad
   class="section before-after color-{{ section.settings.color_scheme }}"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }});"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};"
 >
   <div class="page-width before-after__inner before-after__inner--{{ section.settings.layout }}">
     {%- if section.settings.heading != blank or section.settings.text != blank -%}
@@ -111,7 +111,7 @@
     justify-items: start;
   }
   .before-after__text {
-    font-size: 0.9375rem;
+    font-size: calc(0.9375rem * var(--sec-t, 1));
     color: var(--color-body);
   }
   before-after {
@@ -160,7 +160,7 @@
     padding: 6px 10px;
     background: rgb(0 0 0 / 0.55);
     color: #ffffff;
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem * var(--sec-t, 1));
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -262,30 +262,12 @@
     { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Drag the line to compare. Upload two photos of the same piece, for example the blank and the finished print, or two ways to style it.</p>" },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop the piece" },
     { "type": "url", "id": "button_link", "label": "Button link" },
-    {
-      "type": "select",
-      "id": "padding_top",
-      "label": "Top padding",
-      "options": [
-        { "value": "none", "label": "None" },
-        { "value": "small", "label": "Small" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "large", "label": "Large" }
-      ],
-      "default": "large"
-    },
-    {
-      "type": "select",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "options": [
-        { "value": "none", "label": "None" },
-        { "value": "small", "label": "Small" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "large", "label": "Large" }
-      ],
-      "default": "large"
-    }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [{ "name": "Before and after" }]
 }

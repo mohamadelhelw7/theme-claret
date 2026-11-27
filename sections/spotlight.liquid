@@ -180,7 +180,7 @@
     font-family: var(--font-heading);
     font-style: normal;
     font-weight: var(--font-heading-weight);
-    font-size: calc(var(--d) * 3.4 * var(--heading-scale, 1) * var(--title-scale, 1));
+    font-size: calc(var(--d) * 3.4 * var(--heading-scale, 1) * var(--sec-h, 1) * var(--title-scale, 1));
     line-height: 0.98;
     letter-spacing: -0.02em;
   }
@@ -296,9 +296,9 @@
       ],
       "default": "mixed"
     },
-    { "type": "header", "content": "Spacing" },
-    { "type": "range", "id": "pad_top", "label": "Space above", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
-    { "type": "range", "id": "pad_bottom", "label": "Space below", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "pad_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "range", "id": "pad_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
     { "type": "header", "content": "Sizes" },
     { "type": "range", "id": "heading_size", "label": "Small title size", "min": 70, "max": 200, "step": 5, "unit": "%", "default": 100 },
     { "type": "range", "id": "title_size", "label": "Painting name size", "min": 50, "max": 160, "step": 5, "unit": "%", "default": 100 },

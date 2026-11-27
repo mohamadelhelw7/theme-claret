@@ -19,9 +19,9 @@
   endif
 -%}
 
-<section
+<section data-pad-box
   class="fhero fhero--{{ section.settings.strip_size }} fhero--{{ section.settings.height }}{{ fit_class }} color-{{ section.settings.color_scheme }}"
-  style="--overlay: {{ section.settings.overlay | divided_by: 100.0 }}; --hero-h: {{ section.settings.standard_height | divided_by: 100.0 }}; --head-scale: {{ section.settings.heading_size | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }}; --strip-scale: {{ section.settings.strip_art_size | divided_by: 100.0 }};{% if fit_class != blank %} {% render 'hero-ratio', mode: section.settings.height, ratio: section.settings.aspect_ratio, ratio_mobile: section.settings.aspect_ratio_mobile, video: section.settings.video, image: section.settings.image, image_mobile: section.settings.image_mobile %}{% endif %}"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --overlay: {{ section.settings.overlay | divided_by: 100.0 }}; --hero-h: {{ section.settings.standard_height | divided_by: 100.0 }}; --head-scale: {{ section.settings.heading_size | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }}; --strip-scale: {{ section.settings.strip_art_size | divided_by: 100.0 }};{% if fit_class != blank %} {% render 'hero-ratio', mode: section.settings.height, ratio: section.settings.aspect_ratio, ratio_mobile: section.settings.aspect_ratio_mobile, video: section.settings.video, image: section.settings.image, image_2: section.settings.image_2, image_mobile: section.settings.image_mobile %}{% endif %}"
   aria-labelledby="{{ heading_id }}"
   data-no-reveal
 >
@@ -30,6 +30,7 @@
       {% render 'hero-media',
         video: section.settings.video,
         image: section.settings.image,
+        image_2: section.settings.image_2,
         image_mobile: section.settings.image_mobile,
         alt: section.settings.credit,
         sizes: '100vw'
@@ -302,7 +303,7 @@
     margin: 0;
     font-family: var(--font-heading);
     font-weight: 400;
-    font-size: calc(var(--d) * 4.6 * var(--heading-scale, 1) * var(--head-scale, 1));
+    font-size: calc(var(--d) * 4.6 * var(--heading-scale, 1) * var(--sec-h, 1) * var(--head-scale, 1));
     line-height: 0.9;
     letter-spacing: -0.025em;
     text-wrap: balance;
@@ -459,7 +460,7 @@
     background: rgb(250 249 247 / 0.94);
     box-shadow: 0 0 0 5px rgb(250 249 247 / 0.22);
     color: #4a4a4a;
-    font-size: 1.1rem;
+    font-size: calc(1.1rem * var(--sec-t, 1));
     pointer-events: none;
     opacity: 0;
     scale: 0.6;
@@ -498,7 +499,7 @@
       padding-top: calc(var(--d) * 2);
     }
     .fhero__heading {
-      font-size: calc(var(--d) * 2.5 * var(--heading-scale, 1) * var(--head-scale, 1));
+      font-size: calc(var(--d) * 2.5 * var(--heading-scale, 1) * var(--sec-h, 1) * var(--head-scale, 1));
     }
     .fhero__track {
       bottom: calc(var(--d) * 1.1);
@@ -513,42 +514,139 @@
   "name": "Painting hero",
   "tag": "div",
   "class": "folio-hero-section",
-  "disabled_on": { "groups": ["header", "footer"] },
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
   "settings": [
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" },
-    { "type": "header", "content": "Background" },
-    { "type": "image_picker", "id": "image", "label": "Painting or photo", "info": "A painting filling the hero, or any wide photo" },
-    { "type": "image_picker", "id": "image_mobile", "label": "Phone image", "info": "Optional, shown on phones instead" },
-    { "type": "video", "id": "video", "label": "Video", "info": "Plays muted on a loop instead of the image" },
-    { "type": "checkbox", "id": "drift", "label": "Let the background drift slowly", "default": true },
-    { "type": "range", "id": "overlay", "label": "Shade for the text", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 45 },
-    { "type": "text", "id": "credit", "label": "Credit for the painting", "info": "Shown small at the top. Wrap the title in *asterisks* to set it in italics.", "default": "Vincent van Gogh · *Wheat Field with Cypresses*, 1889" },
-    { "type": "header", "content": "Height" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-3"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Painting or photo",
+      "info": "A painting filling the hero, or any wide photo"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Second photo",
+      "info": "Optional. Shows beside the first, so the hero holds two photos"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Phone image",
+      "info": "Optional, shown on phones instead"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video",
+      "info": "Plays muted on a loop instead of the image"
+    },
+    {
+      "type": "checkbox",
+      "id": "drift",
+      "label": "Let the background drift slowly",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Shade for the text",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 45
+    },
+    {
+      "type": "text",
+      "id": "credit",
+      "label": "Credit for the painting",
+      "info": "Shown small at the top. Wrap the title in *asterisks* to set it in italics.",
+      "default": "Vincent van Gogh · *Wheat Field with Cypresses*, 1889"
+    },
+    {
+      "type": "header",
+      "content": "Height"
+    },
     {
       "type": "select",
       "id": "height",
       "label": "Height",
       "options": [
-        { "value": "standard", "label": "Standard" },
-        { "value": "large", "label": "Large" },
-        { "value": "full", "label": "Full screen" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "adapt", "label": "Follow the image's shape" },
-        { "value": "ratio", "label": "Choose a ratio" }
+        {
+          "value": "standard",
+          "label": "Standard"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "full",
+          "label": "Full screen"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "adapt",
+          "label": "Follow the image's shape"
+        },
+        {
+          "value": "ratio",
+          "label": "Choose a ratio"
+        }
       ],
       "default": "standard"
     },
-    { "type": "range", "id": "standard_height", "label": "Standard height", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100, "visible_if": "{{ section.settings.height == 'standard' }}" },
+    {
+      "type": "range",
+      "id": "standard_height",
+      "label": "Standard height",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ section.settings.height == 'standard' }}"
+    },
     {
       "type": "select",
       "id": "aspect_ratio",
       "label": "Ratio",
       "info": "Used when the height is Choose a ratio",
       "options": [
-        { "value": "2.333", "label": "21:9" },
-        { "value": "1.778", "label": "16:9" },
-        { "value": "1.5", "label": "3:2" },
-        { "value": "1.333", "label": "4:3" }
+        {
+          "value": "2.333",
+          "label": "21:9"
+        },
+        {
+          "value": "1.778",
+          "label": "16:9"
+        },
+        {
+          "value": "1.5",
+          "label": "3:2"
+        },
+        {
+          "value": "1.333",
+          "label": "4:3"
+        }
       ],
       "default": "1.778"
     },
@@ -557,38 +655,167 @@
       "id": "aspect_ratio_mobile",
       "label": "Ratio on phones",
       "options": [
-        { "value": "same", "label": "Same as computers" },
-        { "value": "adapt", "label": "Follow the phone image" },
-        { "value": "0.8", "label": "4:5" },
-        { "value": "0.667", "label": "2:3" }
+        {
+          "value": "same",
+          "label": "Same as computers"
+        },
+        {
+          "value": "adapt",
+          "label": "Follow the phone image"
+        },
+        {
+          "value": "0.8",
+          "label": "4:5"
+        },
+        {
+          "value": "0.667",
+          "label": "2:3"
+        }
       ],
       "default": "0.8"
     },
-    { "type": "header", "content": "Text" },
-    { "type": "text", "id": "heading", "label": "Heading", "info": "Wrap words in *asterisks* to set them in italics on their own line", "default": "The great paintings, *framed for your walls.*" },
-    { "type": "richtext", "id": "text", "label": "Text" },
-    { "type": "text", "id": "button_label", "label": "Link label", "default": "Shop all paintings" },
-    { "type": "url", "id": "button_link", "label": "Link" },
-    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 50, "max": 160, "step": 5, "unit": "%", "default": 100 },
-    { "type": "range", "id": "text_size", "label": "Link, credit and label size", "min": 70, "max": 160, "step": 5, "unit": "%", "default": 100 },
-    { "type": "header", "content": "Art strip" },
-    { "type": "checkbox", "id": "show_strip", "label": "Show the strip of paintings", "default": true },
-    { "type": "collection", "id": "collection", "label": "Paintings from" },
-    { "type": "range", "id": "limit", "label": "Paintings", "min": 4, "max": 16, "step": 1, "default": 10 },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Wrap words in *asterisks* to set them in italics on their own line",
+      "default": "The great paintings, *framed for your walls.*"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Link label",
+      "default": "Shop all paintings"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Link"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 50,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Link, credit and label size",
+      "min": 70,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Art strip"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_strip",
+      "label": "Show the strip of paintings",
+      "default": true
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Paintings from"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Paintings",
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "default": 10
+    },
     {
       "type": "select",
       "id": "strip_size",
       "label": "Strip height",
       "options": [
-        { "value": "third", "label": "Bottom third" },
-        { "value": "half", "label": "Bottom half" }
+        {
+          "value": "third",
+          "label": "Bottom third"
+        },
+        {
+          "value": "half",
+          "label": "Bottom half"
+        }
       ],
       "default": "third"
     },
-    { "type": "range", "id": "strip_art_size", "label": "Painting size in the strip", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
-    { "type": "range", "id": "speed", "label": "Drift speed", "info": "0 keeps it still until shoppers drag it", "min": 0, "max": 100, "step": 5, "default": 35 },
-    { "type": "text", "id": "band_label", "label": "Small label above the strip", "default": "Drag to browse" }
+    {
+      "type": "range",
+      "id": "strip_art_size",
+      "label": "Painting size in the strip",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Drift speed",
+      "info": "0 keeps it still until shoppers drag it",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 35
+    },
+    {
+      "type": "text",
+      "id": "band_label",
+      "label": "Small label above the strip",
+      "default": "Drag to browse"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
   ],
-  "presets": [{ "name": "Painting hero" }]
+  "presets": [
+    {
+      "name": "Painting hero"
+    }
+  ]
 }
 {% endschema %}

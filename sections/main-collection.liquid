@@ -18,7 +18,7 @@
 
 {% render 'breadcrumbs' %}
 
-<div class="section color-{{ section.settings.color_scheme }}" style="--pt: 0px; --pb: var(--space-{{ section.settings.padding_bottom }});">
+<div data-pad class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};">
   <div class="page-width">
     {%- if section.settings.show_title -%}
     <div class="page-title-block collection-hero">
@@ -334,7 +334,7 @@
     justify-content: flex-end;
   }
   .facets__count {
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     color: var(--color-muted);
     margin-inline-end: auto;
   }
@@ -386,7 +386,7 @@
     justify-content: space-between;
     gap: 6px;
     min-height: 52px;
-    font-size: 0.9375rem;
+    font-size: calc(0.9375rem * var(--sec-t, 1));
     font-weight: 600;
     cursor: pointer;
     list-style: none;
@@ -407,7 +407,7 @@
     background: var(--color-button);
     color: var(--color-button-text);
     border-radius: 999px;
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem * var(--sec-t, 1));
     min-width: 18px;
     height: 18px;
     padding: 0 5px;
@@ -431,7 +431,7 @@
     padding: 0 6px;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 0.9375rem;
+    font-size: calc(0.9375rem * var(--sec-t, 1));
   }
   .filter__option:hover {
     background: color-mix(in srgb, var(--color-text) 5%, transparent);
@@ -453,7 +453,7 @@
   }
   .filter__option-count {
     color: var(--color-muted);
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     margin-inline-start: auto;
   }
   .filter__price {
@@ -514,7 +514,7 @@
       border-radius: var(--button-radius);
       background: var(--color-surface);
       border: 1px solid var(--color-border);
-      font-size: 0.875rem;
+      font-size: calc(0.875rem * var(--sec-t, 1));
     }
     .collection-layout--horizontal .filter__panel {
       position: absolute;
@@ -628,7 +628,12 @@
       "default": "wide"
     },
     { "type": "color_scheme", "id": "promo_scheme", "label": "Color scheme without image", "default": "scheme-4" },
-    { "type": "select", "id": "padding_bottom", "label": "Bottom spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "small" }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 24 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ]
 }
 {% endschema %}

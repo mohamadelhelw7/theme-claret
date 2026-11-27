@@ -12,8 +12,8 @@
         "header_alignment": "start",
         "limit": 6,
         "columns": 4,
-        "padding_top": "large",
-        "padding_bottom": "large"
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     },
     "more": {
@@ -26,8 +26,8 @@
         "columns": 4,
         "limit": 8,
         "show_link": false,
-        "padding_top": "large",
-        "padding_bottom": "large"
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     }
   },

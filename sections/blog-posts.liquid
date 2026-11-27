@@ -7,9 +7,9 @@
   endif
 -%}
 
-<section
+<section data-pad
   class="section color-{{ section.settings.color_scheme }}"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }});"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};"
 >
   <card-slider class="page-width">
     {% render 'section-header',
@@ -119,7 +119,7 @@
     font-weight: var(--font-heading-weight);
     text-transform: var(--heading-case);
     letter-spacing: var(--heading-ls);
-    font-size: 1rem;
+    font-size: calc(1rem * var(--sec-t, 1));
     line-height: 1.35;
   }
   .post-card__title a {
@@ -132,7 +132,7 @@
     inset: 0;
   }
   .post-card__excerpt {
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     color: var(--color-body);
     line-height: 1.6;
   }
@@ -141,7 +141,7 @@
     justify-content: space-between;
     gap: 12px;
     margin-top: auto;
-    font-size: 0.75rem;
+    font-size: calc(0.75rem * var(--sec-t, 1));
     color: var(--color-muted);
     letter-spacing: 0.04em;
   }
@@ -241,9 +241,12 @@
     { "type": "checkbox", "id": "show_excerpt", "label": "Show excerpt", "default": true },
     { "type": "checkbox", "id": "show_author", "label": "Show author", "default": false },
     { "type": "checkbox", "id": "show_date", "label": "Show date", "default": true },
-    { "type": "header", "content": "Spacing" },
-    { "type": "select", "id": "padding_top", "label": "Top spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "large" },
-    { "type": "select", "id": "padding_bottom", "label": "Bottom spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "none" }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [{ "name": "Blog posts" }]
 }

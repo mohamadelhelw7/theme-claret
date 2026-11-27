@@ -14,8 +14,8 @@
         "columns": 4,
         "limit": 8,
         "show_link": false,
-        "padding_top": "large",
-        "padding_bottom": "large"
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     }
   },

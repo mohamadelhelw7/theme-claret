@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0
+Everything on the theme checklist is now in Claret.
+- **Padding on every section:** a Padding heading with Top and Bottom sliders in pixels, on every section, including the header and announcement bar (which had one slider for both before), the footer, the product page, the page templates (collection, cart, search, blog, article, page, 404, password) and the heroes. The old None, Small, Medium and Large spacing became pixels (0, 24, 40 and 80). Phones use 60% of each.
+- **Sizes on every section:** sections without their own size sliders get Heading size and Text size. Claret's own sections keep their sliders, and Overall size in Theme settings still scales everything.
+- **Homepage:** Reviews, Before and after, a video section (Seen on the wall), an email signup and Customer support follow the existing sections, which are unchanged. A Painting hero for a video, one photo or two photos (new Second photo setting) is placed first but hidden, ready to switch on.
+- **Product page:** Stock status above the buttons, and a sticky Add to bag bar that slides up once a shopper scrolls past the buttons (phones and computers by default; phones only or off in the section).
+- **Footer:** payment icons and the real language selector are on. The "Language" text column is gone, so the menus sit in three columns.
+
 ## 1.0.9
 - Recently viewed in the footer: the paintings hang level and their names start on the same line, even when a name runs to two lines. A long name used to push its painting up.
 

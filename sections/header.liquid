@@ -62,13 +62,13 @@
   {%- endif -%}
 {%- endcapture -%}
 
-<header
+<header data-pad-box
   class="{{ header_classes }} color-{{ section.settings.color_scheme }}"
   data-sticky="{{ section.settings.sticky }}"
   {% if is_transparent %}
     data-transparent
   {% endif %}
-  style="--logo-width: {{ section.settings.logo_width }}px; --logo-width-mobile: {{ section.settings.logo_width_mobile }}px; --nav-align: {{ section.settings.menu_alignment }}; --transparent-text: {{ section.settings.transparent_text }};"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }}; --logo-width: {{ section.settings.logo_width }}px; --logo-width-mobile: {{ section.settings.logo_width_mobile }}px; --nav-align: {{ section.settings.menu_alignment }}; --transparent-text: {{ section.settings.transparent_text }};"
 >
   <div class="site-header__inner page-width">
     <div class="site-header__start">
@@ -310,34 +310,96 @@
   "name": "Header",
   "tag": "div",
   "class": "header-section",
-  "enabled_on": { "groups": ["header"] },
+  "enabled_on": {
+    "groups": [
+      "header"
+    ]
+  },
   "settings": [
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
-    { "type": "header", "content": "Logo" },
-    { "type": "image_picker", "id": "logo", "label": "Logo image" },
-    { "type": "range", "id": "logo_width", "label": "Logo width on desktop", "min": 60, "max": 260, "step": 5, "unit": "px", "default": 120 },
-    { "type": "range", "id": "logo_width_mobile", "label": "Logo width on mobile", "min": 40, "max": 200, "step": 5, "unit": "px", "default": 100 },
-    { "type": "text", "id": "wordmark", "label": "Text logo", "info": "Used when no logo image is set. Defaults to store name." },
-    { "type": "checkbox", "id": "show_dot", "label": "Show accent dot after text logo", "default": false },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width on desktop",
+      "min": 60,
+      "max": 260,
+      "step": 5,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "label": "Logo width on mobile",
+      "min": 40,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "text",
+      "id": "wordmark",
+      "label": "Text logo",
+      "info": "Used when no logo image is set. Defaults to store name."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dot",
+      "label": "Show accent dot after text logo",
+      "default": false
+    },
     {
       "type": "select",
       "id": "wordmark_style",
       "label": "Text logo style",
       "options": [
-        { "value": "regular", "label": "Regular" },
-        { "value": "spaced", "label": "Spaced capitals" }
+        {
+          "value": "regular",
+          "label": "Regular"
+        },
+        {
+          "value": "spaced",
+          "label": "Spaced capitals"
+        }
       ],
       "default": "regular"
     },
-    { "type": "header", "content": "Layout" },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
     {
       "type": "select",
       "id": "logo_position",
       "label": "Logo position",
       "options": [
-        { "value": "left", "label": "Start" },
-        { "value": "center", "label": "Center" },
-        { "value": "center_below", "label": "Center with menu below" }
+        {
+          "value": "left",
+          "label": "Start"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "center_below",
+          "label": "Center with menu below"
+        }
       ],
       "default": "center_below"
     },
@@ -346,8 +408,14 @@
       "id": "desktop_menu",
       "label": "Desktop menu",
       "options": [
-        { "value": "inline", "label": "Links in header" },
-        { "value": "drawer", "label": "Menu button" }
+        {
+          "value": "inline",
+          "label": "Links in header"
+        },
+        {
+          "value": "drawer",
+          "label": "Menu button"
+        }
       ],
       "default": "inline"
     },
@@ -357,9 +425,18 @@
       "label": "Menu alignment",
       "info": "Used when the logo is at the start",
       "options": [
-        { "value": "flex-start", "label": "Start" },
-        { "value": "center", "label": "Center" },
-        { "value": "flex-end", "label": "End" }
+        {
+          "value": "flex-start",
+          "label": "Start"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "End"
+        }
       ],
       "default": "center"
     },
@@ -368,9 +445,18 @@
       "id": "height",
       "label": "Header height",
       "options": [
-        { "value": "compact", "label": "Compact" },
-        { "value": "standard", "label": "Standard" },
-        { "value": "tall", "label": "Tall" }
+        {
+          "value": "compact",
+          "label": "Compact"
+        },
+        {
+          "value": "standard",
+          "label": "Standard"
+        },
+        {
+          "value": "tall",
+          "label": "Tall"
+        }
       ],
       "default": "standard"
     },
@@ -379,64 +465,240 @@
       "id": "sticky",
       "label": "Sticky header",
       "options": [
-        { "value": "none", "label": "Off" },
-        { "value": "always", "label": "Always visible" },
-        { "value": "scroll_up", "label": "Hide on scroll down" }
+        {
+          "value": "none",
+          "label": "Off"
+        },
+        {
+          "value": "always",
+          "label": "Always visible"
+        },
+        {
+          "value": "scroll_up",
+          "label": "Hide on scroll down"
+        }
       ],
       "default": "always"
     },
-    { "type": "checkbox", "id": "show_border", "label": "Show bottom border", "default": true },
-    { "type": "header", "content": "Over the first section" },
-    { "type": "checkbox", "id": "transparent_home", "label": "Show header over the homepage's first section", "info": "Use with a slideshow or full-width image first. The header turns solid when shoppers scroll or hover.", "default": false },
-    { "type": "color", "id": "transparent_text", "label": "Text and icons over the image", "default": "#FFFFFF" },
-    { "type": "image_picker", "id": "transparent_logo", "label": "Logo over the image", "info": "Optional light version of your logo" },
-    { "type": "header", "content": "Menu" },
-    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    {
+      "type": "checkbox",
+      "id": "show_border",
+      "label": "Show bottom border",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Over the first section"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_home",
+      "label": "Show header over the homepage's first section",
+      "info": "Use with a slideshow or full-width image first. The header turns solid when shoppers scroll or hover.",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "transparent_text",
+      "label": "Text and icons over the image",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "image_picker",
+      "id": "transparent_logo",
+      "label": "Logo over the image",
+      "info": "Optional light version of your logo"
+    },
+    {
+      "type": "header",
+      "content": "Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
     {
       "type": "select",
       "id": "menu_style",
       "label": "Dropdown style",
       "options": [
-        { "value": "dropdown", "label": "Dropdown" },
-        { "value": "mega", "label": "Mega menu" }
+        {
+          "value": "dropdown",
+          "label": "Dropdown"
+        },
+        {
+          "value": "mega",
+          "label": "Mega menu"
+        }
       ],
       "default": "dropdown",
       "info": "Mega menu shows all sub-links in columns"
     },
-    { "type": "image_picker", "id": "mega_image", "label": "Mega menu image" },
-    { "type": "url", "id": "mega_image_link", "label": "Mega menu image link" },
-    { "type": "text", "id": "mega_image_caption", "label": "Mega menu image caption" },
-    { "type": "link_list", "id": "secondary_menu", "label": "Extra links in mobile menu" },
-    { "type": "header", "content": "Icons and extras" },
+    {
+      "type": "image_picker",
+      "id": "mega_image",
+      "label": "Mega menu image"
+    },
+    {
+      "type": "url",
+      "id": "mega_image_link",
+      "label": "Mega menu image link"
+    },
+    {
+      "type": "text",
+      "id": "mega_image_caption",
+      "label": "Mega menu image caption"
+    },
+    {
+      "type": "link_list",
+      "id": "secondary_menu",
+      "label": "Extra links in mobile menu"
+    },
+    {
+      "type": "header",
+      "content": "Icons and extras"
+    },
     {
       "type": "select",
       "id": "icon_style",
       "label": "Search, account and cart",
       "options": [
-        { "value": "icons", "label": "Icons" },
-        { "value": "text", "label": "Text labels on desktop" }
+        {
+          "value": "icons",
+          "label": "Icons"
+        },
+        {
+          "value": "text",
+          "label": "Text labels on desktop"
+        }
       ],
       "default": "icons"
     },
-    { "type": "checkbox", "id": "show_search", "label": "Show search", "default": true },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search",
+      "default": true
+    },
     {
       "type": "select",
       "id": "search_style",
       "label": "Search style",
       "options": [
-        { "value": "icon", "label": "Icon or text" },
-        { "value": "field", "label": "Search field with typed hints" }
+        {
+          "value": "icon",
+          "label": "Icon or text"
+        },
+        {
+          "value": "field",
+          "label": "Search field with typed hints"
+        }
       ],
       "default": "field"
     },
-    { "type": "text", "id": "search_hints", "label": "Typed hints", "info": "Separate with commas", "default": "tees, chinos, hoodies, new in" },
-    { "type": "checkbox", "id": "show_account", "label": "Show account icon", "default": true },
-    { "type": "checkbox", "id": "show_saved", "label": "Show saved items", "info": "Needs Theme settings > Saved items. On phones with the tab bar it moves to the tab bar.", "default": true },
-    { "type": "checkbox", "id": "show_language", "label": "Show language selector on desktop", "info": "Appears when your store has more than one language", "default": false },
-    { "type": "checkbox", "id": "show_country", "label": "Show country and currency selector on desktop", "info": "Appears when you sell in more than one country", "default": false },
-    { "type": "checkbox", "id": "drawer_show_whatsapp", "label": "Show WhatsApp in mobile menu", "info": "Uses the number in Theme settings > WhatsApp", "default": true },
-    { "type": "checkbox", "id": "drawer_show_localization", "label": "Show language and country in mobile menu", "default": true },
-    { "type": "checkbox", "id": "drawer_show_social", "label": "Show social icons in mobile menu", "default": true }
+    {
+      "type": "text",
+      "id": "search_hints",
+      "label": "Typed hints",
+      "info": "Separate with commas",
+      "default": "tees, chinos, hoodies, new in"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account icon",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_saved",
+      "label": "Show saved items",
+      "info": "Needs Theme settings > Saved items. On phones with the tab bar it moves to the tab bar.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_language",
+      "label": "Show language selector on desktop",
+      "info": "Appears when your store has more than one language",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_country",
+      "label": "Show country and currency selector on desktop",
+      "info": "Appears when you sell in more than one country",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "drawer_show_whatsapp",
+      "label": "Show WhatsApp in mobile menu",
+      "info": "Uses the number in Theme settings > WhatsApp",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "drawer_show_localization",
+      "label": "Show language and country in mobile menu",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "drawer_show_social",
+      "label": "Show social icons in mobile menu",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Sizes"
+    },
+    {
+      "type": "range",
+      "id": "size_heading",
+      "label": "Heading size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "size_text",
+      "label": "Text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
   ]
 }
 {% endschema %}

@@ -31,7 +31,7 @@
   assign shown = 0
 -%}
 
-<div class="section color-{{ section.settings.color_scheme }}" style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }});">
+<div data-pad class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};">
   <fbt-bundle
     class="page-width"
     data-load="{{ needs_load }}"
@@ -179,11 +179,11 @@
   }
   .fbt__total-label {
     display: block;
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .fbt__total {
-    font-size: 1.375rem;
+    font-size: calc(1.375rem * var(--sec-t, 1));
     font-weight: 600;
   }
   .fbt__footer .form-message {
@@ -233,9 +233,12 @@
     },
     { "type": "product_list", "id": "products", "label": "Products", "limit": 4, "info": "Products you pick here are always shown, whatever Products to show says." },
     { "type": "range", "id": "limit", "label": "Products added to the bundle", "min": 1, "max": 3, "step": 1, "default": 2 },
-    { "type": "header", "content": "Spacing" },
-    { "type": "select", "id": "padding_top", "label": "Top spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "large" },
-    { "type": "select", "id": "padding_bottom", "label": "Bottom spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "none" }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [{ "name": "Bought together" }]
 }

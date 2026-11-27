@@ -175,7 +175,7 @@
   .pair__heading {
     margin: 0;
     font-family: var(--font-label, inherit);
-    font-size: 0.75rem;
+    font-size: calc(0.75rem * var(--sec-t, 1));
     font-weight: 700;
     letter-spacing: var(--label-ls);
     text-transform: var(--label-case);
@@ -219,7 +219,7 @@
     padding: 12px;
     border: 1px dashed var(--color-border);
     border-radius: var(--radius-sm);
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .upsell-kit-hint[hidden] {
@@ -254,7 +254,7 @@
   .pair-item__title {
     display: -webkit-box;
     overflow: hidden;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     font-weight: 500;
     color: inherit;
     text-decoration: none;
@@ -270,17 +270,17 @@
     flex-wrap: wrap;
     align-items: baseline;
     gap: 2px 8px;
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
   }
   .pair-item__save {
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem * var(--sec-t, 1));
     font-weight: 700;
     letter-spacing: var(--label-ls);
     text-transform: var(--label-case);
     color: var(--color-sale);
   }
   .pair-item__note {
-    font-size: 0.75rem;
+    font-size: calc(0.75rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .pair-item__note[hidden] {
@@ -296,7 +296,7 @@
   .pair-item__form .form-message {
     flex-basis: 100%;
     margin: 0;
-    font-size: 0.75rem;
+    font-size: calc(0.75rem * var(--sec-t, 1));
   }
   .pair-item__select {
     flex: 1 1 110px;
@@ -342,7 +342,7 @@
     grid-template-columns: 88px minmax(0, 1fr);
   }
   .pair--spotlight .pair-item__title {
-    font-size: 0.9375rem;
+    font-size: calc(0.9375rem * var(--sec-t, 1));
   }
 
   /* Slider of cards */

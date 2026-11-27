@@ -79,10 +79,18 @@
             "skip_saturday": false,
             "skip_sunday": false
           }
+        },
+        "stock": {
+          "type": "inventory-status",
+          "settings": {
+            "low_threshold": 5,
+            "show_count": true
+          }
         }
       },
       "block_order": [
         "options",
+        "stock",
         "buy",
         "kit",
         "promises",
@@ -99,7 +107,8 @@
         "sticky_info": true,
         "pad_top": 24,
         "pad_bottom": 64,
-        "blocks_gap": 36
+        "blocks_gap": 36,
+        "sticky_atc": "always"
       }
     },
     "reviews": {
@@ -135,8 +144,8 @@
         "layout": "slider",
         "button_label": "Write a review",
         "anchor": "reviews",
-        "padding_top": "large",
-        "padding_bottom": "large"
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     },
     "reels": {
@@ -169,9 +178,9 @@
         "color_scheme": "scheme-1",
         "eyebrow": "In your homes",
         "heading": "On *your* walls",
-        "padding_bottom": "large",
+        "padding_bottom": 80,
         "chip_scheme": "scheme-1",
-        "padding_top": "large"
+        "padding_top": 80
       }
     },
     "recommendations": {
@@ -183,8 +192,8 @@
         "intent": "related",
         "limit": 4,
         "mobile_layout": "swipe",
-        "padding_top": "large",
-        "padding_bottom": "large"
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     },
     "faq": {
@@ -236,8 +245,8 @@
         "heading": "Questions and answers",
         "button_label": "Chat on WhatsApp",
         "show_whatsapp_icon": true,
-        "padding_top": "large",
-        "padding_bottom": "large"
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     }
   },

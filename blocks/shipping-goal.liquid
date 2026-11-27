@@ -116,7 +116,7 @@
     padding: 12px;
     border: 1px dashed var(--color-border);
     border-radius: var(--radius-sm);
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .upsell-kit-hint[hidden] {
@@ -131,7 +131,7 @@
     align-items: center;
     gap: 8px;
     margin: 0;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     font-weight: 500;
   }
   .ship-goal__icon .icon {
@@ -189,7 +189,7 @@
     inset-block-end: calc(100% + 4px);
     inset-inline-start: calc(var(--ship-p, 0) * 1%);
     font-family: var(--font-label, inherit);
-    font-size: 0.625rem;
+    font-size: calc(0.625rem * var(--sec-t, 1));
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -207,7 +207,7 @@
     display: flex;
     justify-content: space-between;
     gap: 12px;
-    font-size: 0.75rem;
+    font-size: calc(0.75rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .ship-goal__ends span:last-child {

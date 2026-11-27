@@ -1,6 +1,6 @@
-<section
+<section data-pad
   class="section color-{{ section.settings.color_scheme }}"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }});"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};"
 >
   <set-builder class="page-width set-builder" data-required="{{ section.settings.require_full }}">
     {% render 'section-header',
@@ -131,7 +131,7 @@
     overflow: hidden;
   }
   .set-item__price {
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     color: var(--color-body);
   }
   .set-item__select {
@@ -168,14 +168,14 @@
   .set-builder__bar-heading {
     font-family: var(--font-heading);
     font-stretch: var(--heading-stretch, 100%);
-    font-size: 1.125rem;
+    font-size: calc(1.125rem * var(--sec-t, 1));
     font-weight: 600;
     text-transform: var(--heading-case);
     letter-spacing: var(--heading-ls);
   }
   .set-builder__bar-text {
     margin-top: 4px;
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .set-builder__slots {
@@ -223,7 +223,7 @@
     mix-blend-mode: multiply;
   }
   .set-slot__number {
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .set-slot.is-filled .set-slot__number {
@@ -235,14 +235,14 @@
     min-width: 0;
   }
   .set-slot__label {
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem * var(--sec-t, 1));
     font-weight: 600;
     letter-spacing: var(--label-ls);
     text-transform: var(--label-case);
     color: var(--color-muted);
   }
   .set-slot__title {
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -281,7 +281,7 @@
     display: flex;
     justify-content: space-between;
     gap: 16px;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
   }
   .set-builder__total-value {
     font-weight: 600;
@@ -354,9 +354,12 @@
     { "type": "text", "id": "bar_text", "label": "Text", "default": "Choose a piece in each step to complete your set." },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Add set to cart" },
     { "type": "checkbox", "id": "require_full", "label": "Only allow complete sets", "info": "When off, shoppers can add the set with at least one piece. To give a set discount, create an automatic discount in Shopify admin.", "default": false },
-    { "type": "header", "content": "Spacing" },
-    { "type": "select", "id": "padding_top", "label": "Top spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "large" },
-    { "type": "select", "id": "padding_bottom", "label": "Bottom spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "large" }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [
     {

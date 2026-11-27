@@ -25,20 +25,12 @@
             "heading": "Follow",
             "text": "<p><a href=\"https://www.instagram.com/artcellareg\">Instagram</a></p>"
           }
-        },
-        "language": {
-          "type": "_footer-text",
-          "settings": {
-            "heading": "Language",
-            "text": "<p>English · العربية</p>"
-          }
         }
       },
       "block_order": [
         "menu_shop",
         "menu_help",
-        "follow",
-        "language"
+        "follow"
       ],
       "settings": {
         "color_scheme": "scheme-2",
@@ -47,12 +39,12 @@
         "show_signup": true,
         "signup_heading": "Join the list",
         "signup_text": "<p>New paintings and offers, by email.</p>",
-        "columns": 4,
+        "columns": 3,
         "show_policies": true,
-        "show_localization": false,
+        "show_localization": true,
         "show_country": false,
         "show_social": false,
-        "show_payment_icons": false,
+        "show_payment_icons": true,
         "show_powered_by": false,
         "pad_top": 72,
         "pad_bottom": 24,

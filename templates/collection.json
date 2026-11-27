@@ -23,7 +23,7 @@
         "promo_position": 3,
         "promo_size": "wide",
         "promo_scheme": "scheme-6",
-        "padding_bottom": "large"
+        "padding_bottom": 80
       }
     }
   },

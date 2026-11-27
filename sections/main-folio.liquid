@@ -96,6 +96,32 @@
     </div>
   </div>
 
+  {%- if section.settings.sticky_atc != 'off' -%}
+    {%- assign sticky_variant = product.selected_or_first_available_variant -%}
+    <sticky-atc class="sticky-atc sticky-atc--{{ section.settings.sticky_atc }} fpro__sticky color-{{ section.settings.color_scheme }}" data-target="ProductForm-{{ section.id }}">
+      <div class="sticky-atc__inner page-width">
+        <div class="sticky-atc__media">
+          {%- if product.featured_media -%}
+            {{ product.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}
+          {%- endif -%}
+        </div>
+        <div class="sticky-atc__info">
+          <span class="sticky-atc__title">{{ product.title | escape }}</span>
+          <div data-update="sticky-price">{% render 'price', variant: sticky_variant %}</div>
+        </div>
+        <div class="sticky-atc__button" data-update="sticky-button">
+          <button type="submit" form="ProductForm-{{ section.id }}" class="button button--primary"{% unless sticky_variant.available %} disabled{% endunless %}>
+            {%- if sticky_variant.available -%}
+              {{ 'products.product.add_to_cart' | t }}
+            {%- else -%}
+              {{ 'products.product.sold_out' | t }}
+            {%- endif -%}
+          </button>
+        </div>
+      </div>
+    </sticky-atc>
+  {%- endif -%}
+
   <script type="application/json" data-product-variants>
     {{ product.variants | json }}
   </script>
@@ -382,7 +408,7 @@
     font-family: var(--font-heading);
     font-style: normal;
     font-weight: var(--font-heading-weight);
-    font-size: calc(var(--d) * 3.9 * var(--heading-scale, 1) * var(--title-scale, 1));
+    font-size: calc(var(--d) * 3.9 * var(--heading-scale, 1) * var(--sec-h, 1) * var(--title-scale, 1));
     line-height: 1;
     letter-spacing: -0.025em;
   }
@@ -412,7 +438,7 @@
     align-items: center;
     gap: 8px;
     color: inherit;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     text-decoration: none;
   }
   .fpro__blocks {
@@ -457,6 +483,43 @@
   .fpro .accordion-row__icon {
     display: none;
   }
+  /* Sticky Add to bag bar: Claret's square corners, light serif name, small capitals */
+  .fpro__sticky .sticky-atc__media {
+    border-radius: 0;
+    background: var(--wall, #f1f1f0);
+  }
+  .fpro__sticky .sticky-atc__media img {
+    object-fit: contain;
+  }
+  .fpro__sticky .sticky-atc__title {
+    font-family: var(--font-heading);
+    font-weight: 300;
+    font-size: calc(var(--d) * 1.05);
+  }
+  .fpro__sticky .price {
+    font-family: var(--font-heading);
+    font-weight: 300;
+  }
+  .fpro__sticky .button {
+    min-height: 40px;
+    padding-inline: 1.6em;
+  }
+  /* Stock status in the column's small capitals */
+  .fpro .inventory-status__line {
+    font-size: calc(var(--d) * 0.7 * var(--text-scale, 1));
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text);
+  }
+  .fpro .inventory-status__dot {
+    width: 6px;
+    height: 6px;
+    box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 14%, transparent);
+  }
+  .fpro__blocks > .inventory-status + .fbuy {
+    margin-top: calc(var(--gap-now) * -0.5);
+  }
   @media (max-width: 989px) {
     .fpro__grid {
       grid-template-columns: minmax(0, 1fr);
@@ -480,7 +543,7 @@
       --gap-now: calc(var(--blocks-gap, 35px) * 0.6);
     }
     .fpro__title {
-      font-size: calc(var(--d) * 2.6 * var(--heading-scale, 1) * var(--title-scale, 1));
+      font-size: calc(var(--d) * 2.6 * var(--heading-scale, 1) * var(--sec-h, 1) * var(--title-scale, 1));
     }
   }
 {% endstylesheet %}
@@ -520,10 +583,10 @@
       ],
       "default": "start"
     },
-    { "type": "header", "content": "Spacing" },
-    { "type": "range", "id": "pad_top", "label": "Padding above", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 24 },
-    { "type": "range", "id": "pad_bottom", "label": "Padding below", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 64 },
-    { "type": "range", "id": "blocks_gap", "label": "Space between the blocks", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 36 },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "pad_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "pad_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "blocks_gap", "label": "Space between blocks", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 36 },
     { "type": "header", "content": "Sizes" },
     { "type": "range", "id": "wall_height", "label": "Wall height", "min": 60, "max": 150, "step": 5, "unit": "%", "default": 100 },
     { "type": "range", "id": "painting_size", "label": "Painting size on the wall", "min": 60, "max": 118, "step": 2, "unit": "%", "default": 100 },
@@ -531,6 +594,18 @@
     { "type": "range", "id": "price_size", "label": "Price size", "min": 70, "max": 180, "step": 5, "unit": "%", "default": 100 },
     { "type": "range", "id": "text_size", "label": "Artist line and rows text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
     { "type": "checkbox", "id": "sticky_info", "label": "Keep the details in view while the page scrolls", "default": true },
+    {
+      "type": "select",
+      "id": "sticky_atc",
+      "label": "Sticky Add to bag bar",
+      "options": [
+        { "value": "always", "label": "Phones and computers" },
+        { "value": "mobile", "label": "Phones only" },
+        { "value": "off", "label": "Off" }
+      ],
+      "default": "always",
+      "info": "Slides up at the bottom once a shopper scrolls past the buttons"
+    },
     { "type": "paragraph", "content": "Sizes are read from a product option called Size (for example 30 x 40 cm), and frames from an option called Frame or from a product options app. Change the option names in Theme settings → Folio." }
   ]
 }

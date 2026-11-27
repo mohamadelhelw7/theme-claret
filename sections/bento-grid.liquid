@@ -1,8 +1,8 @@
 {%- assign heading_id = 'BentoHeading-' | append: section.id -%}
 
-<section
+<section data-pad
   class="section bento color-{{ section.settings.color_scheme }}"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }});"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};"
   {% if section.settings.heading != blank %}
     aria-labelledby="{{ heading_id }}"
   {% endif %}
@@ -108,12 +108,12 @@
     letter-spacing: var(--heading-ls);
   }
   .bento-tile__heading--big {
-    font-size: calc(clamp(2rem, 4.4vw, 4rem) * var(--heading-scale));
+    font-size: calc(clamp(2rem, 4.4vw, 4rem) * var(--heading-scale) * var(--sec-h, 1));
     line-height: 0.9;
   }
   .bento-tile__text {
     margin: 0;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     opacity: 0.85;
   }
   .bento-tile__cta {
@@ -204,9 +204,12 @@
     },
     { "type": "range", "id": "columns", "label": "Columns on desktop", "min": 2, "max": 4, "step": 1, "default": 4 },
     { "type": "range", "id": "row_height", "label": "Row height", "min": 160, "max": 360, "step": 20, "unit": "px", "default": 240 },
-    { "type": "header", "content": "Spacing" },
-    { "type": "select", "id": "padding_top", "label": "Top spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "large" },
-    { "type": "select", "id": "padding_bottom", "label": "Bottom spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "none" }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [
     {

@@ -9,9 +9,9 @@
 -%}
 
 {%- if has_logos or request.design_mode -%}
-  <section
+  <section data-pad
     class="section color-{{ section.settings.color_scheme }}"
-    style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }}); --logo-height: {{ section.settings.logo_height }}px;"
+    style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }}; --logo-height: {{ section.settings.logo_height }}px;"
   >
     <div class="logo-strip logo-strip--{{ section.settings.style }}{% if section.settings.grayscale %} logo-strip--muted{% endif %}">
       {%- if section.settings.heading != blank -%}
@@ -104,7 +104,7 @@
     color: var(--color-muted);
   }
   .logo-strip__empty {
-    font-size: 0.75rem;
+    font-size: calc(0.75rem * var(--sec-t, 1));
     padding: 10px 16px;
     border: 1px dashed var(--color-border);
     color: var(--color-muted);
@@ -139,9 +139,12 @@
     { "type": "range", "id": "speed", "label": "Scrolling speed", "min": 10, "max": 120, "step": 5, "unit": "px", "default": 40 },
     { "type": "range", "id": "logo_height", "label": "Logo height", "min": 20, "max": 80, "step": 2, "unit": "px", "default": 36 },
     { "type": "checkbox", "id": "grayscale", "label": "Show logos in gray", "default": true },
-    { "type": "header", "content": "Spacing" },
-    { "type": "select", "id": "padding_top", "label": "Top spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "large" },
-    { "type": "select", "id": "padding_bottom", "label": "Bottom spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "large" }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [
     {

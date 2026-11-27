@@ -1,4 +1,4 @@
-<div class="section color-{{ section.settings.color_scheme }}" style="--pt: 80px; --pb: 40px;">
+<div class="section color-{{ section.settings.color_scheme }}" data-pad style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};">
   <div class="page-width empty-state">
     <span class="eyebrow">404</span>
     <h1 class="h1">{{ 'templates.404.title' | t }}</h1>
@@ -17,7 +17,13 @@
       "id": "color_scheme",
       "label": "Color scheme",
       "default": "scheme-1"
-    }
+    },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 40 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ]
 }
 {% endschema %}

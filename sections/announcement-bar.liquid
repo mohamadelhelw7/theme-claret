@@ -10,7 +10,7 @@
 -%}
 
 <announcement-bar
-  style="--ab-scale: {{ section.settings.text_scale | divided_by: 100.0 }}; --ab-pad: {{ section.settings.pad_block }}px;"
+  style="--ab-scale: {{ section.settings.text_scale | divided_by: 100.0 }}; --ab-pt: {{ section.settings.pad_top }}px; --ab-pb: {{ section.settings.pad_bottom }}px;"
   class="announcement-bar announcement-bar--{{ mode }}{% if section.settings.label_font %} announcement-bar--label{% endif %}{% if section.settings.rule_below %} announcement-bar--ruled{% endif %}{% if has_locale %} announcement-bar--with-locale{% endif %} color-{{ section.settings.color_scheme }}"
   data-mode="{{ mode }}"
   data-speed="{{ section.settings.speed }}"
@@ -178,7 +178,7 @@
   }
   .announcement-bar__viewport {
     overflow: hidden;
-    padding: var(--ab-pad, 9px) 0;
+    padding: var(--ab-pt, 9px) 0 var(--ab-pb, 9px);
   }
   .announcement-bar__track {
     display: flex;
@@ -332,7 +332,9 @@
       "default": 4,
       "visible_if": "{{ section.settings.mode == 'rotate' }}"
     },
-    { "type": "range", "id": "pad_block", "label": "Padding above and below", "min": 0, "max": 40, "step": 4, "unit": "px", "default": 8 },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "pad_top", "label": "Top", "min": 0, "max": 40, "step": 4, "unit": "px", "default": 8 },
+    { "type": "range", "id": "pad_bottom", "label": "Bottom", "min": 0, "max": 40, "step": 4, "unit": "px", "default": 8 },
     { "type": "range", "id": "text_scale", "label": "Text size", "min": 70, "max": 180, "step": 5, "unit": "%", "default": 100 },
     { "type": "checkbox", "id": "label_font", "label": "Set in the label font", "info": "Theme settings > Typography > Labels", "default": true },
     { "type": "checkbox", "id": "rule_below", "label": "Rule under the bar", "default": true }

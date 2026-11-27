@@ -100,13 +100,185 @@
         "pad_top": 80,
         "pad_bottom": 80
       }
+    },
+    "media_hero": {
+      "type": "folio-hero",
+      "disabled": true,
+      "settings": {
+        "color_scheme": "scheme-3",
+        "height": "standard",
+        "show_strip": false,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "reviews": {
+      "type": "product-reviews",
+      "blocks": {
+        "review_1": {
+          "type": "_review",
+          "settings": {}
+        },
+        "review_2": {
+          "type": "_review",
+          "settings": {}
+        },
+        "review_3": {
+          "type": "_review",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "Reviews",
+        "heading": "From *their* walls",
+        "layout": "slider",
+        "anchor": "home-reviews",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "before_after": {
+      "type": "before-after",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "wall_scheme": "scheme-2",
+        "before_label": "Before",
+        "after_label": "After",
+        "start": 50,
+        "ratio": "1.5",
+        "layout": "beside",
+        "eyebrow": "Before and after",
+        "heading": "The same wall, *before and after*",
+        "text": "<p>Drag the line to compare. Upload two photos taken from the same spot: the bare wall, then the wall with the painting.</p>",
+        "button_label": "Shop all paintings",
+        "button_link": "shopify://collections/all",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "video": {
+      "type": "reels",
+      "blocks": {
+        "reel_1": {
+          "type": "_reel",
+          "settings": {}
+        },
+        "reel_2": {
+          "type": "_reel",
+          "settings": {}
+        },
+        "reel_3": {
+          "type": "_reel",
+          "settings": {}
+        },
+        "reel_4": {
+          "type": "_reel",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "reel_1",
+        "reel_2",
+        "reel_3",
+        "reel_4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "In your homes",
+        "heading": "Seen *on the wall*",
+        "description": "<p>Short videos of the paintings at home. Add your own or your customers’ clips.</p>",
+        "columns": 4,
+        "auto_products": true,
+        "chip_scheme": "scheme-1",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "color_scheme": "scheme-2",
+        "layout": "center",
+        "arch": false,
+        "eyebrow": "The list",
+        "heading": "New paintings, *first*",
+        "text": "<p>Hear about new paintings and offers by email.</p>",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "support": {
+      "type": "customer-support",
+      "blocks": {
+        "whatsapp": {
+          "type": "_support-channel",
+          "settings": {
+            "channel": "whatsapp",
+            "title": "Chat on WhatsApp",
+            "text": "Questions about sizes, frames or delivery",
+            "link_label": "Start a chat"
+          }
+        },
+        "email": {
+          "type": "_support-channel",
+          "settings": {
+            "channel": "email",
+            "icon": "auto",
+            "title": "Email us",
+            "text": "For orders and anything else",
+            "link_label": "Write to us"
+          }
+        },
+        "instagram": {
+          "type": "_support-channel",
+          "settings": {
+            "channel": "link",
+            "icon": "instagram",
+            "link": "https://www.instagram.com/artcellareg",
+            "new_tab": true,
+            "title": "Instagram",
+            "text": "New paintings and messages",
+            "link_label": "Follow"
+          }
+        }
+      },
+      "block_order": [
+        "whatsapp",
+        "email",
+        "instagram"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "layout": "cards",
+        "card_style": "outline",
+        "columns": 3,
+        "columns_mobile": "1",
+        "alignment": "start",
+        "eyebrow": "Customer support",
+        "heading": "Need a *hand?*",
+        "text": "<p>Ask us about sizes, frames, orders or delivery.</p>",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
     }
   },
   "order": [
+    "media_hero",
     "hero",
     "styles",
     "spotlight",
     "promises",
-    "collection"
+    "collection",
+    "reviews",
+    "before_after",
+    "video",
+    "newsletter",
+    "support"
   ]
 }

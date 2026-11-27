@@ -4,10 +4,10 @@
   assign rating_count = review_product.metafields.reviews.rating_count.value | default: 0
 -%}
 
-<section
+<section data-pad
   id="{{ section.settings.anchor | default: 'reviews' | handleize }}"
   class="section color-{{ section.settings.color_scheme }} product-reviews"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }});"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};"
 >
   <card-slider class="page-width">
     <div class="product-reviews__header">
@@ -83,13 +83,13 @@
   .product-reviews__score {
     font-family: var(--font-heading);
     font-stretch: var(--heading-stretch, 100%);
-    font-size: 2.75rem;
+    font-size: calc(2.75rem * var(--sec-t, 1));
     font-weight: var(--font-heading-weight);
     letter-spacing: -0.03em;
     line-height: 1;
   }
   .product-reviews__count {
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-muted);
     margin-top: 4px;
   }
@@ -206,58 +206,12 @@
       "info": "The star rating block links here",
       "default": "reviews"
     },
-    {
-      "type": "header",
-      "content": "Spacing"
-    },
-    {
-      "type": "select",
-      "id": "padding_top",
-      "label": "Top spacing",
-      "options": [
-        {
-          "value": "none",
-          "label": "None"
-        },
-        {
-          "value": "small",
-          "label": "Small"
-        },
-        {
-          "value": "medium",
-          "label": "Medium"
-        },
-        {
-          "value": "large",
-          "label": "Large"
-        }
-      ],
-      "default": "large"
-    },
-    {
-      "type": "select",
-      "id": "padding_bottom",
-      "label": "Bottom spacing",
-      "options": [
-        {
-          "value": "none",
-          "label": "None"
-        },
-        {
-          "value": "small",
-          "label": "Small"
-        },
-        {
-          "value": "medium",
-          "label": "Medium"
-        },
-        {
-          "value": "large",
-          "label": "Large"
-        }
-      ],
-      "default": "none"
-    }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [
     {

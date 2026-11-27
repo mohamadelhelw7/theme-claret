@@ -5,10 +5,10 @@
   assign hero_alt = section.settings.image.alt | default: section.settings.heading | escape
 -%}
 
-<scroll-progress
+<scroll-progress data-pad-box
   class="campaign campaign--{{ effect }} campaign--{{ section.settings.height }} campaign--text-{{ section.settings.text_position }} color-{{ section.settings.color_scheme }}"
   data-static-progress="0"
-  style="--overlay: {{ section.settings.overlay | divided_by: 100.0 }}; --hero-text: {{ section.settings.text_color }};"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }}; --overlay: {{ section.settings.overlay | divided_by: 100.0 }}; --hero-text: {{ section.settings.text_color }};"
   data-no-reveal
 >
   <div class="campaign__sticky">
@@ -211,14 +211,14 @@
     translate: 0 calc(var(--e) * -6vh);
   }
   .campaign__eyebrow {
-    font-size: 0.75rem;
+    font-size: calc(0.75rem * var(--sec-t, 1));
     font-weight: 600;
     letter-spacing: var(--label-ls);
     text-transform: var(--label-case);
     animation: campaign-fade 1s ease 0.1s both;
   }
   .campaign__heading {
-    font-size: calc(clamp(2.6rem, 6vw, 5.5rem) * var(--heading-scale));
+    font-size: calc(clamp(2.6rem, 6vw, 5.5rem) * var(--heading-scale) * var(--sec-h, 1));
     line-height: 1.02;
   }
   .campaign__heading em {
@@ -229,7 +229,7 @@
   }
   .campaign__text {
     max-width: 520px;
-    font-size: 1rem;
+    font-size: calc(1rem * var(--sec-t, 1));
     opacity: 0.9;
     animation: campaign-fade 1s ease 0.7s both;
   }
@@ -309,18 +309,47 @@
   "tag": "section",
   "class": "campaign-hero-section",
   "settings": [
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "info": "The page color shows around the photo once it shrinks", "default": "scheme-1" },
-    { "type": "image_picker", "id": "image", "label": "Image", "info": "Defaults to your first product photo. A wide photo works best." },
-    { "type": "image_picker", "id": "image_mobile", "label": "Image on mobile" },
-    { "type": "video", "id": "video", "label": "Video", "info": "Plays muted on a loop instead of the image" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "info": "The page color shows around the photo once it shrinks",
+      "default": "scheme-1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Defaults to your first product photo. A wide photo works best."
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Image on mobile"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video",
+      "info": "Plays muted on a loop instead of the image"
+    },
     {
       "type": "select",
       "id": "height",
       "label": "Height",
       "options": [
-        { "value": "medium", "label": "Medium" },
-        { "value": "large", "label": "Large" },
-        { "value": "full", "label": "Full screen" }
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "full",
+          "label": "Full screen"
+        }
       ],
       "default": "full"
     },
@@ -329,29 +358,77 @@
       "id": "scroll_effect",
       "label": "When shoppers scroll",
       "options": [
-        { "value": "arch", "label": "Shrink into an arch" },
-        { "value": "card", "label": "Shrink into a card" },
-        { "value": "zoom", "label": "Slow zoom out" },
-        { "value": "none", "label": "No effect" }
+        {
+          "value": "arch",
+          "label": "Shrink into an arch"
+        },
+        {
+          "value": "card",
+          "label": "Shrink into a card"
+        },
+        {
+          "value": "zoom",
+          "label": "Slow zoom out"
+        },
+        {
+          "value": "none",
+          "label": "No effect"
+        }
       ],
       "default": "arch"
     },
-    { "type": "range", "id": "overlay", "label": "Image darkening", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 25 },
-    { "type": "color", "id": "text_color", "label": "Text over the image", "default": "#FFFFFF" },
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Image darkening",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 25
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text over the image",
+      "default": "#FFFFFF"
+    },
     {
       "type": "select",
       "id": "text_position",
       "label": "Text position",
       "options": [
-        { "value": "bottom_start", "label": "Bottom start" },
-        { "value": "bottom_center", "label": "Bottom center" },
-        { "value": "center", "label": "Center" }
+        {
+          "value": "bottom_start",
+          "label": "Bottom start"
+        },
+        {
+          "value": "bottom_center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
       ],
       "default": "bottom_start"
     },
-    { "type": "checkbox", "id": "show_scroll_hint", "label": "Show scroll line", "default": true },
-    { "type": "header", "content": "Text" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The new collection" },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_hint",
+      "label": "Show scroll line",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The new collection"
+    },
     {
       "type": "textarea",
       "id": "heading",
@@ -359,12 +436,86 @@
       "info": "Each line slides up on its own. Wrap words in *asterisks* for the accent style.",
       "default": "The quiet\n*statement*"
     },
-    { "type": "textarea", "id": "text", "label": "Text", "default": "Everyday pieces with something to say." },
-    { "type": "text", "id": "button_label", "label": "First button label", "default": "Shop now" },
-    { "type": "url", "id": "button_link", "label": "First button link" },
-    { "type": "text", "id": "button2_label", "label": "Second button label" },
-    { "type": "url", "id": "button2_link", "label": "Second button link" }
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Everyday pieces with something to say."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "First button label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "First button link"
+    },
+    {
+      "type": "text",
+      "id": "button2_label",
+      "label": "Second button label"
+    },
+    {
+      "type": "url",
+      "id": "button2_link",
+      "label": "Second button link"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Sizes"
+    },
+    {
+      "type": "range",
+      "id": "size_heading",
+      "label": "Heading size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "size_text",
+      "label": "Text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
   ],
-  "presets": [{ "name": "Campaign hero" }]
+  "presets": [
+    {
+      "name": "Campaign hero"
+    }
+  ]
 }
 {% endschema %}

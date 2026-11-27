@@ -72,11 +72,15 @@ The announcement bar moves as a ticker in ink. Edit the messages in **Customize 
 
 ## Padding
 
-Padding sliders in pixels sit in each section's settings: Padding above and below on the homepage sections and the footer, Padding above, below and Space between the blocks on the product page, and Padding above and below on the header and the announcement bar. Phones use 60% of each. The space at the sides of the page is in Theme settings → Layout.
+Every section has **Padding** with **Top** and **Bottom** sliders in pixels, including the header, the announcement bar, the footer and the product page (which also has **Space between blocks**). Phones use 60% of each.
+
+Every section also has **Sizes**. Claret's own sections have a slider for each part (headings, text, paintings); the other sections have **Heading size** and **Text size**. **Theme settings → Claret → Overall size** scales everything at once. The space at the sides of the page is in **Theme settings → Layout**.
 
 ## 8. Homepage
 
-The homepage has five sections, in the design's order. Each one can be moved, hidden or removed, and more sections are under **Add section**.
+The homepage has ten sections: Shop by colour, Shop by style, Spotlight, the Promise band, the Collection grid, Reviews, Before and after, videos (**Seen on the wall**), the email signup and Customer support. Each one can be moved, hidden or removed, and more sections are under **Add section**.
+
+A **Painting hero** that takes a video, one photo or two photos side by side is placed first but hidden. To use it, click the eye icon beside it in the section list; it then shows above Shop by colour, or hide Shop by colour to make it the only hero.
 
 ### Shop by colour
 
@@ -125,7 +129,7 @@ Two photos to compare, for example a bare wall and the same wall with the painti
 - **On your walls**: the **Reels** section, short vertical videos of the paintings in customers' homes. Upload each video under **Content → Files** (9:16 works best).
 - **Customer support**: each **Contact option** block opens a WhatsApp chat, a phone call, an email or a link.
 
-The email signup is in the footer, so it shows on every page.
+There is an email signup on the homepage (**Newsletter**) and one in the footer on every page.
 
 ## 9. Product cards
 
@@ -152,6 +156,7 @@ The product template has five sections.
   - **About the painting**: the product's description, folded.
   - **Accordion** rows, for example sizes and frames, and delivery and returns.
   - **Delivery progress**: order today, we ship it and delivered, with dates counted from today. Set the days to your real times, and switch off the days you don't ship.
+- **Sticky Add to bag bar**: once a shopper scrolls past the buttons, a bar with the painting, its price and Add to bag slides up at the bottom. Choose phones and computers, phones only, or off under **Sticky Add to bag bar** in the section.
 
 ### 2–5. The other sections
 
@@ -174,7 +179,7 @@ The **Claret footer**, on the wall color under a black line:
 - **Recently viewed**: the paintings a shopper looked at last hang in the frames they chose, in the store name's place beside the email signup. Until they have looked at one, the store name shows there, unless you pick a collection to show before then.
 - The store's name in the light serif (wrap a word in *asterisks* to set it in italics), or a logo image.
 - **Email signup**: **Join the list**. Signups are saved in **Customers** with the `newsletter` tag.
-- **Menus** in columns, and a fine line with the copyright and policy links. The language selector, social links and payment icons can be switched on under **Bottom line**.
+- **Menus** in columns, and a fine line with the copyright, policy links, payment icons and the language selector. The selector shows once your store has a second language in **Settings → Languages**. Social links can be switched on under **Bottom line** too.
 
 ## 14. Motion
 

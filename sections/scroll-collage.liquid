@@ -6,7 +6,7 @@
   endif
 -%}
 
-<scroll-progress
+<scroll-progress style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};" data-pad-box
   class="collage collage--{{ section.settings.length }} color-{{ section.settings.color_scheme }}"
   data-static-progress="1"
   data-no-reveal
@@ -157,7 +157,7 @@
     position: absolute;
     top: 50%;
     translate: calc(var(--e) * var(--dir) * -12vw) -50%;
-    font-size: calc(clamp(2rem, 4.4vw, 4.75rem) * var(--heading-scale));
+    font-size: calc(clamp(2rem, 4.4vw, 4.75rem) * var(--heading-scale) * var(--sec-h, 1));
     white-space: nowrap;
     z-index: 1;
   }
@@ -218,7 +218,7 @@
     .collage .collage__word {
       inset-inline: 0;
       text-align: center;
-      font-size: calc(clamp(1.75rem, 9vw, 2.75rem) * var(--heading-scale));
+      font-size: calc(clamp(1.75rem, 9vw, 2.75rem) * var(--heading-scale) * var(--sec-h, 1));
       translate: 0 0;
     }
     .collage .collage__word--start {
@@ -251,41 +251,158 @@
   "tag": "section",
   "class": "scroll-collage-section",
   "max_blocks": 8,
-  "blocks": [{ "type": "_collage-image" }],
+  "blocks": [
+    {
+      "type": "_collage-image"
+    }
+  ],
   "settings": [
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-6" },
-    { "type": "paragraph", "content": "The center photo grows to fill the screen as shoppers scroll, while the floating photos drift away." },
-    { "type": "text", "id": "word_start", "label": "Word before the photo", "default": "Wear" },
-    { "type": "text", "id": "word_end", "label": "Word after the photo", "default": "Daily" },
-    { "type": "image_picker", "id": "image", "label": "Center photo", "info": "Defaults to your first product photo. A wide lifestyle photo works best." },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-6"
+    },
+    {
+      "type": "paragraph",
+      "content": "The center photo grows to fill the screen as shoppers scroll, while the floating photos drift away."
+    },
+    {
+      "type": "text",
+      "id": "word_start",
+      "label": "Word before the photo",
+      "default": "Wear"
+    },
+    {
+      "type": "text",
+      "id": "word_end",
+      "label": "Word after the photo",
+      "default": "Daily"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Center photo",
+      "info": "Defaults to your first product photo. A wide lifestyle photo works best."
+    },
     {
       "type": "select",
       "id": "length",
       "label": "Scroll length",
       "options": [
-        { "value": "short", "label": "Short" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "long", "label": "Long" }
+        {
+          "value": "short",
+          "label": "Short"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "long",
+          "label": "Long"
+        }
       ],
       "default": "medium"
     },
-    { "type": "header", "content": "When the photo fills the screen" },
-    { "type": "text", "id": "end_heading", "label": "Heading", "default": "Made to be collected" },
-    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop the collection" },
-    { "type": "url", "id": "button_link", "label": "Button link" }
+    {
+      "type": "header",
+      "content": "When the photo fills the screen"
+    },
+    {
+      "type": "text",
+      "id": "end_heading",
+      "label": "Heading",
+      "default": "Made to be collected"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop the collection"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Sizes"
+    },
+    {
+      "type": "range",
+      "id": "size_heading",
+      "label": "Heading size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "size_text",
+      "label": "Text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
   ],
   "presets": [
     {
       "name": "Scroll collage",
       "blocks": [
-        { "type": "_collage-image" },
-        { "type": "_collage-image" },
-        { "type": "_collage-image" },
-        { "type": "_collage-image" },
-        { "type": "_collage-image" },
-        { "type": "_collage-image" },
-        { "type": "_collage-image" },
-        { "type": "_collage-image" }
+        {
+          "type": "_collage-image"
+        },
+        {
+          "type": "_collage-image"
+        },
+        {
+          "type": "_collage-image"
+        },
+        {
+          "type": "_collage-image"
+        },
+        {
+          "type": "_collage-image"
+        },
+        {
+          "type": "_collage-image"
+        },
+        {
+          "type": "_collage-image"
+        },
+        {
+          "type": "_collage-image"
+        }
       ]
     }
   ]

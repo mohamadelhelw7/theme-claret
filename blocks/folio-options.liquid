@@ -443,7 +443,7 @@
     padding: 0 14px;
     border: 1px solid var(--color-border);
     border-radius: var(--input-radius);
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     cursor: pointer;
   }
   input:checked + .fopt__pill {
@@ -586,12 +586,12 @@
     font-family: var(--font-heading);
     font-style: italic;
     font-weight: 400;
-    font-size: 2.2rem;
+    font-size: calc(2.2rem * var(--sec-t, 1));
     line-height: 1;
   }
   .fguide__intro {
     margin-top: 6px;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .fguide__intro p {
@@ -612,12 +612,12 @@
   .fguide__table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     font-variant-numeric: tabular-nums;
   }
   .fguide__table th {
     padding: 0 10px 8px;
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem * var(--sec-t, 1));
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -638,7 +638,7 @@
   .fguide__tips {
     padding-top: 14px;
     border-top: 1px solid var(--color-border);
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     color: var(--color-body);
   }
 {% endstylesheet %}

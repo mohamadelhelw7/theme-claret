@@ -22,7 +22,7 @@
   assign discounted = total | times: keep | divided_by: 100
 -%}
 
-<section class="section color-{{ section.settings.color_scheme }}" style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }});">
+<section data-pad class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};">
   <div class="page-width">
     <div class="bundle">
       <div class="bundle__media media-tile" style="--tile-bg: {{ section.settings.media_bg }};">
@@ -151,7 +151,7 @@
     height: 28px;
     border-radius: 14px;
     border: 1.5px solid currentColor;
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     font-weight: 600;
     display: inline-flex;
     align-items: center;
@@ -167,11 +167,11 @@
     text-decoration: none;
   }
   .bundle__step-meta {
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .bundle__step-price {
-    font-size: 0.9375rem;
+    font-size: calc(0.9375rem * var(--sec-t, 1));
     font-weight: 600;
   }
   .bundle__footer {
@@ -189,11 +189,11 @@
     gap: 8px;
   }
   .bundle__total-label {
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .bundle__total {
-    font-size: 1.375rem;
+    font-size: calc(1.375rem * var(--sec-t, 1));
     font-weight: 600;
     display: flex;
     gap: 8px;
@@ -201,11 +201,11 @@
     flex-wrap: wrap;
   }
   .bundle__total .price__compare {
-    font-size: 0.9375rem;
+    font-size: calc(0.9375rem * var(--sec-t, 1));
     font-weight: 400;
   }
   .bundle__save {
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     color: var(--color-sale);
   }
   @media (max-width: 989px) {
@@ -285,58 +285,12 @@
       "label": "Image background",
       "default": "#DCE1D2"
     },
-    {
-      "type": "header",
-      "content": "Spacing"
-    },
-    {
-      "type": "select",
-      "id": "padding_top",
-      "label": "Top spacing",
-      "options": [
-        {
-          "value": "none",
-          "label": "None"
-        },
-        {
-          "value": "small",
-          "label": "Small"
-        },
-        {
-          "value": "medium",
-          "label": "Medium"
-        },
-        {
-          "value": "large",
-          "label": "Large"
-        }
-      ],
-      "default": "large"
-    },
-    {
-      "type": "select",
-      "id": "padding_bottom",
-      "label": "Bottom spacing",
-      "options": [
-        {
-          "value": "none",
-          "label": "None"
-        },
-        {
-          "value": "small",
-          "label": "Small"
-        },
-        {
-          "value": "medium",
-          "label": "Medium"
-        },
-        {
-          "value": "large",
-          "label": "Large"
-        }
-      ],
-      "default": "none"
-    }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [
     {

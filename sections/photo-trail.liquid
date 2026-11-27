@@ -2,9 +2,9 @@
   assign heading_lines = section.settings.heading | escape | newline_to_br | split: '<br />'
 -%}
 
-<section
+<section data-pad
   class="section photo-trail-section color-{{ section.settings.color_scheme }}"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }});"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};"
 >
   <photo-trail
     class="photo-trail"
@@ -156,7 +156,7 @@
   .photo-trail__heading {
     display: grid;
     margin: 0;
-    font-size: calc(clamp(3rem, 11vw, 10rem) * var(--heading-scale));
+    font-size: calc(clamp(3rem, 11vw, 10rem) * var(--heading-scale) * var(--sec-h, 1));
     line-height: 0.88;
     letter-spacing: -0.02em;
     mix-blend-mode: difference;
@@ -225,9 +225,12 @@
     { "type": "range", "id": "height", "label": "Height", "min": 50, "max": 100, "step": 5, "unit": "vh", "default": 80 },
     { "type": "range", "id": "photo_size", "label": "Photo size", "min": 160, "max": 360, "step": 20, "unit": "px", "default": 240 },
     { "type": "range", "id": "spacing", "label": "Distance between photos", "min": 40, "max": 200, "step": 10, "unit": "px", "default": 90 },
-    { "type": "header", "content": "Spacing" },
-    { "type": "select", "id": "padding_top", "label": "Top spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "none" },
-    { "type": "select", "id": "padding_bottom", "label": "Bottom spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "none" }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [
     {

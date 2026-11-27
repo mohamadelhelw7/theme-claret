@@ -1,6 +1,6 @@
-<section
+<section data-pad
   class="section story-rows color-{{ section.settings.color_scheme }}"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }});"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};"
 >
   <div class="page-width story-rows__list">
     {% content_for 'blocks' %}
@@ -39,13 +39,13 @@
     max-width: 520px;
   }
   .story-row__heading {
-    font-size: calc(clamp(1.6rem, 2.6vw, 2.25rem) * var(--heading-scale));
+    font-size: calc(clamp(1.6rem, 2.6vw, 2.25rem) * var(--heading-scale) * var(--sec-h, 1));
     text-transform: none;
     letter-spacing: 0;
     line-height: 1.1;
   }
   .story-row__text {
-    font-size: 0.9375rem;
+    font-size: calc(0.9375rem * var(--sec-t, 1));
     line-height: 1.7;
     color: var(--color-body);
   }
@@ -145,30 +145,12 @@
     },
     { "type": "checkbox", "id": "product_photos", "label": "Use product photos for rows without an image", "info": "On product pages, rows use the product's second, third and fourth photos", "default": true },
     { "type": "collection", "id": "collection", "label": "Collection for photos on other pages" },
-    {
-      "type": "select",
-      "id": "padding_top",
-      "label": "Top padding",
-      "options": [
-        { "value": "none", "label": "None" },
-        { "value": "small", "label": "Small" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "large", "label": "Large" }
-      ],
-      "default": "large"
-    },
-    {
-      "type": "select",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "options": [
-        { "value": "none", "label": "None" },
-        { "value": "small", "label": "Small" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "large", "label": "Large" }
-      ],
-      "default": "large"
-    }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [
     {

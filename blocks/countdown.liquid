@@ -59,7 +59,7 @@
     text-align: center;
   }
   .countdown__heading {
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     font-weight: 600;
   }
   .countdown__clock {
@@ -86,7 +86,7 @@
     font-family: var(--font-heading);
     font-stretch: var(--heading-stretch, 100%);
     font-weight: var(--font-heading-weight);
-    font-size: 1.75rem;
+    font-size: calc(1.75rem * var(--sec-t, 1));
     line-height: 1;
     font-variant-numeric: tabular-nums;
     direction: ltr;
@@ -99,7 +99,7 @@
     padding: 16px 10px;
   }
   .countdown__label {
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem * var(--sec-t, 1));
     text-transform: var(--label-case);
     letter-spacing: calc(var(--label-ls) * 0.6);
     color: var(--color-muted);
@@ -108,7 +108,7 @@
   .countdown__sep {
     font-family: var(--font-heading);
     font-stretch: var(--heading-stretch, 100%);
-    font-size: 1.5rem;
+    font-size: calc(1.5rem * var(--sec-t, 1));
     line-height: 1;
     color: var(--color-muted);
   }
@@ -116,7 +116,7 @@
     font-weight: 600;
   }
   .countdown__invalid {
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-sale);
   }
 {% endstylesheet %}

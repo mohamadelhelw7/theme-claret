@@ -1,6 +1,6 @@
-<section
+<section data-pad
   class="section scatter-reviews color-{{ section.settings.color_scheme }}"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }});"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};"
 >
   <div class="page-width">
     {%- render 'section-header', heading: section.settings.heading, description: section.settings.description, alignment: 'split' -%}
@@ -115,14 +115,14 @@
   }
   .scatter-card__quote {
     margin: 0;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     font-weight: 500;
     line-height: 1.55;
   }
   .scatter-card__name {
     display: grid;
     gap: 2px;
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem * var(--sec-t, 1));
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -201,30 +201,12 @@
     { "type": "richtext", "id": "description", "label": "Description", "default": "<p>Notes from customers about the pieces in their rotation.</p>" },
     { "type": "checkbox", "id": "spread", "label": "Start the cards in a pile and spread them on scroll", "info": "Computers only", "default": true },
     { "type": "checkbox", "id": "auto_photos", "label": "Use product photos for cards without a photo", "default": true },
-    {
-      "type": "select",
-      "id": "padding_top",
-      "label": "Top padding",
-      "options": [
-        { "value": "none", "label": "None" },
-        { "value": "small", "label": "Small" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "large", "label": "Large" }
-      ],
-      "default": "large"
-    },
-    {
-      "type": "select",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "options": [
-        { "value": "none", "label": "None" },
-        { "value": "small", "label": "Small" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "large", "label": "Large" }
-      ],
-      "default": "large"
-    }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [
     {

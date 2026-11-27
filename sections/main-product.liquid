@@ -9,12 +9,12 @@
 
 {% render 'breadcrumbs' %}
 
-<product-info
+<product-info data-pad
   class="section color-{{ section.settings.color_scheme }} main-product"
   data-section="{{ section.id }}"
   data-url="{{ product.url }}"
   data-update-url="true"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }}); --media-ratio: {{ section.settings.media_ratio }};"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }}; --media-ratio: {{ section.settings.media_ratio }};"
 >
   <div class="page-width main-product__grid main-product__grid--{{ section.settings.media_width }} main-product__grid--media-{{ section.settings.media_position }}">
     <media-gallery
@@ -253,9 +253,12 @@
       "default": "mobile",
       "info": "Appears after shoppers scroll past the main add to cart button"
     },
-    { "type": "header", "content": "Spacing" },
-    { "type": "select", "id": "padding_top", "label": "Top spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "medium" },
-    { "type": "select", "id": "padding_bottom", "label": "Bottom spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "small" }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 24 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ]
 }
 {% endschema %}

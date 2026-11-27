@@ -1,4 +1,4 @@
-<rail-scroll class="rail color-{{ section.settings.color_scheme }}" data-no-reveal>
+<rail-scroll style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};" data-pad-box class="rail color-{{ section.settings.color_scheme }}" data-no-reveal>
   <div class="rail__sticky" data-rail-sticky>
     <div class="rail__head page-width">
       {% render 'section-header',
@@ -85,7 +85,7 @@
     align-items: baseline;
   }
   .rail-item__number {
-    font-size: 0.75rem;
+    font-size: calc(0.75rem * var(--sec-t, 1));
     font-weight: 600;
     letter-spacing: 0.1em;
     color: var(--color-accent);
@@ -93,12 +93,12 @@
   .rail-item__title {
     font-family: var(--font-heading);
     font-stretch: var(--heading-stretch, 100%);
-    font-size: 1.25rem;
+    font-size: calc(1.25rem * var(--sec-t, 1));
     line-height: 1.2;
   }
   .rail-item__subtitle {
     margin-top: 2px;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .rail-item__link {
@@ -165,37 +165,165 @@
   "tag": "section",
   "class": "lookbook-rail-section",
   "max_blocks": 12,
-  "blocks": [{ "type": "_rail-item" }],
+  "blocks": [
+    {
+      "type": "_rail-item"
+    }
+  ],
   "settings": [
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
-    { "type": "paragraph", "content": "On desktop, scrolling down moves the looks sideways. On phones they become a swipe row." },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "The lookbook" },
-    { "type": "inline_richtext", "id": "description", "label": "Description", "default": "Six looks from the new season." },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "paragraph",
+      "content": "On desktop, scrolling down moves the looks sideways. On phones they become a swipe row."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The lookbook"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "Six looks from the new season."
+    },
     {
       "type": "select",
       "id": "header_alignment",
       "label": "Heading layout",
       "options": [
-        { "value": "start", "label": "Start" },
-        { "value": "center", "label": "Center" },
-        { "value": "split", "label": "Split with accent line" }
+        {
+          "value": "start",
+          "label": "Start"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "split",
+          "label": "Split with accent line"
+        }
       ],
       "default": "start"
     },
-    { "type": "text", "id": "link_label", "label": "Link label", "default": "Shop the collection" },
-    { "type": "url", "id": "link", "label": "Link" }
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "Shop the collection"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Sizes"
+    },
+    {
+      "type": "range",
+      "id": "size_heading",
+      "label": "Heading size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "size_text",
+      "label": "Text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
   ],
   "presets": [
     {
       "name": "Horizontal lookbook",
       "blocks": [
-        { "type": "_rail-item", "settings": { "title": "The office", "shape": "arch" } },
-        { "type": "_rail-item", "settings": { "title": "Weekend", "shape": "landscape" } },
-        { "type": "_rail-item", "settings": { "title": "Dinner", "shape": "portrait" } },
-        { "type": "_rail-item", "settings": { "title": "Travel", "shape": "arch" } },
-        { "type": "_rail-item", "settings": { "title": "City walk", "shape": "landscape" } },
-        { "type": "_rail-item", "settings": { "title": "Evening", "shape": "portrait" } }
+        {
+          "type": "_rail-item",
+          "settings": {
+            "title": "The office",
+            "shape": "arch"
+          }
+        },
+        {
+          "type": "_rail-item",
+          "settings": {
+            "title": "Weekend",
+            "shape": "landscape"
+          }
+        },
+        {
+          "type": "_rail-item",
+          "settings": {
+            "title": "Dinner",
+            "shape": "portrait"
+          }
+        },
+        {
+          "type": "_rail-item",
+          "settings": {
+            "title": "Travel",
+            "shape": "arch"
+          }
+        },
+        {
+          "type": "_rail-item",
+          "settings": {
+            "title": "City walk",
+            "shape": "landscape"
+          }
+        },
+        {
+          "type": "_rail-item",
+          "settings": {
+            "title": "Evening",
+            "shape": "portrait"
+          }
+        }
       ]
     }
   ]

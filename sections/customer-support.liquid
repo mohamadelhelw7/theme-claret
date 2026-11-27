@@ -11,9 +11,9 @@
   endif
 -%}
 
-<section
+<section data-pad
   class="section color-{{ section.settings.color_scheme }}"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }});"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};"
 >
   <div
     class="page-width support support--{{ layout }} support--{{ section.settings.card_style }} support--align-{{ section.settings.alignment }}{% if has_image %} support--image-{{ section.settings.image_position }}{% endif %}"
@@ -107,7 +107,7 @@
     align-items: center;
     gap: 8px;
     margin: 4px 0 0;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem * var(--sec-t, 1));
     color: var(--color-body);
   }
   .support__hours .icon {
@@ -206,7 +206,7 @@
     margin: 0;
   }
   .support__text {
-    font-size: 0.9rem;
+    font-size: calc(0.9rem * var(--sec-t, 1));
     color: var(--color-body);
   }
   .support__link {
@@ -215,7 +215,7 @@
     gap: 8px;
     margin-top: 4px;
     font-family: var(--font-label, inherit);
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     letter-spacing: var(--label-ls, 0.04em);
     text-transform: var(--label-case, none);
     overflow-wrap: anywhere;
@@ -471,58 +471,12 @@
       ],
       "default": "start"
     },
-    {
-      "type": "header",
-      "content": "Spacing"
-    },
-    {
-      "type": "select",
-      "id": "padding_top",
-      "label": "Top spacing",
-      "options": [
-        {
-          "value": "none",
-          "label": "None"
-        },
-        {
-          "value": "small",
-          "label": "Small"
-        },
-        {
-          "value": "medium",
-          "label": "Medium"
-        },
-        {
-          "value": "large",
-          "label": "Large"
-        }
-      ],
-      "default": "large"
-    },
-    {
-      "type": "select",
-      "id": "padding_bottom",
-      "label": "Bottom spacing",
-      "options": [
-        {
-          "value": "none",
-          "label": "None"
-        },
-        {
-          "value": "small",
-          "label": "Small"
-        },
-        {
-          "value": "medium",
-          "label": "Medium"
-        },
-        {
-          "value": "large",
-          "label": "Large"
-        }
-      ],
-      "default": "large"
-    }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [
     {

@@ -1,8 +1,8 @@
-<slide-show
+<slide-show data-pad-box
   class="slideshow slideshow--{{ section.settings.height }} slideshow--{{ section.settings.transition }} slideshow--text-{{ section.settings.content_style }} slideshow--align-{{ section.settings.text_position }} slideshow--dots-{{ section.settings.dots }} color-{{ section.settings.color_scheme }}"
   data-autoplay="{{ section.settings.autoplay }}"
   data-interval="{{ section.settings.interval | times: 1000 }}"
-  style="--overlay: {{ section.settings.overlay | divided_by: 100.0 }};"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }}; --overlay: {{ section.settings.overlay | divided_by: 100.0 }};"
   aria-roledescription="{{ 'sections.slideshow.carousel' | t }}"
   data-no-reveal
 >
@@ -268,7 +268,7 @@
     min-height: 44px;
     color: inherit;
     text-decoration: none;
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     font-weight: 600;
     letter-spacing: var(--label-ls);
     text-transform: var(--label-case);
@@ -294,11 +294,11 @@
     color: inherit;
   }
   .slide__heading {
-    font-size: calc(clamp(2rem, 4.2vw, 3.75rem) * var(--heading-scale));
+    font-size: calc(clamp(2rem, 4.2vw, 3.75rem) * var(--heading-scale) * var(--sec-h, 1));
   }
   .slide__text {
     max-width: 620px;
-    font-size: 0.9375rem;
+    font-size: calc(0.9375rem * var(--sec-t, 1));
     opacity: 0.88;
   }
   .slide__buttons {
@@ -346,7 +346,7 @@
     gap: 16px;
   }
   .slideshow--text-framed .slide__heading {
-    font-size: calc(clamp(1.75rem, 3.4vw, 3rem) * var(--heading-scale));
+    font-size: calc(clamp(1.75rem, 3.4vw, 3rem) * var(--heading-scale) * var(--sec-h, 1));
   }
   .slide__frame {
     position: absolute;
@@ -543,7 +543,7 @@
   }
   .slideshow__count {
     font-family: var(--font-label);
-    font-size: 0.6875rem;
+    font-size: calc(0.6875rem * var(--sec-t, 1));
     letter-spacing: 0.08em;
     font-variant-numeric: tabular-nums;
   }
@@ -630,17 +630,35 @@
   "tag": "section",
   "class": "slideshow-section",
   "max_blocks": 5,
-  "blocks": [{ "type": "_slide" }],
+  "blocks": [
+    {
+      "type": "_slide"
+    }
+  ],
   "settings": [
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-3"
+    },
     {
       "type": "select",
       "id": "height",
       "label": "Height",
       "options": [
-        { "value": "small", "label": "Small" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "full", "label": "Full screen" }
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "full",
+          "label": "Full screen"
+        }
       ],
       "default": "full"
     },
@@ -649,9 +667,18 @@
       "id": "transition",
       "label": "Slide change",
       "options": [
-        { "value": "reveal", "label": "Zoom reveal" },
-        { "value": "fade", "label": "Fade" },
-        { "value": "blinds", "label": "Vertical blinds" }
+        {
+          "value": "reveal",
+          "label": "Zoom reveal"
+        },
+        {
+          "value": "fade",
+          "label": "Fade"
+        },
+        {
+          "value": "blinds",
+          "label": "Vertical blinds"
+        }
       ],
       "default": "reveal"
     },
@@ -660,8 +687,14 @@
       "id": "content_style",
       "label": "Text style",
       "options": [
-        { "value": "framed", "label": "In a thin frame" },
-        { "value": "plain", "label": "Plain" }
+        {
+          "value": "framed",
+          "label": "In a thin frame"
+        },
+        {
+          "value": "plain",
+          "label": "Plain"
+        }
       ],
       "default": "framed",
       "info": "The frame draws itself around the text when a slide appears."
@@ -671,9 +704,18 @@
       "id": "text_position",
       "label": "Text position",
       "options": [
-        { "value": "middle", "label": "Middle" },
-        { "value": "center", "label": "Bottom center" },
-        { "value": "start", "label": "Bottom start" }
+        {
+          "value": "middle",
+          "label": "Middle"
+        },
+        {
+          "value": "center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "start",
+          "label": "Bottom start"
+        }
       ],
       "default": "middle"
     },
@@ -682,23 +724,128 @@
       "id": "dots",
       "label": "Slide controls",
       "options": [
-        { "value": "ring", "label": "Next button with a timer ring" },
-        { "value": "side", "label": "Dots at the side" },
-        { "value": "bottom", "label": "Dots at the bottom" }
+        {
+          "value": "ring",
+          "label": "Next button with a timer ring"
+        },
+        {
+          "value": "side",
+          "label": "Dots at the side"
+        },
+        {
+          "value": "bottom",
+          "label": "Dots at the bottom"
+        }
       ],
       "default": "ring"
     },
-    { "type": "range", "id": "overlay", "label": "Image darkening", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 20 },
-    { "type": "checkbox", "id": "autoplay", "label": "Change slides automatically", "default": true },
-    { "type": "range", "id": "interval", "label": "Time per slide", "min": 3, "max": 12, "step": 1, "unit": "s", "default": 7 }
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Image darkening",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 20
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Change slides automatically",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "interval",
+      "label": "Time per slide",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "unit": "s",
+      "default": 7
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Sizes"
+    },
+    {
+      "type": "range",
+      "id": "size_heading",
+      "label": "Heading size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "size_text",
+      "label": "Text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
   ],
   "presets": [
     {
       "name": "Slideshow",
       "blocks": [
-        { "type": "_slide", "settings": { "eyebrow": "The new collection", "heading": "Made to be lived with", "text": "Everyday clothes in clean lines.", "show_inset": false } },
-        { "type": "_slide", "settings": { "layout": "split", "eyebrow": "Caps", "heading": "The details", "text": "Caps, bags and the pieces that finish a fit.", "show_inset": false } },
-        { "type": "_slide", "settings": { "eyebrow": "Everyday rotation", "heading": "Day to night", "text": "From the first class to the last train home.", "show_inset": false } }
+        {
+          "type": "_slide",
+          "settings": {
+            "eyebrow": "The new collection",
+            "heading": "Made to be lived with",
+            "text": "Everyday clothes in clean lines.",
+            "show_inset": false
+          }
+        },
+        {
+          "type": "_slide",
+          "settings": {
+            "layout": "split",
+            "eyebrow": "Caps",
+            "heading": "The details",
+            "text": "Caps, bags and the pieces that finish a fit.",
+            "show_inset": false
+          }
+        },
+        {
+          "type": "_slide",
+          "settings": {
+            "eyebrow": "Everyday rotation",
+            "heading": "Day to night",
+            "text": "From the first class to the last train home.",
+            "show_inset": false
+          }
+        }
       ]
     }
   ]

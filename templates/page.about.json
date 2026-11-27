@@ -24,8 +24,8 @@
         "link_label": "All styles",
         "show_counts": true,
         "interval": 3,
-        "padding_top": "large",
-        "padding_bottom": "large"
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     },
     "support": {

@@ -86,10 +86,10 @@
   }
   .review-card__author {
     font-weight: 500;
-    font-size: 1rem;
+    font-size: calc(1rem * var(--sec-t, 1));
   }
   .review-card__verified {
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .review-card__star-off {
@@ -98,7 +98,7 @@
   }
   .review-card__quote {
     margin: 0;
-    font-size: 0.9375rem;
+    font-size: calc(0.9375rem * var(--sec-t, 1));
     line-height: 1.65;
     color: var(--color-body);
   }
@@ -128,7 +128,7 @@
     object-fit: cover;
   }
   .review-card__product-title {
-    font-size: 0.9375rem;
+    font-size: calc(0.9375rem * var(--sec-t, 1));
     font-weight: 500;
   }
 {% endstylesheet %}

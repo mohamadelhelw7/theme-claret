@@ -5,7 +5,7 @@
   icons. The paintings sweep open from the top and the name rises in as the footer comes into view.
 {%- endcomment -%}
 
-<footer class="ffoot color-{{ section.settings.color_scheme }}" style="--footer-mt: var(--space-{{ section.settings.margin_top }}); --footer-cols: {{ section.settings.columns }}; --head-scale: {{ section.settings.heading_size | divided_by: 100.0 }}; --recent-scale: {{ section.settings.painting_size | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }}; --mark-scale: {{ section.settings.wordmark_width | divided_by: 100.0 }};">
+<footer class="ffoot color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --footer-mt: var(--space-{{ section.settings.margin_top }}); --footer-cols: {{ section.settings.columns }}; --head-scale: {{ section.settings.heading_size | divided_by: 100.0 }}; --recent-scale: {{ section.settings.painting_size | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }}; --mark-scale: {{ section.settings.wordmark_width | divided_by: 100.0 }};">
   <div class="page-width">
     {%- if section.settings.show_recent or section.settings.show_signup -%}
       <div class="ffoot__top{% unless section.settings.show_recent and section.settings.show_signup %} ffoot__top--one{% endunless %}">
@@ -137,7 +137,8 @@
 {% stylesheet %}
   .ffoot {
     margin-top: var(--footer-mt);
-    padding-top: calc(var(--d) * 3.4);
+    padding-top: var(--pt, 56px);
+    padding-bottom: var(--pb, 0px);
     background: radial-gradient(60% 40% at 50% 12%, color-mix(in srgb, #ffffff 55%, transparent), transparent 70%), var(--color-bg);
   }
   .ffoot a {
@@ -382,6 +383,12 @@
       row-gap: 24px;
     }
   }
+  @media (max-width: 749px) {
+    .ffoot {
+      padding-top: calc(var(--pt, 56px) * 0.6);
+      padding-bottom: calc(var(--pb, 0px) * 0.6);
+    }
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -390,48 +397,247 @@
   "tag": "div",
   "class": "folio-footer-section",
   "max_blocks": 6,
-  "blocks": [{ "type": "_footer-brand" }, { "type": "_footer-menu" }, { "type": "_footer-text" }],
+  "blocks": [
+    {
+      "type": "_footer-brand"
+    },
+    {
+      "type": "_footer-menu"
+    },
+    {
+      "type": "_footer-text"
+    }
+  ],
   "settings": [
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
     {
       "type": "select",
       "id": "margin_top",
       "label": "Space above the footer",
       "options": [
-        { "value": "none", "label": "None" },
-        { "value": "small", "label": "Small" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "large", "label": "Large" }
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
       ],
       "default": "medium"
     },
-    { "type": "header", "content": "Sizes" },
-    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
-    { "type": "range", "id": "painting_size", "label": "Recently viewed painting size", "min": 60, "max": 150, "step": 5, "unit": "%", "default": 100 },
-    { "type": "range", "id": "text_size", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
-    { "type": "range", "id": "wordmark_width", "label": "Store name width", "info": "The huge store name fills this share of the page width", "min": 30, "max": 100, "step": 5, "unit": "%", "default": 100 },
-    { "type": "header", "content": "Recently viewed" },
-    { "type": "checkbox", "id": "show_recent", "label": "Hang recently viewed paintings", "info": "The paintings a shopper looked at last, in the frame they chose. Until they have looked at any, it shows the collection below.", "default": true },
-    { "type": "text", "id": "recent_heading", "label": "Heading", "default": "Recently viewed" },
-    { "type": "text", "id": "recent_note", "label": "Small note", "default": "Your last four paintings" },
-    { "type": "range", "id": "recent_limit", "label": "Paintings", "min": 2, "max": 4, "step": 1, "default": 4 },
-    { "type": "collection", "id": "recent_collection", "label": "Show before a shopper has looked at any", "info": "Leave empty to show drawn paintings in the theme editor only" },
-    { "type": "header", "content": "Email signup" },
-    { "type": "checkbox", "id": "show_signup", "label": "Show the email signup", "default": true },
-    { "type": "text", "id": "signup_heading", "label": "Heading", "default": "Join the list" },
-    { "type": "richtext", "id": "signup_text", "label": "Text", "default": "<p>New paintings and offers, by email.</p>" },
-    { "type": "header", "content": "Menus" },
-    { "type": "range", "id": "columns", "label": "Columns on computers", "min": 2, "max": 6, "step": 1, "default": 4 },
-    { "type": "header", "content": "Store name" },
-    { "type": "checkbox", "id": "show_wordmark", "label": "Set the store name huge across the bottom", "info": "It rises into place as the footer comes into view", "default": true },
-    { "type": "text", "id": "wordmark", "label": "Name", "info": "Defaults to the store's name" },
-    { "type": "header", "content": "Bottom line" },
-    { "type": "checkbox", "id": "show_policies", "label": "Show policy links", "default": true },
-    { "type": "checkbox", "id": "show_localization", "label": "Show the language selector", "default": true },
-    { "type": "checkbox", "id": "show_country", "label": "Also show country and currency", "default": false },
-    { "type": "checkbox", "id": "show_social", "label": "Show social links", "default": true },
-    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true },
-    { "type": "checkbox", "id": "show_powered_by", "label": "Show Powered by Shopify", "default": false }
+    {
+      "type": "header",
+      "content": "Sizes"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "painting_size",
+      "label": "Recently viewed painting size",
+      "min": 60,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "wordmark_width",
+      "label": "Store name width",
+      "info": "The huge store name fills this share of the page width",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Recently viewed"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_recent",
+      "label": "Hang recently viewed paintings",
+      "info": "The paintings a shopper looked at last, in the frame they chose. Until they have looked at any, it shows the collection below.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "recent_heading",
+      "label": "Heading",
+      "default": "Recently viewed"
+    },
+    {
+      "type": "text",
+      "id": "recent_note",
+      "label": "Small note",
+      "default": "Your last four paintings"
+    },
+    {
+      "type": "range",
+      "id": "recent_limit",
+      "label": "Paintings",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "collection",
+      "id": "recent_collection",
+      "label": "Show before a shopper has looked at any",
+      "info": "Leave empty to show drawn paintings in the theme editor only"
+    },
+    {
+      "type": "header",
+      "content": "Email signup"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_signup",
+      "label": "Show the email signup",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "signup_heading",
+      "label": "Heading",
+      "default": "Join the list"
+    },
+    {
+      "type": "richtext",
+      "id": "signup_text",
+      "label": "Text",
+      "default": "<p>New paintings and offers, by email.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Menus"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns on computers",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Store name"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wordmark",
+      "label": "Set the store name huge across the bottom",
+      "info": "It rises into place as the footer comes into view",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "wordmark",
+      "label": "Name",
+      "info": "Defaults to the store's name"
+    },
+    {
+      "type": "header",
+      "content": "Bottom line"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_policies",
+      "label": "Show policy links",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_localization",
+      "label": "Show the language selector",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_country",
+      "label": "Also show country and currency",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show social links",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment icons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_powered_by",
+      "label": "Show Powered by Shopify",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
   ]
 }
 {% endschema %}

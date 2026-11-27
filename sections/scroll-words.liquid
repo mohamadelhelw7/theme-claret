@@ -9,9 +9,9 @@
   endif
 -%}
 
-<section
+<section data-pad
   class="section scroll-words color-{{ section.settings.color_scheme }}"
-  style="--pt: var(--space-{{ section.settings.padding_top }}); --pb: var(--space-{{ section.settings.padding_bottom }}); --word-a: {{ word_a }}; --word-b: {{ word_b }};"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }}; --word-a: {{ word_a }}; --word-b: {{ word_b }};"
 >
   <div class="page-width">
     {%- if section.settings.heading != blank or section.settings.eyebrow != blank -%}
@@ -45,7 +45,7 @@
     top: calc(50vh - 0.55em);
     align-self: flex-start;
     margin-block: 14vh;
-    font-size: calc(clamp(2rem, 4.4vw, 4.75rem) * var(--heading-scale));
+    font-size: calc(clamp(2rem, 4.4vw, 4.75rem) * var(--heading-scale) * var(--sec-h, 1));
     font-weight: 700;
     color: var(--word-a);
     overflow-wrap: normal;
@@ -123,7 +123,7 @@
     .word-pair__word .display-word {
       position: static;
       margin: 0;
-      font-size: calc(clamp(1.5rem, 8vw, 2.5rem) * var(--heading-scale));
+      font-size: calc(clamp(1.5rem, 8vw, 2.5rem) * var(--heading-scale) * var(--sec-h, 1));
     }
     .word-pair__accent {
       width: 22vw;
@@ -146,9 +146,12 @@
     { "type": "text", "id": "heading", "label": "Heading" },
     { "type": "color", "id": "color_a", "label": "First word color", "info": "Leave empty to use the accent color" },
     { "type": "color", "id": "color_b", "label": "Second word color", "info": "Leave empty to use a lighter accent" },
-    { "type": "header", "content": "Spacing" },
-    { "type": "select", "id": "padding_top", "label": "Top spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "large" },
-    { "type": "select", "id": "padding_bottom", "label": "Bottom spacing", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "none" }
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
   ],
   "presets": [
     {

@@ -4,7 +4,7 @@
       "type": "main-page",
       "settings": {
         "content_width": 760,
-        "padding_bottom": "none"
+        "padding_bottom": 0
       }
     },
     "reviews": {
@@ -57,8 +57,8 @@
       ],
       "settings": {
         "heading": "Loved by our customers",
-        "padding_top": "medium",
-        "padding_bottom": "none"
+        "padding_top": 40,
+        "padding_bottom": 0
       }
     },
     "cta": {
@@ -98,8 +98,8 @@
         "alignment": "custom-section--center",
         "panel": true,
         "gap": 20,
-        "padding_top": "large",
-        "padding_bottom": "none",
+        "padding_top": 80,
+        "padding_bottom": 0,
         "panel_scheme": "scheme-4"
       }
     }

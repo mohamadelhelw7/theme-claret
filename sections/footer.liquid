@@ -1,4 +1,4 @@
-<footer class="site-footer color-{{ section.settings.color_scheme }}" style="--footer-mt: var(--space-{{ section.settings.margin_top }});">
+<footer class="site-footer color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }}; --footer-mt: var(--space-{{ section.settings.margin_top }});">
   <div class="page-width site-footer__inner">
     <div class="site-footer__top">
       {% content_for 'blocks' %}
@@ -69,8 +69,8 @@
     color: var(--color-text);
   }
   .site-footer__inner {
-    padding-top: 72px;
-    padding-bottom: calc(40px + env(safe-area-inset-bottom));
+    padding-top: var(--pt, 72px);
+    padding-bottom: calc(var(--pb, 40px) + env(safe-area-inset-bottom));
   }
   .site-footer__top {
     display: grid;
@@ -86,7 +86,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 16px;
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     color: var(--color-muted);
   }
   .site-footer__copyright a {
@@ -166,7 +166,7 @@
   }
   .site-footer__closing-text {
     max-width: 640px;
-    font-size: 0.8125rem;
+    font-size: calc(0.8125rem * var(--sec-t, 1));
     letter-spacing: var(--label-ls);
     text-transform: var(--label-case);
     line-height: 1.8;
@@ -183,6 +183,12 @@
       gap: 32px 16px;
     }
   }
+  @media (max-width: 749px) {
+    .site-footer__inner {
+      padding-top: calc(var(--pt, 72px) * 0.6);
+      padding-bottom: calc(var(--pb, 40px) * 0.6 + env(safe-area-inset-bottom));
+    }
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -190,33 +196,224 @@
   "name": "Footer",
   "tag": "div",
   "class": "footer-section",
-  "enabled_on": { "groups": ["footer"] },
-  "blocks": [{ "type": "_footer-brand" }, { "type": "_footer-newsletter" }, { "type": "_footer-menu" }, { "type": "_footer-text" }, { "type": "@app" }],
+  "enabled_on": {
+    "groups": [
+      "footer"
+    ]
+  },
+  "blocks": [
+    {
+      "type": "_footer-brand"
+    },
+    {
+      "type": "_footer-newsletter"
+    },
+    {
+      "type": "_footer-menu"
+    },
+    {
+      "type": "_footer-text"
+    },
+    {
+      "type": "@app"
+    }
+  ],
   "settings": [
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-3" },
-    { "type": "select", "id": "margin_top", "label": "Space above footer", "options": [{ "value": "none", "label": "None" }, { "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "large" },
-    { "type": "header", "content": "Bottom bar" },
-    { "type": "checkbox", "id": "show_localization", "label": "Show language and country selectors", "info": "Appears when your store has more than one", "default": true },
-    { "type": "checkbox", "id": "show_social", "label": "Show social icons", "default": true },
-    { "type": "text", "id": "payment_text", "label": "Payment methods text", "info": "Optional, for example the cards you accept" },
-    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": false },
-    { "type": "checkbox", "id": "show_powered_by", "label": "Show Powered by Shopify", "default": false },
-    { "type": "header", "content": "Closing image" },
-    { "type": "paragraph", "content": "A full-width photo at the very bottom with your logo and a short line." },
-    { "type": "image_picker", "id": "closing_image", "label": "Image" },
-    { "type": "checkbox", "id": "show_closing_logo", "label": "Show logo", "default": false },
-    { "type": "image_picker", "id": "closing_logo", "label": "Logo", "info": "Defaults to your store name in large letters" },
-    { "type": "text", "id": "closing_text", "label": "Text" },
-    { "type": "select", "id": "closing_height", "label": "Height", "options": [{ "value": "small", "label": "Small" }, { "value": "medium", "label": "Medium" }, { "value": "large", "label": "Large" }], "default": "medium" },
-    { "type": "range", "id": "closing_overlay", "label": "Image darkening", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 35 }
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-3"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "label": "Space above footer",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "large"
+    },
+    {
+      "type": "header",
+      "content": "Bottom bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_localization",
+      "label": "Show language and country selectors",
+      "info": "Appears when your store has more than one",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show social icons",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "payment_text",
+      "label": "Payment methods text",
+      "info": "Optional, for example the cards you accept"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment icons",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_powered_by",
+      "label": "Show Powered by Shopify",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Closing image"
+    },
+    {
+      "type": "paragraph",
+      "content": "A full-width photo at the very bottom with your logo and a short line."
+    },
+    {
+      "type": "image_picker",
+      "id": "closing_image",
+      "label": "Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_closing_logo",
+      "label": "Show logo",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "closing_logo",
+      "label": "Logo",
+      "info": "Defaults to your store name in large letters"
+    },
+    {
+      "type": "text",
+      "id": "closing_text",
+      "label": "Text"
+    },
+    {
+      "type": "select",
+      "id": "closing_height",
+      "label": "Height",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "range",
+      "id": "closing_overlay",
+      "label": "Image darkening",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 35
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Sizes"
+    },
+    {
+      "type": "range",
+      "id": "size_heading",
+      "label": "Heading size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "size_text",
+      "label": "Text size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
   ],
   "presets": [
     {
       "name": "Footer",
       "blocks": [
-        { "type": "_footer-newsletter" },
-        { "type": "_footer-menu", "settings": { "heading": "Shop", "menu": "main-menu" } },
-        { "type": "_footer-menu", "settings": { "heading": "Help", "menu": "footer" } }
+        {
+          "type": "_footer-newsletter"
+        },
+        {
+          "type": "_footer-menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        {
+          "type": "_footer-menu",
+          "settings": {
+            "heading": "Help",
+            "menu": "footer"
+          }
+        }
       ]
     }
   ]

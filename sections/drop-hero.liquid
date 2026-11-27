@@ -28,9 +28,9 @@
   endif
 -%}
 
-<div
+<div data-pad-box
   class="{{ hero_classes }} color-{{ section.settings.color_scheme }}"
-  style="--overlay: {{ section.settings.overlay | divided_by: 100.0 }}; --hero-text: {{ section.settings.text_color }}; --drop-scale: {{ section.settings.heading_size | divided_by: 100.0 }};"
+  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --overlay: {{ section.settings.overlay | divided_by: 100.0 }}; --hero-text: {{ section.settings.text_color }}; --drop-scale: {{ section.settings.heading_size | divided_by: 100.0 }};"
   data-no-reveal
 >
   {%- unless layout == 'type' -%}
@@ -320,7 +320,7 @@
     display: flex;
     flex-direction: column;
     margin: 0;
-    font-size: calc(clamp(3.25rem, 12vw, 12rem) * var(--drop-scale) * var(--heading-scale));
+    font-size: calc(clamp(3.25rem, 12vw, 12rem) * var(--drop-scale) * var(--heading-scale) * var(--sec-h, 1));
     line-height: 0.86;
     letter-spacing: -0.02em;
     overflow-wrap: anywhere;
@@ -494,7 +494,7 @@
     pointer-events: none;
   }
   .drop-hero--type .drop-hero__heading {
-    font-size: calc(clamp(3.75rem, 15vw, 15rem) * var(--drop-scale) * var(--heading-scale));
+    font-size: calc(clamp(3.75rem, 15vw, 15rem) * var(--drop-scale) * var(--heading-scale) * var(--sec-h, 1));
   }
 
   @media (max-width: 749px) {
@@ -544,18 +544,41 @@
   "tag": "section",
   "class": "drop-hero-section",
   "max_blocks": 6,
-  "blocks": [{ "type": "_sticker" }],
-  "disabled_on": { "groups": ["header", "footer"] },
+  "blocks": [
+    {
+      "type": "_sticker"
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
   "settings": [
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
     {
       "type": "select",
       "id": "layout",
       "label": "Layout",
       "options": [
-        { "value": "full", "label": "Photo fills the screen" },
-        { "value": "split", "label": "Headline over a side photo" },
-        { "value": "type", "label": "Big type, no photo" }
+        {
+          "value": "full",
+          "label": "Photo fills the screen"
+        },
+        {
+          "value": "split",
+          "label": "Headline over a side photo"
+        },
+        {
+          "value": "type",
+          "label": "Big type, no photo"
+        }
       ],
       "default": "full"
     },
@@ -564,10 +587,22 @@
       "id": "height",
       "label": "Height",
       "options": [
-        { "value": "full", "label": "Full screen" },
-        { "value": "large", "label": "Large" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "auto", "label": "Fit content" }
+        {
+          "value": "full",
+          "label": "Full screen"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "auto",
+          "label": "Fit content"
+        }
       ],
       "default": "full"
     },
@@ -576,89 +611,356 @@
       "id": "alignment",
       "label": "Text alignment",
       "options": [
-        { "value": "start", "label": "Start" },
-        { "value": "center", "label": "Center" }
+        {
+          "value": "start",
+          "label": "Start"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
       ],
       "default": "start"
     },
-    { "type": "header", "content": "Photo or video" },
-    { "type": "image_picker", "id": "image", "label": "Image", "info": "Defaults to your first product photo" },
-    { "type": "image_picker", "id": "image_mobile", "label": "Image on mobile" },
-    { "type": "video", "id": "video", "label": "Video", "info": "Plays muted on a loop instead of the image" },
-    { "type": "range", "id": "overlay", "label": "Darken the photo", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 35 },
-    { "type": "color", "id": "text_color", "label": "Text over the photo", "default": "#FFFFFF" },
-    { "type": "checkbox", "id": "offset_shadow", "label": "Accent block behind the side photo", "default": true },
-    { "type": "header", "content": "Headline" },
-    { "type": "text", "id": "eyebrow", "label": "Label", "default": "The edit" },
-    { "type": "checkbox", "id": "live_dot", "label": "Show a blinking dot in the label", "default": true },
-    { "type": "textarea", "id": "heading", "label": "Heading", "info": "Short words on separate lines look best. Wrap a word in *stars* to color it.", "default": "New\n*season*" },
+    {
+      "type": "header",
+      "content": "Photo or video"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Defaults to your first product photo"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Image on mobile"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video",
+      "info": "Plays muted on a loop instead of the image"
+    },
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Darken the photo",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 35
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text over the photo",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "checkbox",
+      "id": "offset_shadow",
+      "label": "Accent block behind the side photo",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Label",
+      "default": "The edit"
+    },
+    {
+      "type": "checkbox",
+      "id": "live_dot",
+      "label": "Show a blinking dot in the label",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Short words on separate lines look best. Wrap a word in *stars* to color it.",
+      "default": "New\n*season*"
+    },
     {
       "type": "select",
       "id": "heading_style",
       "label": "Heading style",
       "options": [
-        { "value": "solid", "label": "Solid" },
-        { "value": "outline", "label": "Every second line outlined" },
-        { "value": "glitch", "label": "Glitch" }
+        {
+          "value": "solid",
+          "label": "Solid"
+        },
+        {
+          "value": "outline",
+          "label": "Every second line outlined"
+        },
+        {
+          "value": "glitch",
+          "label": "Glitch"
+        }
       ],
       "default": "glitch"
     },
-    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 60, "max": 140, "step": 5, "unit": "%", "default": 100 },
-    { "type": "text", "id": "text", "label": "Text", "default": "Tees, hoodies and caps, numbered like collectible cards." },
-    { "type": "text", "id": "button_label", "label": "First button label", "default": "Shop now" },
-    { "type": "url", "id": "button_link", "label": "First button link", "info": "Defaults to all products" },
-    { "type": "text", "id": "button2_label", "label": "Second button label", "default": "Lookbook" },
-    { "type": "url", "id": "button2_link", "label": "Second button link", "info": "Defaults to all collections" },
-    { "type": "header", "content": "Drop countdown" },
-    { "type": "checkbox", "id": "show_countdown", "label": "Show a countdown", "default": false },
-    { "type": "text", "id": "countdown_label", "label": "Countdown label", "default": "Sale ends in" },
-    { "type": "text", "id": "drop_date", "label": "Drop date", "info": "Format YYYY-MM-DD, for example 2026-12-31", "default": "2026-12-31" },
-    { "type": "text", "id": "drop_time", "label": "Drop time", "info": "24 hour format HH:MM, for example 20:00", "default": "20:00" },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 60,
+      "max": 140,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Tees, hoodies and caps, numbered like collectible cards."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "First button label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "First button link",
+      "info": "Defaults to all products"
+    },
+    {
+      "type": "text",
+      "id": "button2_label",
+      "label": "Second button label",
+      "default": "Lookbook"
+    },
+    {
+      "type": "url",
+      "id": "button2_link",
+      "label": "Second button link",
+      "info": "Defaults to all collections"
+    },
+    {
+      "type": "header",
+      "content": "Drop countdown"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_countdown",
+      "label": "Show a countdown",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "countdown_label",
+      "label": "Countdown label",
+      "default": "Sale ends in"
+    },
+    {
+      "type": "text",
+      "id": "drop_date",
+      "label": "Drop date",
+      "info": "Format YYYY-MM-DD, for example 2026-12-31",
+      "default": "2026-12-31"
+    },
+    {
+      "type": "text",
+      "id": "drop_time",
+      "label": "Drop time",
+      "info": "24 hour format HH:MM, for example 20:00",
+      "default": "20:00"
+    },
     {
       "type": "select",
       "id": "timezone",
       "label": "Time zone",
       "options": [
-        { "value": "+02:00", "label": "Egypt winter time (UTC+2)" },
-        { "value": "+03:00", "label": "Egypt summer time, Saudi Arabia (UTC+3)" },
-        { "value": "+04:00", "label": "UAE (UTC+4)" },
-        { "value": "+01:00", "label": "UTC+1" },
-        { "value": "Z", "label": "UTC" }
+        {
+          "value": "+02:00",
+          "label": "Egypt winter time (UTC+2)"
+        },
+        {
+          "value": "+03:00",
+          "label": "Egypt summer time, Saudi Arabia (UTC+3)"
+        },
+        {
+          "value": "+04:00",
+          "label": "UAE (UTC+4)"
+        },
+        {
+          "value": "+01:00",
+          "label": "UTC+1"
+        },
+        {
+          "value": "Z",
+          "label": "UTC"
+        }
       ],
       "default": "+02:00"
     },
-    { "type": "text", "id": "live_message", "label": "Message when the countdown ends", "default": "The new collection is here" },
-    { "type": "header", "content": "Drop alerts" },
-    { "type": "checkbox", "id": "show_notify", "label": "Show an email sign up", "info": "Emails are saved to your customers list", "default": false },
-    { "type": "text", "id": "notify_heading", "label": "Sign up heading", "default": "Hear about new arrivals" },
-    { "type": "text", "id": "notify_button", "label": "Button label", "default": "Notify me" },
-    { "type": "text", "id": "notify_tag", "label": "Customer tag", "info": "Added to everyone who signs up here, so you can email them when a new drop lands", "default": "new-arrivals" },
-    { "type": "text", "id": "notify_success", "label": "Message after signing up", "default": "You're on the list." },
-    { "type": "header", "content": "Spinning badge" },
-    { "type": "checkbox", "id": "show_badge", "label": "Show the badge", "default": true },
-    { "type": "text", "id": "badge_text", "label": "Text around the circle", "info": "About 20 to 30 characters fits best", "default": "New drop • Collect them all • " },
-    { "type": "text", "id": "badge_center", "label": "Center text", "default": "01" },
+    {
+      "type": "text",
+      "id": "live_message",
+      "label": "Message when the countdown ends",
+      "default": "The new collection is here"
+    },
+    {
+      "type": "header",
+      "content": "Drop alerts"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_notify",
+      "label": "Show an email sign up",
+      "info": "Emails are saved to your customers list",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "notify_heading",
+      "label": "Sign up heading",
+      "default": "Hear about new arrivals"
+    },
+    {
+      "type": "text",
+      "id": "notify_button",
+      "label": "Button label",
+      "default": "Notify me"
+    },
+    {
+      "type": "text",
+      "id": "notify_tag",
+      "label": "Customer tag",
+      "info": "Added to everyone who signs up here, so you can email them when a new drop lands",
+      "default": "new-arrivals"
+    },
+    {
+      "type": "text",
+      "id": "notify_success",
+      "label": "Message after signing up",
+      "default": "You're on the list."
+    },
+    {
+      "type": "header",
+      "content": "Spinning badge"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show the badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Text around the circle",
+      "info": "About 20 to 30 characters fits best",
+      "default": "New drop • Collect them all • "
+    },
+    {
+      "type": "text",
+      "id": "badge_center",
+      "label": "Center text",
+      "default": "01"
+    },
     {
       "type": "select",
       "id": "badge_style",
       "label": "Badge style",
       "options": [
-        { "value": "plain", "label": "Text only" },
-        { "value": "outline", "label": "Outline" },
-        { "value": "accent", "label": "Accent fill" }
+        {
+          "value": "plain",
+          "label": "Text only"
+        },
+        {
+          "value": "outline",
+          "label": "Outline"
+        },
+        {
+          "value": "accent",
+          "label": "Accent fill"
+        }
       ],
       "default": "accent"
     },
-    { "type": "range", "id": "badge_size", "label": "Badge size", "min": 80, "max": 200, "step": 4, "unit": "px", "default": 128 },
-    { "type": "header", "content": "Stickers" },
-    { "type": "paragraph", "content": "Add stickers as blocks. Shoppers can drag them around the hero." }
+    {
+      "type": "range",
+      "id": "badge_size",
+      "label": "Badge size",
+      "min": 80,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 128
+    },
+    {
+      "type": "header",
+      "content": "Stickers"
+    },
+    {
+      "type": "paragraph",
+      "content": "Add stickers as blocks. Shoppers can drag them around the hero."
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
   ],
   "presets": [
     {
       "name": "Drop hero",
       "blocks": [
-        { "type": "_sticker", "settings": { "text": "New in", "shape": "pill", "color_scheme": "scheme-6", "x": 74, "y": 62, "rotate": -8 } },
-        { "type": "_sticker", "settings": { "text": "New", "shape": "star", "color_scheme": "scheme-5", "size": 112, "x": 88, "y": 78, "rotate": 12 } }
+        {
+          "type": "_sticker",
+          "settings": {
+            "text": "New in",
+            "shape": "pill",
+            "color_scheme": "scheme-6",
+            "x": 74,
+            "y": 62,
+            "rotate": -8
+          }
+        },
+        {
+          "type": "_sticker",
+          "settings": {
+            "text": "New",
+            "shape": "star",
+            "color_scheme": "scheme-5",
+            "size": 112,
+            "x": 88,
+            "y": 78,
+            "rotate": 12
+          }
+        }
       ]
     }
   ]

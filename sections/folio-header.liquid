@@ -26,7 +26,7 @@
   {% if is_transparent %}
     data-transparent
   {% endif %}
-  style="--logo-width: {{ section.settings.logo_width }}px; --logo-width-mobile: {{ section.settings.logo_width_mobile }}px; --logo-height: {{ section.settings.logo_height }}px; --header-pad: {{ section.settings.pad_block }}px; --wordmark-scale: {{ section.settings.wordmark_size | divided_by: 100.0 }}; --menu-scale: {{ section.settings.menu_size | divided_by: 100.0 }}; --transparent-text: {{ section.settings.transparent_text }};"
+  style="--logo-width: {{ section.settings.logo_width }}px; --logo-width-mobile: {{ section.settings.logo_width_mobile }}px; --logo-height: {{ section.settings.logo_height }}px; --header-pt: {{ section.settings.pad_top }}px; --header-pb: {{ section.settings.pad_bottom }}px; --wordmark-scale: {{ section.settings.wordmark_size | divided_by: 100.0 }}; --menu-scale: {{ section.settings.menu_size | divided_by: 100.0 }}; --transparent-text: {{ section.settings.transparent_text }};"
 >
   <div class="folio-header__bar page-width">
     <div class="folio-header__start">
@@ -308,7 +308,8 @@
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
     gap: 12px calc(var(--d) * 3.4);
-    padding-block: var(--header-pad, 20px);
+    padding-top: var(--header-pt, 20px);
+    padding-bottom: var(--header-pb, 20px);
   }
   .folio-header--logo-start .folio-header__bar {
     grid-template-columns: auto minmax(0, 1fr) auto;
@@ -464,7 +465,7 @@
   .folio-header .site-nav__mega-title {
     color: var(--color-accent);
     font-family: var(--font-label);
-    font-size: 0.75rem;
+    font-size: calc(0.75rem * var(--sec-t, 1));
     letter-spacing: var(--label-ls);
     text-transform: var(--label-case);
   }
@@ -484,7 +485,7 @@
     color: var(--color-text);
     font-family: var(--font-heading);
     font-style: italic;
-    font-size: 0.95rem;
+    font-size: calc(0.95rem * var(--sec-t, 1));
     font-weight: 400;
   }
 
@@ -550,7 +551,7 @@
     border-radius: 999px;
     background: var(--color-text);
     color: var(--color-bg);
-    font-size: 0.625rem;
+    font-size: calc(0.625rem * var(--sec-t, 1));
   }
   .folio-header--actions-icons .folio-header__count::before,
   .folio-header--actions-icons .folio-header__count::after {
@@ -668,7 +669,9 @@
       ],
       "default": "center"
     },
-    { "type": "range", "id": "pad_block", "label": "Padding above and below", "min": 0, "max": 60, "step": 4, "unit": "px", "default": 20 },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "pad_top", "label": "Top", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 20 },
+    { "type": "range", "id": "pad_bottom", "label": "Bottom", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 20 },
     {
       "type": "select",
       "id": "sticky",
