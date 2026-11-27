@@ -12,7 +12,7 @@
   assign form_id = 'ProductForm-' | append: section.id
 -%}
 
-<div class="fbuy" style="--buy-h: {{ block.settings.button_height }}px; --buy-text: {{ block.settings.text_size }}px;" data-update="folio-buy-{{ block.id }}" {{ block.shopify_attributes }}>
+<div data-align="{{ block.settings.block_align }}" class="fbuy" style="--bmt: {{ block.settings.block_pt }}px; --bmb: {{ block.settings.block_pb }}px;{% if block.settings.block_font != 'default' %} --font-heading: var(--ff-{{ block.settings.block_font }}); --font-body: var(--ff-{{ block.settings.block_font }});{% endif %} --buy-h: {{ block.settings.button_height }}px; --buy-text: {{ block.settings.text_size }}px;" data-update="folio-buy-{{ block.id }}" {{ block.shopify_attributes }}>
   {%- form 'product', product, id: form_id, data-product-form: '', novalidate: 'novalidate', class: 'fbuy__form' -%}
     <input type="hidden" name="id" value="{{ current_variant.id }}">
     <button
@@ -176,7 +176,13 @@
     { "type": "checkbox", "id": "show_price", "label": "Show the price on Add to bag", "info": "It adds the hanging kit's price when the kit is added", "default": true },
     { "type": "range", "id": "button_height", "label": "Button height", "min": 36, "max": 72, "step": 2, "unit": "px", "default": 46 },
     { "type": "range", "id": "text_size", "label": "Button text size", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 14 },
-    { "type": "checkbox", "id": "show_buy_now", "label": "Show Buy it now", "info": "A black button that adds the painting (and the kit, if added) and goes straight to checkout", "default": true }
+    { "type": "checkbox", "id": "show_buy_now", "label": "Show Buy it now", "info": "A black button that adds the painting (and the kit, if added) and goes straight to checkout", "default": true },
+    {"type":"header","content":"Text"},
+    {"type":"select","id":"block_align","label":"Alignment","info":"Only this block. Mirrors on Arabic pages.","options":[{"value":"default","label":"As the section"},{"value":"start","label":"Left"},{"value":"center","label":"Center"},{"value":"end","label":"Right"}],"default":"default"},
+    {"type":"select","id":"block_font","label":"Font","options":[{"value":"default","label":"As designed"},{"value":"heading","label":"Theme heading font"},{"value":"body","label":"Theme body font"},{"value":"newsreader","label":"Newsreader"},{"value":"red_hat_text","label":"Red Hat Text"},{"value":"instrument_serif","label":"Instrument Serif"},{"value":"inter_tight","label":"Inter Tight"}],"default":"default"},
+    {"type":"header","content":"Padding"},
+    {"type":"range","id":"block_pt","label":"Top","min":0,"max":120,"step":4,"unit":"px","default":0},
+    {"type":"range","id":"block_pb","label":"Bottom","min":0,"max":120,"step":4,"unit":"px","default":0}
   ]
 }
 {% endschema %}

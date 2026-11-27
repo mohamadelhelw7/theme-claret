@@ -86,9 +86,29 @@
             "low_threshold": 5,
             "show_count": true
           }
+        },
+        "title": {
+          "type": "folio-title",
+          "settings": {}
+        },
+        "artist": {
+          "type": "folio-artist",
+          "settings": {}
+        },
+        "price": {
+          "type": "folio-price",
+          "settings": {}
+        },
+        "rating": {
+          "type": "folio-rating",
+          "settings": {}
         }
       },
       "block_order": [
+        "title",
+        "artist",
+        "price",
+        "rating",
         "options",
         "stock",
         "buy",

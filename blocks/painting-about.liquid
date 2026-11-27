@@ -7,7 +7,7 @@
 {% enddoc %}
 
 {%- if product.description != blank -%}
-  <details class="accordion-row fabout" {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
+  <details style="--bmt: {{ block.settings.block_pt }}px; --bmb: {{ block.settings.block_pb }}px;{% if block.settings.block_font != 'default' %} --font-heading: var(--ff-{{ block.settings.block_font }}); --font-body: var(--ff-{{ block.settings.block_font }});{% endif %}" data-align="{{ block.settings.block_align }}" class="accordion-row fabout" {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
     <summary class="accordion-row__summary">
       <span class="accordion-row__title">{{ block.settings.heading | escape }}</span>
       <span class="accordion-row__toggle" aria-hidden="true">{% render 'icon', icon: 'plus' %}</span>
@@ -22,7 +22,13 @@
   "tag": null,
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "About the painting" },
-    { "type": "checkbox", "id": "open", "label": "Open at first", "default": false }
+    { "type": "checkbox", "id": "open", "label": "Open at first", "default": false },
+    {"type":"header","content":"Text"},
+    {"type":"select","id":"block_align","label":"Alignment","info":"Only this block. Mirrors on Arabic pages.","options":[{"value":"default","label":"As the section"},{"value":"start","label":"Left"},{"value":"center","label":"Center"},{"value":"end","label":"Right"}],"default":"default"},
+    {"type":"select","id":"block_font","label":"Font","options":[{"value":"default","label":"As designed"},{"value":"heading","label":"Theme heading font"},{"value":"body","label":"Theme body font"},{"value":"newsreader","label":"Newsreader"},{"value":"red_hat_text","label":"Red Hat Text"},{"value":"instrument_serif","label":"Instrument Serif"},{"value":"inter_tight","label":"Inter Tight"}],"default":"default"},
+    {"type":"header","content":"Padding"},
+    {"type":"range","id":"block_pt","label":"Top","min":0,"max":120,"step":4,"unit":"px","default":0},
+    {"type":"range","id":"block_pb","label":"Bottom","min":0,"max":120,"step":4,"unit":"px","default":0}
   ]
 }
 {% endschema %}

@@ -154,7 +154,11 @@ The product template has five sections.
 ### 1. Product on the wall
 
 - **The wall**: the painting hangs in its floating frame under a soft gallery light (**Gallery light on the painting**). Picking a frame changes the wood; picking a size changes how large it hangs. The frame always keeps the painting's shape.
-- **The details** sit in a column that stays in view: the title in italics, the artist, the price and the star rating, then the blocks:
+- **The details** sit in a column that stays in view. Every part is its own block, so you can move it, hide it or set it on its own. Each block has **Text** (**Alignment**: as the section, Left, Center or Right, and **Font**) and **Padding** (**Top** and **Bottom**), and changing one never changes the others:
+  - **Painting name**: with its own **Size** and **Size on phones**.
+  - **Artist line**: the artist (the product's vendor, hidden when it is the store's name) and the note from the metafield **custom.artist_note**.
+  - **Painting price**: with its own **Size** and **Size on phones**.
+  - **Star rating**: shows once your review app saves a rating on the product.
   - **Frame and size**: the frame tiles, the size dropdown with every price, and an underlined **Size guide** link that opens a popup with every size in centimetres and inches, and your tips.
   - **Stock status**.
   - **Buy buttons**: **Add to bag** with the price, and **Buy it now** in black, which goes straight to checkout.
@@ -164,7 +168,7 @@ The product template has five sections.
   - **Accordion** rows, for example sizes and frames, and delivery and returns.
   - **Delivery progress**: order today, we ship it and delivered, with dates counted from today. Set the days to your real times, and switch off the days you don't ship.
 - **Sticky Add to bag bar**: once a shopper scrolls past the buttons, a bar with the painting, its price and Add to bag slides up at the bottom. Choose phones and computers, phones only, or off under **Sticky Add to bag bar** in the section.
-- **Sizes on phones**: phones have their own **Wall height**, **Painting size on the wall**, **Title size** and **Price size**, so you can set the product page for phones without changing it on computers.
+- **Sizes on phones**: phones have their own **Wall height** and **Painting size on the wall** in the section, and the **Painting name** and **Painting price** blocks have their own **Size on phones**, so you can set the product page for phones without changing it on computers.
 
 ### 2–5. The other sections
 

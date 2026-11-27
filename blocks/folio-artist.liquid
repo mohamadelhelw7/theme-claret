@@ -1,0 +1,157 @@
+{% doc %}
+  The artist (the product's vendor, unless it is the store's own name) and a short note from the
+  custom.artist_note metafield, for example "Danish, 1863–1935".
+
+  @example
+  {% content_for 'block', type: 'folio-artist', id: 'artist' %}
+{% enddoc %}
+
+{%- liquid
+  assign show_vendor = false
+  if block.settings.show_vendor and product.vendor != blank and product.vendor != shop.name
+    assign show_vendor = true
+  endif
+  assign note = ''
+  if block.settings.show_note
+    assign note = product.metafields.custom.artist_note.value
+  endif
+-%}
+{%- if show_vendor or note != blank -%}
+  <div class="fartist" data-align="{{ block.settings.block_align }}" style="--bmt: {{ block.settings.block_pt }}px; --bmb: {{ block.settings.block_pb }}px;{% if block.settings.block_font != 'default' %} --font-heading: var(--ff-{{ block.settings.block_font }}); --font-body: var(--ff-{{ block.settings.block_font }});{% endif %} --text-scale: {{ block.settings.size | divided_by: 100.0 }};" {{ block.shopify_attributes }}>
+    <p class="fpro__by">
+      {%- if show_vendor -%}<span>{{ product.vendor | escape }}</span>{%- endif -%}
+      {%- if note != blank -%}<span class="fpro__note">{% if show_vendor %} · {% endif %}{{ note | escape }}</span>{%- endif -%}
+    </p>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Artist line",
+  "tag": null,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show the artist",
+      "info": "The product's vendor. Hidden when it is the store's own name.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_note",
+      "label": "Show the artist note",
+      "info": "From the product metafield custom.artist_note, for example \"Danish, 1863–1935\"",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Sizes"
+    },
+    {
+      "type": "range",
+      "id": "size",
+      "label": "Size",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "select",
+      "id": "block_align",
+      "label": "Alignment",
+      "info": "Only this block. Mirrors on Arabic pages.",
+      "options": [
+        {
+          "value": "default",
+          "label": "As the section"
+        },
+        {
+          "value": "start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "end",
+          "label": "Right"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "block_font",
+      "label": "Font",
+      "options": [
+        {
+          "value": "default",
+          "label": "As designed"
+        },
+        {
+          "value": "heading",
+          "label": "Theme heading font"
+        },
+        {
+          "value": "body",
+          "label": "Theme body font"
+        },
+        {
+          "value": "newsreader",
+          "label": "Newsreader"
+        },
+        {
+          "value": "red_hat_text",
+          "label": "Red Hat Text"
+        },
+        {
+          "value": "instrument_serif",
+          "label": "Instrument Serif"
+        },
+        {
+          "value": "inter_tight",
+          "label": "Inter Tight"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "block_pt",
+      "label": "Top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "block_pb",
+      "label": "Bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Artist line"
+    }
+  ]
+}
+{% endschema %}

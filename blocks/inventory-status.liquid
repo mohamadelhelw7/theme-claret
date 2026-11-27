@@ -6,7 +6,7 @@
 {% enddoc %}
 
 {%- assign current_variant = product.selected_or_first_available_variant -%}
-<div class="inventory-status" data-update="inventory-{{ block.id }}" {{ block.shopify_attributes }}>
+<div style="--bmt: {{ block.settings.block_pt }}px; --bmb: {{ block.settings.block_pb }}px;{% if block.settings.block_font != 'default' %} --font-heading: var(--ff-{{ block.settings.block_font }}); --font-body: var(--ff-{{ block.settings.block_font }});{% endif %}" data-align="{{ block.settings.block_align }}" class="inventory-status" data-update="inventory-{{ block.id }}" {{ block.shopify_attributes }}>
   {%- if current_variant.inventory_management == 'shopify' -%}
     {%- liquid
       assign qty = current_variant.inventory_quantity
@@ -77,7 +77,13 @@
   "tag": null,
   "settings": [
     { "type": "range", "id": "low_threshold", "label": "Low stock below", "min": 1, "max": 30, "step": 1, "default": 10 },
-    { "type": "checkbox", "id": "show_count", "label": "Show exact count when low", "default": true }
+    { "type": "checkbox", "id": "show_count", "label": "Show exact count when low", "default": true },
+    {"type":"header","content":"Text"},
+    {"type":"select","id":"block_align","label":"Alignment","info":"Only this block. Mirrors on Arabic pages.","options":[{"value":"default","label":"As the section"},{"value":"start","label":"Left"},{"value":"center","label":"Center"},{"value":"end","label":"Right"}],"default":"default"},
+    {"type":"select","id":"block_font","label":"Font","options":[{"value":"default","label":"As designed"},{"value":"heading","label":"Theme heading font"},{"value":"body","label":"Theme body font"},{"value":"newsreader","label":"Newsreader"},{"value":"red_hat_text","label":"Red Hat Text"},{"value":"instrument_serif","label":"Instrument Serif"},{"value":"inter_tight","label":"Inter Tight"}],"default":"default"},
+    {"type":"header","content":"Padding"},
+    {"type":"range","id":"block_pt","label":"Top","min":0,"max":120,"step":4,"unit":"px","default":0},
+    {"type":"range","id":"block_pb","label":"Bottom","min":0,"max":120,"step":4,"unit":"px","default":0}
   ],
   "presets": [{ "name": "Stock status", "category": "Product" }]
 }

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.0
+- **Product page: every part is its own block.** The name, the artist line, the price and the star rating were fixed parts of the section; they are now the blocks **Painting name**, **Artist line**, **Painting price** and **Star rating**, so each can be moved, hidden or set on its own. The name and price blocks carry their own **Size** and **Size on phones** (these left the section's settings).
+- **Every product page block has its own Text and Padding:** Alignment (as the section, Left, Center or Right), Font, and Padding Top and Bottom. Changing one block never changes another.
+- The blocks sit in a flex column, so the name and artist, and the price and stars, keep their close spacing exactly (a grid stretched short blocks and added 4px).
+
 ## 1.2.0
 - **Text alignment on every section with text** (72 sections, under Text): As designed, Left, Center or Right. Headings, text, labels, lists, button rows, icons, links and section heads all move together; product cards keep their own card settings. Checked on Claret's homepage, footer and product page in all three positions on computers and phones.
 - **Heading font and Text font on every section with text:** As designed, the theme's heading or body font, Newsreader, Red Hat Text, Instrument Serif or Inter Tight. The Arabic font stays in each choice.

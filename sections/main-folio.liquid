@@ -10,15 +10,12 @@
 {%- liquid
   assign art = product.featured_media
   assign art_ratio = art.aspect_ratio | default: 0.75
-  assign rating = product.metafields.reviews.rating.value
-  assign rating_count = product.metafields.reviews.rating_count.value | default: 0
-  assign artist_note = product.metafields.custom.artist_note.value
 -%}
 
 <product-info data-align="{{ section.settings.sec_text_align }}"
   class="fpro fpro--media-{{ section.settings.media_position }}{% if section.settings.sticky_info %} fpro--sticky{% endif %} color-{{ section.settings.color_scheme }}"
   data-pad
-  style="{%- if section.settings.sec_heading_font != 'default' %} --font-heading: var(--ff-{{ section.settings.sec_heading_font }});{% endif -%}{%- if section.settings.sec_text_font != 'default' %} --font-body: var(--ff-{{ section.settings.sec_text_font }});{% endif %} --pt: {{ section.settings.pad_top }}px; --pb: {{ section.settings.pad_bottom }}px; --blocks-gap: {{ section.settings.blocks_gap }}px; --stage-scale: {{ section.settings.wall_height | divided_by: 100.0 }}; --title-scale: {{ section.settings.title_size | divided_by: 100.0 }}; --price-scale: {{ section.settings.price_size | divided_by: 100.0 }}; --stage-scale-m: {{ section.settings.wall_height_mobile | divided_by: 100.0 }}; --title-scale-m: {{ section.settings.title_size_mobile | divided_by: 100.0 }}; --price-scale-m: {{ section.settings.price_size_mobile | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }};"
+  style="{%- if section.settings.sec_heading_font != 'default' %} --font-heading: var(--ff-{{ section.settings.sec_heading_font }});{% endif -%}{%- if section.settings.sec_text_font != 'default' %} --font-body: var(--ff-{{ section.settings.sec_text_font }});{% endif %} --pt: {{ section.settings.pad_top }}px; --pb: {{ section.settings.pad_bottom }}px; --blocks-gap: {{ section.settings.blocks_gap }}px; --stage-scale: {{ section.settings.wall_height | divided_by: 100.0 }}; --stage-scale-m: {{ section.settings.wall_height_mobile | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }};"
   data-section="{{ section.id }}"
   data-url="{{ product.url }}"
   data-update-url="true"
@@ -71,26 +68,6 @@
     </div>
 
     <div class="fpro__info">
-      <div class="fpro__head">
-        <h1 class="fpro__title">{{ product.title | escape }}</h1>
-        {%- assign show_vendor = false -%}
-        {%- if product.vendor != blank and product.vendor != shop.name -%}{%- assign show_vendor = true -%}{%- endif -%}
-        {%- if show_vendor or artist_note != blank -%}
-          <p class="fpro__by">
-            {%- if show_vendor -%}<span>{{ product.vendor | escape }}</span>{%- endif -%}
-            {%- if artist_note != blank -%}<span class="fpro__note"> · {{ artist_note | escape }}</span>{%- endif -%}
-          </p>
-        {%- endif -%}
-      </div>
-      <div class="fpro__priceline">
-        {% content_for 'block', type: 'product-price', id: 'price' %}
-        {%- if rating != blank -%}
-          <a class="fpro__rating" href="#reviews">
-            {% render 'stars', rating: rating.rating, scale: rating.scale_max %}
-            <span><bdi dir="ltr">{{ rating.rating | round: 1 }}</bdi>{% if rating_count > 0 %} · {{ rating_count }}{% endif %}</span>
-          </a>
-        {%- endif -%}
-      </div>
       <div class="fpro__blocks">
         {% content_for 'blocks' %}
       </div>
@@ -444,11 +421,13 @@
     align-items: center;
     gap: 8px;
     color: inherit;
-    font-size: calc(0.875rem * var(--sec-t, 1));
+    font-size: calc(var(--d) * 0.82 * var(--rating-scale, 1));
     text-decoration: none;
   }
+  /* A flex column, so the negative margins that join blocks (name and artist, price and stars) pull exactly */
   .fpro__blocks {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: var(--gap-now);
   }
   .fpro__blocks > .fabout {
@@ -459,10 +438,10 @@
     border-bottom: 0;
   }
   .fpro__blocks > .fabout + .accordion {
-    margin-top: calc(var(--gap-now) * -1);
+    margin-top: calc(var(--gap-now) * -1 + var(--bmt, 0px));
   }
   .fpro__blocks > .fbuy + .fkit {
-    margin-top: calc(var(--gap-now) * -1 + var(--d) * 0.9);
+    margin-top: calc(var(--gap-now) * -1 + var(--d) * 0.9 + var(--bmt, 0px));
   }
   .fpro__blocks > .accordion--lines > .accordion-row:first-child {
     border-top-color: var(--color-text);
@@ -564,7 +543,24 @@
     box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 14%, transparent);
   }
   .fpro__blocks > .inventory-status + .fbuy {
-    margin-top: calc(var(--gap-now) * -0.5);
+    margin-top: calc(var(--gap-now) * -0.5 + var(--bmt, 0px));
+  }
+  /* Each block's own Padding (Top and Bottom) */
+  .fpro__blocks > [data-align] {
+    margin-top: var(--bmt, 0px);
+    margin-bottom: var(--bmb, 0px);
+  }
+  /* The artist sits close under the name, the stars close under the price */
+  .fpro__blocks > .ftitle + .fartist {
+    margin-top: calc(var(--gap-now) * -1 + var(--d) * 0.6 + var(--bmt, 0px));
+  }
+  .fpro__blocks > .fprice + .frating {
+    margin-top: calc(var(--gap-now) * -1 + var(--d) * 0.5 + var(--bmt, 0px));
+  }
+  .fprice__note {
+    margin: 0.5em 0 0;
+    font-size: calc(var(--d) * 0.72);
+    color: var(--color-muted);
   }
   @media (max-width: 989px) {
     .fpro__grid {
@@ -640,15 +636,11 @@
     { "type": "header", "content": "Sizes" },
     { "type": "range", "id": "wall_height", "label": "Wall height", "min": 60, "max": 150, "step": 5, "unit": "%", "default": 100 },
     { "type": "range", "id": "painting_size", "label": "Painting size on the wall", "min": 60, "max": 118, "step": 2, "unit": "%", "default": 100 },
-    { "type": "range", "id": "title_size", "label": "Title size", "min": 50, "max": 160, "step": 5, "unit": "%", "default": 100 },
-    { "type": "range", "id": "price_size", "label": "Price size", "min": 70, "max": 180, "step": 5, "unit": "%", "default": 100 },
     { "type": "header", "content": "Sizes on phones" },
     { "type": "range", "id": "wall_height_mobile", "label": "Wall height on phones", "min": 60, "max": 200, "step": 5, "unit": "%", "default": 120 },
     { "type": "range", "id": "painting_size_mobile", "label": "Painting size on the wall on phones", "min": 60, "max": 122, "step": 2, "unit": "%", "default": 114 },
-    { "type": "range", "id": "title_size_mobile", "label": "Title size on phones", "min": 40, "max": 160, "step": 5, "unit": "%", "default": 75 },
-    { "type": "range", "id": "price_size_mobile", "label": "Price size on phones", "min": 50, "max": 180, "step": 5, "unit": "%", "default": 75 },
     { "type": "header", "content": "Text" },
-    { "type": "range", "id": "text_size", "label": "Artist line and rows text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "text_size", "label": "Rows text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
     { "type": "checkbox", "id": "sticky_info", "label": "Keep the details in view while the page scrolls", "default": true },
     {
       "type": "select",

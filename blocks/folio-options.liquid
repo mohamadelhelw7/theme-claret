@@ -37,7 +37,7 @@
   endif
 -%}
 
-<div class="fopt" style="--swatch: {{ block.settings.swatch_size }}px; --opt-text: {{ block.settings.text_size | divided_by: 100.0 }};" {{ block.shopify_attributes }}>
+<div data-align="{{ block.settings.block_align }}" class="fopt" style="--bmt: {{ block.settings.block_pt }}px; --bmb: {{ block.settings.block_pb }}px;{% if block.settings.block_font != 'default' %} --font-heading: var(--ff-{{ block.settings.block_font }}); --font-body: var(--ff-{{ block.settings.block_font }});{% endif %} --swatch: {{ block.settings.swatch_size }}px; --opt-text: {{ block.settings.text_size | divided_by: 100.0 }};" {{ block.shopify_attributes }}>
   {%- if app_tiles -%}
     <div class="fopt__group" data-app-frames>
       <span class="fopt__label">{{ block.settings.frame_label | escape }} <b data-app-frame-name>{{ 'products.frames.oak' | t }}</b></span>
@@ -661,7 +661,13 @@
     { "type": "text", "id": "guide_label", "label": "Link label", "default": "Size guide" },
     { "type": "text", "id": "guide_heading", "label": "Popup heading", "default": "Size guide" },
     { "type": "richtext", "id": "guide_intro", "label": "Intro", "default": "<p>Sizes are the painting itself, width × height.</p>" },
-    { "type": "richtext", "id": "guide_tips", "label": "Tips under the table", "default": "<p><strong>Measure the wall.</strong> Mark the space with tape before you choose, and look at it from across the room.</p><p><strong>Above a sofa or bed.</strong> A painting about two thirds the width of the furniture usually looks balanced.</p>" }
+    { "type": "richtext", "id": "guide_tips", "label": "Tips under the table", "default": "<p><strong>Measure the wall.</strong> Mark the space with tape before you choose, and look at it from across the room.</p><p><strong>Above a sofa or bed.</strong> A painting about two thirds the width of the furniture usually looks balanced.</p>" },
+    {"type":"header","content":"Text"},
+    {"type":"select","id":"block_align","label":"Alignment","info":"Only this block. Mirrors on Arabic pages.","options":[{"value":"default","label":"As the section"},{"value":"start","label":"Left"},{"value":"center","label":"Center"},{"value":"end","label":"Right"}],"default":"default"},
+    {"type":"select","id":"block_font","label":"Font","options":[{"value":"default","label":"As designed"},{"value":"heading","label":"Theme heading font"},{"value":"body","label":"Theme body font"},{"value":"newsreader","label":"Newsreader"},{"value":"red_hat_text","label":"Red Hat Text"},{"value":"instrument_serif","label":"Instrument Serif"},{"value":"inter_tight","label":"Inter Tight"}],"default":"default"},
+    {"type":"header","content":"Padding"},
+    {"type":"range","id":"block_pt","label":"Top","min":0,"max":120,"step":4,"unit":"px","default":0},
+    {"type":"range","id":"block_pb","label":"Bottom","min":0,"max":120,"step":4,"unit":"px","default":0}
   ]
 }
 {% endschema %}
