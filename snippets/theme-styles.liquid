@@ -169,6 +169,7 @@
     --wall: {{ settings.wall_color }};
     --d-scale: {{ settings.size_scale | default: 100 | divided_by: 100.0 }};
     --card-frame-scale: {{ settings.card_frame_size | default: 100 | divided_by: 100.0 }};
+    --card-frame-scale-mobile: {{ settings.card_frame_size_mobile | default: 125 | divided_by: 100.0 }};
     --card-title-scale: {{ settings.card_title_size | default: 100 | divided_by: 100.0 }};
     --card-price-scale: {{ settings.card_price_size | default: 100 | divided_by: 100.0 }};
     --wall-hi: {{ settings.wall_color | color_lighten: 3 }};

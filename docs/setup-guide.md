@@ -99,7 +99,7 @@ Your style collections as rooms: a softly lit wall with one painting from the co
 
 Everything has a size setting:
 
-- **Theme settings → Claret → Overall size** scales Claret's text and spacing everywhere. 100% is the design. **Painting size on cards**, **Title size on cards** and **Price size on cards** set the product cards.
+- **Theme settings → Claret → Overall size** scales Claret's text and spacing everywhere. 100% is the design. **Painting size on cards**, **Painting size on cards on phones** (125% by default, because cards are narrow on phones), **Title size on cards** and **Price size on cards** set the product cards.
 - Each section has a **Sizes** group: the header (logo height and width, text logo, menu text), the announcement bar (text), the hero (height, heading, link and credit, strip paintings), Shop by style (small title, style names, painting), Spotlight (titles, text, wall, painting), Turn of the page (book, painting, titles, text), the footer (headings, recently viewed paintings, text, store name width) and the product page (wall height, painting on the wall, title, price, text).
 - Product blocks: frame tile size and text size (Frame and size), button height and text size (Buy buttons), and a size for the hanging kit, the promises (icon and text) and the delivery bar.
 
@@ -171,6 +171,8 @@ The product template has five sections.
 ## 12. Collection page
 
 **Main collection** shows the collection name, description and the wall cards with filters. Set up filters (artist, style, size, price) with the **Search & Discovery** app.
+
+More paintings load as shoppers scroll (**Load as shoppers scroll**, the default). While they load, a row of empty cards holds their place. **Load more button** and **Page numbers** are the other choices.
 
 ## 13. Footer
 

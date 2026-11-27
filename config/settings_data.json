@@ -212,7 +212,8 @@
       "size_scale": 100,
       "card_frame_size": 100,
       "card_title_size": 100,
-      "card_price_size": 100
+      "card_price_size": 100,
+      "card_frame_size_mobile": 125
     },
     "Gallery": {
       "type_heading_font": "newsreader_n2",
@@ -425,7 +426,8 @@
       "size_scale": 100,
       "card_frame_size": 100,
       "card_title_size": 100,
-      "card_price_size": 100
+      "card_price_size": 100,
+      "card_frame_size_mobile": 125
     },
     "Slate": {
       "type_heading_font": "newsreader_n2",
@@ -638,7 +640,8 @@
       "size_scale": 100,
       "card_frame_size": 100,
       "card_title_size": 100,
-      "card_price_size": 100
+      "card_price_size": 100,
+      "card_frame_size_mobile": 125
     }
   }
 }

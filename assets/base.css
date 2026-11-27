@@ -4014,3 +4014,64 @@ a.sec-head__side--quiet {
 [data-pad-box] {
   font-size: calc(var(--body-size, 1rem) * var(--sec-t, 1));
 }
+
+/* Infinite scroll: empty cards hold the next row while it loads, shaped like the wall cards */
+.load-more--infinite {
+  display: block;
+  justify-items: normal;
+  margin-top: var(--grid-gap);
+}
+.ghost-card {
+  display: grid;
+  gap: 0.6em;
+  align-content: start;
+}
+.ghost-card__wall {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: var(--card-ratio, 0.8);
+  overflow: hidden;
+  background: radial-gradient(70% 60% at 50% 42%, var(--wall-hi, #f8f8f7), var(--wall, #f1f1f0));
+}
+.ghost-card__wall i {
+  width: 52%;
+  aspect-ratio: 0.8;
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+}
+.ghost-card__line {
+  display: block;
+  width: 70%;
+  height: 0.7em;
+  margin-top: calc(var(--d, 16px) * 0.4);
+  background: color-mix(in srgb, var(--color-text) 7%, transparent);
+}
+.ghost-card__line--short {
+  width: 40%;
+  margin-top: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ghost-card__wall::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+    translate: -100% 0;
+    animation: ghost-sweep 1.6s ease-in-out infinite;
+  }
+}
+@keyframes ghost-sweep {
+  to {
+    translate: 100% 0;
+  }
+}
+@media (max-width: 749px) {
+  .load-more__ghosts > li:nth-child(n + 3),
+  [data-grid-mobile='1'] .load-more__ghosts > li:nth-child(n + 2) {
+    display: none;
+  }
+  /* Paintings hang larger on the card walls on phones (Theme settings → Claret → Painting size on cards on phones) */
+  .product-card--wall .product-card__media {
+    --frame-scale: calc(var(--card-frame-scale-mobile, 1.25) * var(--sec-art, 1));
+  }
+}

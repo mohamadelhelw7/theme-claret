@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "Claret",
-    "theme_version": "1.1.1",
+    "theme_version": "1.1.2",
     "theme_author": "Mohamed Elhelw",
     "theme_documentation_url": "https://github.com/mohamadelhelw7/theme-claret",
     "theme_support_url": "https://github.com/mohamadelhelw7/theme-claret"
@@ -646,6 +646,17 @@
         "step": 5,
         "unit": "%",
         "default": 100
+      },
+      {
+        "type": "range",
+        "id": "card_frame_size_mobile",
+        "label": "Painting size on cards on phones",
+        "info": "Cards are narrow on phones, so the paintings hang larger there",
+        "min": 60,
+        "max": 140,
+        "step": 5,
+        "unit": "%",
+        "default": 125
       },
       {
         "type": "range",

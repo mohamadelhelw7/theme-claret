@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2
+- Infinite scroll: no more "Showing X of Y", progress line or Load more button while paintings load. A row of empty wall cards holds the place of the next paintings until they arrive (one row; two cards on phones). The Load more button style keeps its count and button.
+- Phones: paintings hang larger on the card walls. New setting **Theme settings → Claret → Painting size on cards on phones**, 125% by default.
+
 ## 1.1.1
 - Product cards: names, artists and prices sit on the same lines across a row, whatever the length of the name. Each name keeps room for the number of lines set in Theme settings → Product cards → Title lines (2 by default), so a one-line name no longer lifts its price above the others.
 

@@ -237,16 +237,33 @@
                 assign shown_percent = shown_count | times: 100 | divided_by: paginate.items
               -%}
               <load-more
-                class="load-more"
+                class="load-more{% if section.settings.pagination_style == 'infinite' %} load-more--infinite{% endif %}"
                 data-mode="{{ section.settings.pagination_style }}"
                 data-next="{{ paginate.next.url }}"
                 data-section="{{ section.id }}"
               >
-                <p class="load-more__count">{{ 'collections.load_more.showing' | t: shown: shown_count, total: paginate.items }}</p>
-                <div class="load-more__bar" aria-hidden="true"><span style="width: {{ shown_percent }}%;"></span></div>
-                <a class="button button--secondary load-more__button" href="{{ paginate.next.url }}" data-load-more>
-                  {{- 'collections.load_more.button' | t -}}
-                </a>
+                {%- if section.settings.pagination_style == 'infinite' -%}
+                  {%- comment -%} Empty cards where the next paintings will hang, until they arrive {%- endcomment -%}
+                  <ul
+                    class="product-grid product-grid--collection load-more__ghosts"
+                    role="presentation"
+                    aria-hidden="true"
+                    style="--cols-desktop: {{ section.settings.columns_desktop }}; --cols-mobile: {{ section.settings.columns_mobile }};"
+                  >
+                    {%- for i in (1..section.settings.columns_desktop) -%}
+                      <li class="ghost-card"><span class="ghost-card__wall"><i></i></span><span class="ghost-card__line"></span><span class="ghost-card__line ghost-card__line--short"></span></li>
+                    {%- endfor -%}
+                  </ul>
+                  <a class="visually-hidden" href="{{ paginate.next.url }}" data-load-more tabindex="-1">
+                    {{- 'collections.load_more.button' | t -}}
+                  </a>
+                {%- else -%}
+                  <p class="load-more__count">{{ 'collections.load_more.showing' | t: shown: shown_count, total: paginate.items }}</p>
+                  <div class="load-more__bar" aria-hidden="true"><span style="width: {{ shown_percent }}%;"></span></div>
+                  <a class="button button--secondary load-more__button" href="{{ paginate.next.url }}" data-load-more>
+                    {{- 'collections.load_more.button' | t -}}
+                  </a>
+                {%- endif -%}
               </load-more>
             {%- endif -%}
           {%- endif -%}
