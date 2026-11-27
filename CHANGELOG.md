@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.9
+- Recently viewed in the footer: the paintings hang level and their names start on the same line, even when a name runs to two lines. A long name used to push its painting up.
+
 ## 1.0.8
 Phones:
 - Product page rows: About the painting and Sizes and frames are the same height again. On phones the space between blocks shrinks to 60%, but the rows were still pulled together by the full space, so the second row covered part of the first. The hanging kit line no longer touches Buy it now.
