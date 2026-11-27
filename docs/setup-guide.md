@@ -88,6 +88,7 @@ A **Painting hero** that takes a video, one photo or two photos side by side is 
 - **Paintings from**: the collection to read colours from (up to 40 paintings).
 - **The colours**: the theme reads five colours from a small copy of each painting's photo in the shopper's browser and remembers them. To set a painting's colours yourself, create a product metafield **custom.colours** of type **List of colors** and fill it; those colours are used instead.
 - **Move along the colours until a shopper takes over** keeps a marker sweeping along on its own.
+- **On phones** the colour strip sits right under the painting, with five colour buttons under it: a tap on Reds, Golds, Greens, Blues or Neutrals brings a painting in that colour onto the wall, and another tap moves to the next one. Shoppers can also swipe the painting left or right to step through the paintings, or tap and drag along the strip.
 
 ### Shop by style
 

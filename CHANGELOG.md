@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.4
+Shop by colour on phones:
+- The colour strip sits right under the painting instead of below the words, so the painting and the colours are on screen together.
+- Five colour buttons (Reds, Golds, Greens, Blues, Neutrals) under the strip: a tap brings a painting in that colour onto the wall, another tap moves to the next painting in that colour.
+- Swipe the painting left or right to step to the next or previous painting.
+- Computers are unchanged.
+
 ## 1.1.3
 Product page on phones:
 - New **Sizes on phones** settings in the Product on the wall section: **Wall height on phones** (120%), **Painting size on the wall on phones** (114%), **Title size on phones** (75%) and **Price size on phones** (75%). Phones no longer follow the computer sizes, so the painting hangs larger on a taller wall and the title and price are smaller. The painting also keeps less empty wall around it on phones (24px instead of 64px).

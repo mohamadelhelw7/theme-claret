@@ -93,6 +93,7 @@
     </div>
     <div class="cspec__spec" data-spec aria-label="{{ 'sections.colour_spectrum.label' | t }}"><span class="cspec__mark" data-mark></span></div>
     <div class="cspec__legend" data-legend></div>
+    <div class="cspec__fams" data-fams role="group" aria-label="{{ 'sections.colour_spectrum.label' | t | escape }}"></div>
     <script type="application/json" data-family-names>
       {"reds": {{ 'sections.colour_spectrum.reds' | t | json }}, "golds": {{ 'sections.colour_spectrum.golds' | t | json }}, "greens": {{ 'sections.colour_spectrum.greens' | t | json }}, "blues": {{ 'sections.colour_spectrum.blues' | t | json }}, "neutrals": {{ 'sections.colour_spectrum.neutrals' | t | json }}}
     </script>
@@ -218,6 +219,7 @@
         this.slivers = Array.from(this.spec.querySelectorAll('i'));
         this.labels = JSON.parse(this.querySelector('[data-family-names]')?.textContent || '{}');
         this.placeLegend();
+        this.buildFamilies();
         this.current = -1;
         const start = Math.max(0, this.all.findIndex((x) => x.k === 0 && x.f !== 'neutrals'));
         this.show(start);
@@ -237,6 +239,22 @@
           this.sweep = (this.sweep + 1) % this.all.length;
           this.show(this.sweep);
         }, 900);
+        // Swipe the painting left or right to step to the next one along the spectrum
+        const wall = this.querySelector('.cspec__wall');
+        let sx = null;
+        let sy = 0;
+        wall?.addEventListener('pointerdown', (e) => { sx = e.clientX; sy = e.clientY; });
+        wall?.addEventListener('pointerup', (e) => {
+          if (sx === null) return;
+          const dx = e.clientX - sx;
+          const dy = e.clientY - sy;
+          sx = null;
+          if (Math.abs(dx) > 36 && Math.abs(dx) > Math.abs(dy)) {
+            this.auto = false;
+            this.step(dx < 0 ? 1 : -1);
+          }
+        });
+        wall?.addEventListener('pointercancel', () => { sx = null; });
         this.onResize = () => { this.placeLegend(); const i = this.current; this.current = -1; this.show(i); };
         window.addEventListener('resize', this.onResize);
       }
@@ -257,6 +275,45 @@
           return `<span style="left:${left}px">${this.labels[f] || f}</span>`;
         }).join('');
       }
+      // The five colour groups as buttons: a tap jumps to the group, another tap moves to its next painting
+      buildFamilies() {
+        const box = this.querySelector('[data-fams]');
+        if (!box) return;
+        box.innerHTML = FAMILIES.map((f) => {
+          const members = this.all.filter((x) => x.f === f);
+          if (!members.length) return '';
+          const mid = members[Math.floor(members.length / 2)];
+          return `<button type="button" class="cspec__fam" data-fam="${f}" aria-pressed="false"><i style="background:${toHex(mid.c)}"></i><span>${this.labels[f] || f}</span></button>`;
+        }).join('');
+        box.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-fam]');
+          if (!btn) return;
+          this.auto = false;
+          const fam = btn.dataset.fam;
+          const cur = this.all[this.current];
+          const idx = [];
+          this.all.forEach((x, j) => { if (x.f === fam) idx.push(j); });
+          if (!idx.length) return;
+          let next = idx[0];
+          if (cur && cur.f === fam) {
+            const after = idx.filter((j) => j > this.current && this.all[j].k !== cur.k);
+            const other = idx.find((j) => this.all[j].k !== cur.k);
+            next = after.length ? after[0] : other !== undefined ? other : idx[0];
+          }
+          this.show(next);
+        });
+      }
+      // Step to the next painting along the spectrum (or the previous one)
+      step(dir) {
+        const n = this.all.length;
+        const k = this.all[this.current]?.k;
+        let j = this.current;
+        for (let t = 0; t < n; t++) {
+          j = (j + dir + n) % n;
+          if (this.all[j].k !== k) break;
+        }
+        this.show(j);
+      }
       pick(clientX) {
         const r = this.spec.getBoundingClientRect();
         const t = Math.min(0.999, Math.max(0, (clientX - r.left) / r.width));
@@ -274,6 +331,7 @@
         const x = this.all[i];
         const item = this.items[x.k] || {};
         this.slivers.forEach((el, j) => el.classList.toggle('is-hot', j === i));
+        this.querySelectorAll('[data-fam]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.fam === x.f)));
         this.figs.forEach((fig) => fig.classList.toggle('is-on', Number(fig.dataset.k) === x.k));
         this.mark.style.left = `${this.slivers[i].offsetLeft + this.slivers[i].offsetWidth / 2}px`;
         this.querySelector('[data-sw]').style.background = toHex(x.c);
@@ -436,6 +494,9 @@
     position: absolute;
     top: 0;
   }
+  .cspec__fams {
+    display: none;
+  }
   @media (prefers-reduced-motion: reduce) {
     .cspec__fig,
     .cspec__spec i {
@@ -456,8 +517,60 @@
     .cspec__wall {
       height: calc(var(--d) * 24 * var(--wall-scale, 1));
     }
+    /* Phones: the painting, then the colour strip and the colour buttons right under it, then the words */
+    .cspec__in {
+      display: flex;
+      flex-direction: column;
+    }
+    .cspec__hero {
+      display: contents;
+    }
+    .cspec__wall {
+      order: 1;
+      touch-action: pan-y;
+    }
     .cspec__spec {
-      height: calc(var(--d) * 4.4);
+      order: 2;
+      height: calc(var(--d) * 3.4);
+      margin-top: calc(var(--d) * 1.2);
+    }
+    .cspec__legend {
+      display: none;
+    }
+    .cspec__fams {
+      order: 3;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
+      gap: 6px;
+      margin: calc(var(--d) * 0.9) var(--gutter) 0;
+    }
+    .cspec__copy {
+      order: 4;
+    }
+    .cspec__fam {
+      display: grid;
+      align-content: start;
+      gap: 7px;
+      min-height: 44px;
+      padding: 0 0 6px;
+      border: 0;
+      border-bottom: 1px solid transparent;
+      background: none;
+      color: var(--color-muted);
+      font: 500 calc(var(--d) * 0.6) / 1.2 var(--font-body);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: start;
+      cursor: pointer;
+    }
+    .cspec__fam i {
+      display: block;
+      height: calc(var(--d) * 0.7);
+    }
+    .cspec__fam[aria-pressed='true'] {
+      border-bottom-color: var(--color-text);
+      color: var(--color-text);
     }
   }
 {% endstylesheet %}
