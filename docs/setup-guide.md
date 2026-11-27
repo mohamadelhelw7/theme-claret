@@ -157,6 +157,7 @@ The product template has five sections.
   - **Accordion** rows, for example sizes and frames, and delivery and returns.
   - **Delivery progress**: order today, we ship it and delivered, with dates counted from today. Set the days to your real times, and switch off the days you don't ship.
 - **Sticky Add to bag bar**: once a shopper scrolls past the buttons, a bar with the painting, its price and Add to bag slides up at the bottom. Choose phones and computers, phones only, or off under **Sticky Add to bag bar** in the section.
+- **Sizes on phones**: phones have their own **Wall height**, **Painting size on the wall**, **Title size** and **Price size**, so you can set the product page for phones without changing it on computers.
 
 ### 2–5. The other sections
 

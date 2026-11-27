@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.3
+Product page on phones:
+- New **Sizes on phones** settings in the Product on the wall section: **Wall height on phones** (120%), **Painting size on the wall on phones** (114%), **Title size on phones** (75%) and **Price size on phones** (75%). Phones no longer follow the computer sizes, so the painting hangs larger on a taller wall and the title and price are smaller. The painting also keeps less empty wall around it on phones (24px instead of 64px).
+- The sticky Add to bag bar looks like the rest of Claret: a fine ink line on top instead of a shadow, the painting as a tiny framed print, the name in small capitals, the price in the light serif and a slimmer black button.
+
 ## 1.1.2
 - Infinite scroll: no more "Showing X of Y", progress line or Load more button while paintings load. A row of empty wall cards holds the place of the next paintings until they arrive (one row; two cards on phones). The Load more button style keeps its count and button.
 - Phones: paintings hang larger on the card walls. New setting **Theme settings → Claret → Painting size on cards on phones**, 125% by default.
