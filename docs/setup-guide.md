@@ -84,9 +84,16 @@ Product cards keep their own settings in **Theme settings → Product cards**.
 
 ## 8. Homepage
 
-The homepage has ten sections: Shop by colour, Shop by style, Spotlight, the Promise band, the Collection grid, Reviews, Before and after, videos (**Seen on the wall**), the email signup and Customer support. Each one can be moved, hidden or removed, and more sections are under **Add section**.
+The homepage opens with the **Full painting hero**, then Shop by style, Spotlight, the Promise band, the Collection grid, Reviews, Before and after, videos (**Seen on the wall**), the email signup and Customer support. **Shop by colour** is still in the list but hidden: click the eye icon beside it to show it again. Each section can be moved, hidden or removed, and more sections are under **Add section**.
 
-A **Painting hero** that takes a video, one photo or two photos side by side is placed first but hidden. To use it, click the eye icon beside it in the section list; it then shows above Shop by colour, or hide Shop by colour to make it the only hero.
+### Full painting hero
+
+- One painting fills the first screen and drifts slowly, with the headline and two buttons at the bottom and the painting's name at the top, linking to it. A new painting fades in every few seconds. Shoppers tap the right side for the next painting and the left side to go back, swipe, pick one from the lines above the headline, or pause.
+- **Paintings**: without blocks, the hero shows the paintings from **Paintings from** (all your paintings when it is empty), up to **Number of paintings**. Add **Slide** blocks to use your own photos instead: each slide takes a photo, a phone photo, a second photo beside it on computers, or a video, plus a credit and its link.
+- **Motion**: **Move to the next painting on its own**, **Seconds per painting** and **Slow drift**. It stays still for shoppers who turn off motion on their phone.
+- **Height**: on computers Fill the screen, Large, Medium, the first painting's own shape or an aspect ratio; on phones Fill the screen, Tall, the painting's shape or an aspect ratio. Fill the screen ends the hero at the bottom of the screen, under the header.
+- **Look**: text color, the shade behind the text, sizes (heading on computers and on phones, text), padding and text alignment.
+- Tall paintings are cropped to fill a wide computer screen. For computers, wide paintings or your own photos in Slide blocks work best; set each photo's focal point in the image picker.
 
 ### Shop by colour
 

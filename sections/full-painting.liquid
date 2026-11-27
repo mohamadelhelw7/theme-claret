@@ -1,0 +1,726 @@
+{%- comment -%}
+  Full painting hero: one painting fills the first screen and drifts slowly, like standing close in a gallery.
+  The headline and buttons sit at the bottom, where the thumb is, and a credit names the painting at the top.
+  The paintings come from Slide blocks (your own photos or videos) or, without blocks, from a collection's
+  paintings. A new one fades in every few seconds; shoppers tap the right side for the next and the left side to
+  go back, swipe, or pick one from the lines above the headline.
+{%- endcomment -%}
+
+{%- liquid
+  assign fp_collection = section.settings.collection
+  if fp_collection == blank
+    assign fp_collection = collections.all
+  endif
+  assign heading_id = 'FullPaintingHeading-' | append: section.id
+  assign fp_use_blocks = false
+  if section.blocks.size > 0
+    assign fp_use_blocks = true
+  endif
+  assign fp_count = section.blocks.size
+  if fp_use_blocks == false
+    assign fp_count = fp_collection.products.size | at_most: section.settings.limit
+  endif
+  assign fp_btn_text = '#121212'
+  assign fp_brightness = section.settings.text_color | color_brightness
+  if fp_brightness < 128
+    assign fp_btn_text = '#ffffff'
+  endif
+  assign fp_ratio = 1.5
+  assign fp_ratio_m = 0.8
+  if fp_use_blocks
+    assign fp_first_image = section.blocks.first.settings.image
+    if fp_first_image != blank
+      assign fp_ratio = fp_first_image.aspect_ratio
+    endif
+    assign fp_first_mobile = section.blocks.first.settings.image_mobile | default: fp_first_image
+    if fp_first_mobile != blank
+      assign fp_ratio_m = fp_first_mobile.aspect_ratio
+    endif
+  elsif fp_collection.products.first.featured_media != blank
+    assign fp_ratio = fp_collection.products.first.featured_media.aspect_ratio
+    assign fp_ratio_m = fp_ratio
+  endif
+-%}
+
+<section
+  data-align="{{ section.settings.sec_text_align }}"
+  data-pad
+  class="section fullp color-{{ section.settings.color_scheme }}"
+  style="{%- if section.settings.sec_heading_font != 'default' %} --font-heading: var(--ff-{{ section.settings.sec_heading_font }});{% endif -%}{%- if section.settings.sec_text_font != 'default' %} --font-body: var(--ff-{{ section.settings.sec_text_font }});{% endif %} --pt: {{ section.settings.pad_top }}px; --pb: {{ section.settings.pad_bottom }}px; --fp-text: {{ section.settings.text_color }}; --fp-btn-text: {{ fp_btn_text }}; --overlay: {{ section.settings.overlay | divided_by: 100.0 }}; --speed: {{ section.settings.speed }}s; --head-scale: {{ section.settings.heading_size | divided_by: 100.0 }}; --head-scale-m: {{ section.settings.heading_size_mobile | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }}; --fp-ratio: {{ fp_ratio }}; --fp-ratio-m: {{ fp_ratio_m }}; --fp-ar: {{ section.settings.aspect_ratio }}; --fp-ar-m: {{ section.settings.aspect_ratio_mobile }};"
+  aria-labelledby="{{ heading_id }}"
+>
+  <full-painting
+    class="fullp__in fullp--h-{{ section.settings.height }} fullp--m-{{ section.settings.height_mobile }}{% if section.settings.drift %} fullp--drift{% endif %}"
+    data-auto="{{ section.settings.auto }}"
+    data-speed="{{ section.settings.speed }}"
+    data-no-reveal
+  >
+    <div class="fullp__slides">
+      {%- if fp_use_blocks -%}
+        {% content_for 'blocks' %}
+      {%- elsif fp_collection.products.size > 0 -%}
+        {%- for product in fp_collection.products limit: section.settings.limit -%}
+          {%- liquid
+            assign slide_media = product.featured_media
+            assign slide_credit = product.title
+            if product.vendor != blank and product.vendor != shop.name
+              assign slide_credit = product.vendor | append: ' · ' | append: product.title
+            endif
+            assign slide_loading = 'lazy'
+            assign slide_priority = 'auto'
+            if forloop.first
+              assign slide_loading = 'eager'
+              assign slide_priority = 'high'
+            endif
+            assign slide_alt = slide_media.alt | default: product.title | escape
+            assign slide_focal = ''
+            if slide_media != blank
+              assign slide_focal = 'object-position: ' | append: slide_media.preview_image.presentation.focal_point | append: ';'
+            endif
+          -%}
+          <div class="fullp__slide{% if forloop.first %} is-on{% endif %}" data-credit="{{ slide_credit | escape }}" data-link="{{ product.url }}">
+            <div class="fullp__media">
+              {%- if slide_media != blank -%}
+                {{ slide_media | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 1920, 2400', sizes: '100vw', loading: slide_loading, fetchpriority: slide_priority, alt: slide_alt, style: slide_focal, class: 'fullp__img' }}
+              {%- else -%}
+                {% render 'media-placeholder', kind: 'hero', index: forloop.index %}
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        <div class="fullp__slide is-on" data-credit="" data-link="">
+          <div class="fullp__media">{% render 'media-placeholder', kind: 'hero' %}</div>
+        </div>
+      {%- endif -%}
+    </div>
+    <span class="fullp__shade" aria-hidden="true"></span>
+
+    {%- if section.settings.show_credit -%}
+      <a class="fullp__credit" href="#" data-fp-credit hidden></a>
+    {%- endif -%}
+
+    <div class="fullp__copy page-width">
+      <div class="fullp__copy-in">
+        {%- if fp_count > 1 -%}
+          <div class="fullp__nav">
+            <div class="fullp__dots" role="group" aria-label="{{ 'sections.full_painting.paintings' | t }}">
+              {%- for i in (1..fp_count) -%}
+                <button type="button" class="fullp__dot" data-fp-dot aria-label="{{ 'sections.full_painting.go_to' | t: number: i }}"><span></span></button>
+              {%- endfor -%}
+            </div>
+            {%- if section.settings.auto -%}
+              <button type="button" class="fullp__pause" data-fp-pause aria-label="{{ 'sections.full_painting.pause' | t }}" data-label-pause="{{ 'sections.full_painting.pause' | t }}" data-label-play="{{ 'sections.full_painting.play' | t }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path class="fullp__icon-pause" d="M9 6v12M15 6v12"/><path class="fullp__icon-play" d="M8 5.5v13l11-6.5z"/></svg>
+              </button>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 id="{{ heading_id }}" class="fullp__heading">{% render 'accent-text', text: section.settings.heading %}</h2>
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}
+          <div class="fullp__text rte">{{ section.settings.text }}</div>
+        {%- endif -%}
+        {%- if section.settings.button_label != blank or section.settings.button2_label != blank -%}
+          <div class="fullp__btns">
+            {%- if section.settings.button_label != blank -%}
+              <a class="fullp__btn fullp__btn--solid" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label | escape }}</a>
+            {%- endif -%}
+            {%- if section.settings.button2_label != blank -%}
+              <a class="fullp__btn fullp__btn--line" href="{{ section.settings.button2_link | default: routes.collections_url }}">{{ section.settings.button2_label | escape }}</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </full-painting>
+</section>
+
+{% javascript %}
+  if (!customElements.get('full-painting')) {
+    class FullPainting extends HTMLElement {
+      connectedCallback() {
+        this.slides = Array.from(this.querySelectorAll('.fullp__slide'));
+        if (!this.slides.length) return;
+        this.dots = Array.from(this.querySelectorAll('[data-fp-dot]'));
+        this.credit = this.querySelector('[data-fp-credit]');
+        this.pauseBtn = this.querySelector('[data-fp-pause]');
+        this.speed = (Number(this.dataset.speed) || 5) * 1000;
+        const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        this.auto = this.dataset.auto === 'true' && !still && this.slides.length > 1;
+        this.held = !this.auto;
+        this.visible = true;
+        this.cur = -1;
+        this.left = this.speed;
+        this.toggleAttribute('data-still', !this.auto);
+
+        // Fill the first screen: the hero ends at the bottom of the screen, wherever the header leaves it
+        this.measure = () => {
+          const top = this.getBoundingClientRect().top + window.scrollY;
+          this.style.setProperty('--fp-top', `${Math.round(Math.min(top, window.innerHeight * 0.4))}px`);
+        };
+        this.measure();
+        window.addEventListener('resize', this.measure);
+
+        // A tap on the right moves on, on the left goes back; a sideways swipe does the same
+        let sx = null;
+        let sy = 0;
+        this.addEventListener('pointerdown', (e) => {
+          if (e.target.closest('a, button')) return;
+          sx = e.clientX;
+          sy = e.clientY;
+        });
+        this.addEventListener('pointerup', (e) => {
+          if (sx === null) return;
+          const dx = e.clientX - sx;
+          const dy = e.clientY - sy;
+          sx = null;
+          if (this.slides.length < 2 || (Math.abs(dy) > 24 && Math.abs(dy) > Math.abs(dx))) return;
+          if (Math.abs(dx) > 40) {
+            this.go(this.cur + (dx < 0 ? 1 : -1));
+            return;
+          }
+          const r = this.getBoundingClientRect();
+          this.go(this.cur + (e.clientX - r.left < r.width * 0.35 ? -1 : 1));
+        });
+        this.addEventListener('pointercancel', () => { sx = null; });
+        this.dots.forEach((dot, i) => dot.addEventListener('click', () => this.go(i)));
+        this.pauseBtn?.addEventListener('click', () => {
+          this.held = !this.held;
+          this.pauseBtn.setAttribute('aria-pressed', String(this.held));
+          this.pauseBtn.setAttribute('aria-label', this.held ? this.pauseBtn.dataset.labelPlay : this.pauseBtn.dataset.labelPause);
+          this.schedule();
+        });
+
+        // Only moves while it can be seen
+        if ('IntersectionObserver' in window) {
+          this.io = new IntersectionObserver((entries) => {
+            this.visible = entries[0].isIntersecting;
+            this.schedule();
+          });
+          this.io.observe(this);
+        }
+        this.onVisibility = () => this.schedule();
+        document.addEventListener('visibilitychange', this.onVisibility);
+
+        // In the theme editor, picking a slide shows it and holds it
+        this.onSelect = (e) => {
+          const i = this.slides.findIndex((s) => s.contains(e.target) || s === e.target);
+          if (i < 0) return;
+          this.held = true;
+          this.go(i);
+        };
+        document.addEventListener('shopify:block:select', this.onSelect);
+
+        const start = Math.max(0, this.slides.findIndex((s) => s.classList.contains('is-on')));
+        this.go(start);
+      }
+
+      disconnectedCallback() {
+        clearTimeout(this.timer);
+        this.io?.disconnect();
+        window.removeEventListener('resize', this.measure);
+        document.removeEventListener('visibilitychange', this.onVisibility);
+        document.removeEventListener('shopify:block:select', this.onSelect);
+      }
+
+      go(index) {
+        const n = this.slides.length;
+        const i = ((index % n) + n) % n;
+        this.cur = i;
+        this.slides.forEach((slide, j) => {
+          const on = j === i;
+          slide.classList.toggle('is-on', on);
+          slide.setAttribute('aria-hidden', String(!on));
+          slide.querySelectorAll('video').forEach((v) => {
+            if (on) v.play?.().catch(() => {});
+            else v.pause?.();
+          });
+        });
+        this.dots.forEach((dot, j) => {
+          dot.classList.remove('is-on');
+          dot.classList.toggle('is-done', j < i);
+          if (j === i) dot.setAttribute('aria-current', 'true');
+          else dot.removeAttribute('aria-current');
+        });
+        if (this.dots[i]) {
+          void this.dots[i].offsetWidth;
+          this.dots[i].classList.add('is-on');
+        }
+        if (this.credit) {
+          const slide = this.slides[i];
+          const text = slide.dataset.credit || '';
+          this.credit.textContent = text;
+          this.credit.hidden = !text;
+          if (slide.dataset.link) this.credit.setAttribute('href', slide.dataset.link);
+          else this.credit.removeAttribute('href');
+        }
+        this.left = this.speed;
+        this.schedule();
+      }
+
+      // Runs the timer while the hero is visible and not paused; a pause keeps the time that was left
+      schedule() {
+        clearTimeout(this.timer);
+        const stopped = !this.auto || this.held || !this.visible || document.hidden;
+        if (stopped && this.started) this.left = Math.max(400, this.left - (Date.now() - this.started));
+        this.started = 0;
+        this.classList.toggle('is-paused', stopped);
+        if (stopped) return;
+        this.started = Date.now();
+        this.timer = setTimeout(() => this.go(this.cur + 1), this.left);
+      }
+    }
+    customElements.define('full-painting', FullPainting);
+  }
+{% endjavascript %}
+
+{% stylesheet %}
+  .fullp__in {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    isolation: isolate;
+    color: var(--fp-text, #ffffff);
+    background: #1a1a1a;
+    touch-action: pan-y;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  /* Heights on computers */
+  .fullp--h-screen {
+    height: calc(100svh - var(--fp-top, 120px));
+    min-height: 520px;
+  }
+  .fullp--h-large {
+    height: 85svh;
+    min-height: 480px;
+  }
+  .fullp--h-medium {
+    height: 68svh;
+    min-height: 440px;
+  }
+  .fullp--h-adapt {
+    aspect-ratio: var(--fp-ratio, 1.5);
+  }
+  .fullp--h-ratio {
+    aspect-ratio: var(--fp-ar, 1.778);
+  }
+  .fullp__slides {
+    position: absolute;
+    inset: 0;
+  }
+  .fullp__slide {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+  .fullp__slide.is-on {
+    opacity: 1;
+  }
+  .fullp__media {
+    position: absolute;
+    inset: 0;
+    display: grid;
+  }
+  .fullp__media--two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .fullp__pic {
+    display: block;
+    min-width: 0;
+    height: 100%;
+  }
+  .fullp__img,
+  .fullp__media > .media-placeholder,
+  .fullp__media > svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* The slow drift, like stepping closer to the painting */
+  @media (prefers-reduced-motion: no-preference) {
+    .fullp--drift .fullp__slide.is-on .fullp__media {
+      animation: fullp-drift calc(var(--speed, 5s) * 2) ease-in-out infinite alternate;
+    }
+  }
+  @keyframes fullp-drift {
+    from {
+      transform: scale(1.04) translate(0, 0);
+    }
+    to {
+      transform: scale(1.1) translate(-2%, -1.5%);
+    }
+  }
+  .fullp__shade {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(10, 10, 10, calc(var(--overlay, 0.5) * 0.55)) 0%, rgba(10, 10, 10, 0) 22%, rgba(10, 10, 10, 0) 40%, rgba(10, 10, 10, var(--overlay, 0.5)) 100%);
+  }
+  .fullp__credit {
+    position: absolute;
+    z-index: 2;
+    top: calc(var(--d) * 1.1);
+    inset-inline: var(--gutter);
+    font: 500 calc(var(--d) * 0.6 * var(--text-scale, 1)) / 1.3 var(--font-body);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.9;
+  }
+  .fullp__credit[href]:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .fullp__copy {
+    position: absolute;
+    z-index: 2;
+    inset-inline: 0;
+    bottom: calc(var(--d) * 2.2);
+  }
+  .fullp__copy-in {
+    display: grid;
+    gap: calc(var(--d) * 0.95);
+    max-width: 40em;
+  }
+  .fullp__nav {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: calc(var(--d) * 0.6);
+    max-width: 24em;
+  }
+  .fullp__dots {
+    flex: 1;
+    display: flex;
+    gap: 6px;
+  }
+  .fullp__dot {
+    flex: 1;
+    min-width: 0;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+  .fullp__dot span {
+    position: relative;
+    display: block;
+    height: 2px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--fp-text, #ffffff) 35%, transparent);
+  }
+  .fullp__dot span::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--fp-text, #ffffff);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  .fullp__dot.is-done span::after {
+    transform: scaleX(1);
+  }
+  .fullp__dot.is-on span::after {
+    animation: fullp-fill var(--speed, 5s) linear forwards;
+  }
+  [data-still] .fullp__dot.is-on span::after {
+    animation: none;
+    transform: scaleX(1);
+  }
+  .fullp__in.is-paused .fullp__dot.is-on span::after {
+    animation-play-state: paused;
+  }
+  @keyframes fullp-fill {
+    to {
+      transform: scaleX(1);
+    }
+  }
+  [dir='rtl'] .fullp__dot span::after {
+    transform-origin: right;
+  }
+  .fullp__pause {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  .fullp__pause svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .fullp__icon-play,
+  .fullp__pause[aria-pressed='true'] .fullp__icon-pause {
+    display: none;
+  }
+  .fullp__pause[aria-pressed='true'] .fullp__icon-play {
+    display: inline;
+  }
+  .fullp__heading {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-style: normal;
+    font-weight: var(--font-heading-weight);
+    font-size: calc(var(--d) * 4.4 * var(--heading-scale, 1) * var(--sec-h, 1) * var(--head-scale, 1));
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: inherit;
+  }
+  .fullp__heading em {
+    font-style: italic;
+  }
+  .fullp__text {
+    max-width: 30em;
+    font-size: calc(var(--d) * 0.86 * var(--text-scale, 1));
+    line-height: 1.7;
+    opacity: 0.92;
+  }
+  .fullp__text p {
+    margin: 0;
+  }
+  .fullp__btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em;
+    padding-top: calc(var(--d) * 0.2);
+  }
+  .fullp__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(var(--d) * 2.6);
+    padding: 0 calc(var(--d) * 1.6);
+    border: 1px solid var(--fp-text, #ffffff);
+    border-radius: var(--button-radius, 0);
+    font: 600 calc(var(--d) * 0.66) / 1 var(--font-button, var(--font-body));
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  .fullp__btn--solid {
+    background: var(--fp-text, #ffffff);
+    color: var(--fp-btn-text, #121212);
+  }
+  .fullp__btn--line {
+    background: transparent;
+    color: var(--fp-text, #ffffff);
+  }
+  .fullp__btn--line:hover {
+    background: color-mix(in srgb, var(--fp-text, #ffffff) 14%, transparent);
+  }
+  /* Text alignment: the whole block of words moves together */
+  .fullp[data-align='center'] .fullp__copy-in {
+    margin-inline: auto;
+    justify-items: center;
+  }
+  .fullp[data-align='end'] .fullp__copy-in {
+    margin-inline-start: auto;
+    justify-items: end;
+  }
+  .fullp[data-align='start'] .fullp__copy-in {
+    justify-items: start;
+  }
+  @media (max-width: 749px) {
+    /* Heights on phones */
+    .fullp__in {
+      height: auto;
+      min-height: 0;
+      aspect-ratio: auto;
+    }
+    .fullp--m-screen {
+      height: calc(100svh - var(--fp-top, 110px));
+      min-height: 440px;
+    }
+    .fullp--m-tall {
+      height: 78svh;
+      min-height: 420px;
+    }
+    .fullp--m-adapt {
+      aspect-ratio: var(--fp-ratio-m, 0.8);
+    }
+    .fullp--m-ratio {
+      aspect-ratio: var(--fp-ar-m, 0.8);
+    }
+    .fullp__media--two {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .fullp__pic--second {
+      display: none;
+    }
+    .fullp__copy {
+      bottom: calc(var(--d) * 1.4);
+    }
+    .fullp__copy-in {
+      gap: calc(var(--d) * 0.8);
+    }
+    .fullp__heading {
+      font-size: calc(var(--d) * 2.35 * var(--heading-scale, 1) * var(--sec-h, 1) * var(--head-scale-m, 1));
+    }
+    .fullp__btns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+      width: 100%;
+    }
+    .fullp__btn {
+      padding: 0 0.8em;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Full painting hero",
+  "tag": "div",
+  "class": "full-painting-section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "blocks": [{ "type": "_painting-slide" }],
+  "max_blocks": 12,
+  "settings": [
+    { "type": "header", "content": "Paintings" },
+    { "type": "paragraph", "content": "Add Slide blocks for your own photos or videos. Without slides, the hero shows the paintings from the collection below." },
+    { "type": "collection", "id": "collection", "label": "Paintings from", "info": "Leave empty to use all your paintings" },
+    { "type": "range", "id": "limit", "label": "Number of paintings", "min": 2, "max": 12, "step": 1, "default": 6 },
+    { "type": "checkbox", "id": "show_credit", "label": "Show the painting's name at the top", "info": "Links to the painting", "default": true },
+    { "type": "header", "content": "Heading and buttons" },
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Wrap a word in *asterisks* to set it in italics", "default": "The great paintings, *framed for your walls.*" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Seven sizes, five frames, ready to hang.</p>" },
+    { "type": "text", "id": "button_label", "label": "First button", "default": "Shop paintings" },
+    { "type": "url", "id": "button_link", "label": "First button link" },
+    { "type": "text", "id": "button2_label", "label": "Second button", "default": "Collections" },
+    { "type": "url", "id": "button2_link", "label": "Second button link" },
+    { "type": "header", "content": "Motion" },
+    { "type": "checkbox", "id": "auto", "label": "Move to the next painting on its own", "info": "Shoppers can pause it, and it stays still for people who turn off motion", "default": true },
+    { "type": "range", "id": "speed", "label": "Seconds per painting", "min": 3, "max": 12, "step": 1, "unit": "s", "default": 5 },
+    { "type": "checkbox", "id": "drift", "label": "Slow drift", "info": "The painting moves very slowly, like stepping closer", "default": true },
+    { "type": "header", "content": "Look" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#FFFFFF" },
+    { "type": "range", "id": "overlay", "label": "Shade behind the text", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 60 },
+    { "type": "header", "content": "Height" },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height on computers",
+      "options": [
+        { "value": "screen", "label": "Fill the screen" },
+        { "value": "large", "label": "Large" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "adapt", "label": "Adapt to the first painting" },
+        { "value": "ratio", "label": "Aspect ratio below" }
+      ],
+      "default": "screen"
+    },
+    {
+      "type": "select",
+      "id": "aspect_ratio",
+      "label": "Aspect ratio on computers",
+      "options": [
+        { "value": "2.333", "label": "21:9" },
+        { "value": "1.778", "label": "16:9" },
+        { "value": "1.5", "label": "3:2" },
+        { "value": "1.333", "label": "4:3" }
+      ],
+      "default": "1.778",
+      "visible_if": "{{ section.settings.height == 'ratio' }}"
+    },
+    {
+      "type": "select",
+      "id": "height_mobile",
+      "label": "Height on phones",
+      "options": [
+        { "value": "screen", "label": "Fill the screen" },
+        { "value": "tall", "label": "Tall" },
+        { "value": "adapt", "label": "Adapt to the first painting" },
+        { "value": "ratio", "label": "Aspect ratio below" }
+      ],
+      "default": "screen"
+    },
+    {
+      "type": "select",
+      "id": "aspect_ratio_mobile",
+      "label": "Aspect ratio on phones",
+      "options": [
+        { "value": "1", "label": "1:1" },
+        { "value": "0.8", "label": "4:5" },
+        { "value": "0.667", "label": "2:3" },
+        { "value": "0.5625", "label": "9:16" }
+      ],
+      "default": "0.8",
+      "visible_if": "{{ section.settings.height_mobile == 'ratio' }}"
+    },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 50, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "heading_size_mobile", "label": "Heading size on phones", "min": 50, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "text_size", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "pad_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "range", "id": "pad_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "header", "content": "Text" },
+    {
+      "type": "select",
+      "id": "sec_text_align",
+      "label": "Text alignment",
+      "info": "Headings, text, labels and buttons. Mirrors on Arabic pages.",
+      "options": [
+        { "value": "default", "label": "As designed" },
+        { "value": "start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "end", "label": "Right" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "sec_heading_font",
+      "label": "Heading font",
+      "options": [
+        { "value": "default", "label": "As designed" },
+        { "value": "heading", "label": "Theme heading font" },
+        { "value": "body", "label": "Theme body font" },
+        { "value": "newsreader", "label": "Newsreader" },
+        { "value": "red_hat_text", "label": "Red Hat Text" },
+        { "value": "instrument_serif", "label": "Instrument Serif" },
+        { "value": "inter_tight", "label": "Inter Tight" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "sec_text_font",
+      "label": "Text font",
+      "options": [
+        { "value": "default", "label": "As designed" },
+        { "value": "heading", "label": "Theme heading font" },
+        { "value": "body", "label": "Theme body font" },
+        { "value": "newsreader", "label": "Newsreader" },
+        { "value": "red_hat_text", "label": "Red Hat Text" },
+        { "value": "instrument_serif", "label": "Instrument Serif" },
+        { "value": "inter_tight", "label": "Inter Tight" }
+      ],
+      "default": "default"
+    }
+  ],
+  "presets": [{ "name": "Full painting hero" }]
+}
+{% endschema %}

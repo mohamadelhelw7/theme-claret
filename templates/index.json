@@ -17,7 +17,8 @@
         "color_scheme": "scheme-1",
         "pad_top": 0,
         "pad_bottom": 48
-      }
+      },
+      "disabled": true
     },
     "styles": {
       "type": "style-rooms",
@@ -99,17 +100,6 @@
         "color_scheme": "scheme-1",
         "pad_top": 80,
         "pad_bottom": 80
-      }
-    },
-    "media_hero": {
-      "type": "folio-hero",
-      "disabled": true,
-      "settings": {
-        "color_scheme": "scheme-3",
-        "height": "standard",
-        "show_strip": false,
-        "padding_top": 0,
-        "padding_bottom": 0
       }
     },
     "reviews": {
@@ -266,10 +256,33 @@
         "padding_top": 80,
         "padding_bottom": 80
       }
+    },
+    "hero_full": {
+      "type": "full-painting",
+      "settings": {
+        "limit": 6,
+        "show_credit": true,
+        "heading": "The great paintings, *framed for your walls.*",
+        "text": "<p>Seven sizes, five frames, ready to hang.</p>",
+        "button_label": "Shop paintings",
+        "button_link": "shopify://collections/all",
+        "button2_label": "Collections",
+        "button2_link": "shopify://collections",
+        "auto": true,
+        "speed": 5,
+        "drift": true,
+        "color_scheme": "scheme-1",
+        "text_color": "#FFFFFF",
+        "overlay": 60,
+        "height": "screen",
+        "height_mobile": "screen",
+        "pad_top": 0,
+        "pad_bottom": 0
+      }
     }
   },
   "order": [
-    "media_hero",
+    "hero_full",
     "hero",
     "styles",
     "spotlight",

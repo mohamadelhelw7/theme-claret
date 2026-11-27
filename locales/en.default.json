@@ -358,6 +358,12 @@
     "style_rooms": {
       "samples": "Scenic,Portraits,Botanical,Wildlife",
       "shop": "Shop the room"
+    },
+    "full_painting": {
+      "paintings": "Paintings",
+      "go_to": "Painting {{ number }}",
+      "pause": "Pause",
+      "play": "Play"
     }
   },
   "contact": {

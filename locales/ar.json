@@ -378,6 +378,12 @@
     "style_rooms": {
       "samples": "مناظر طبيعية,بورتريه,نباتات,حياة برية",
       "shop": "تسوق القاعة"
+    },
+    "full_painting": {
+      "paintings": "اللوحات",
+      "go_to": "اللوحة {{ number }}",
+      "pause": "إيقاف مؤقت",
+      "play": "تشغيل"
     }
   },
   "contact": {

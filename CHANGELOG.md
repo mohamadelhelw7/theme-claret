@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0
+- **New hero: Full painting.** One painting fills the first screen and drifts slowly, with the headline and two buttons at the bottom where the thumb is and the painting's name at the top, linking to it. A new painting fades in every five seconds; shoppers tap the right side for the next, the left side to go back, swipe, pick one from the lines above the headline, or pause. Paintings come from a collection (all paintings by default) or from **Slide** blocks with your own photo, phone photo, second photo or video. Settings for motion, speed, drift, text color, shade, height on computers and phones (fill the screen by default), sizes, padding and text alignment.
+- It opens the homepage. **Shop by colour** is hidden (still in the section list, ready to show again), and the hidden Painting hero placeholder was removed, since the new hero takes a video, one photo or two photos.
+
 ## 1.3.0
 - **Product page: every part is its own block.** The name, the artist line, the price and the star rating were fixed parts of the section; they are now the blocks **Painting name**, **Artist line**, **Painting price** and **Star rating**, so each can be moved, hidden or set on its own. The name and price blocks carry their own **Size** and **Size on phones** (these left the section's settings).
 - **Every product page block has its own Text and Padding:** Alignment (as the section, Left, Center or Right), Font, and Padding Top and Bottom. Changing one block never changes another.
