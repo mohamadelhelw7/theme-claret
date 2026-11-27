@@ -76,6 +76,12 @@ Every section has **Padding** with **Top** and **Bottom** sliders in pixels, inc
 
 Every section also has **Sizes**. Claret's own sections have a slider for each part (headings, text, paintings); the other sections have **Heading size** and **Text size**. **Theme settings → Claret → Overall size** scales everything at once. The space at the sides of the page is in **Theme settings → Layout**.
 
+Every section with text also has **Text**:
+- **Text alignment**: As designed, Left, Center or Right. Headings, text, labels, buttons, icons and links all follow it, and it mirrors on Arabic pages.
+- **Heading font** and **Text font**: As designed, the theme's heading or body font (**Theme settings → Typography**), or one of the fonts that come with Claret: Newsreader, Red Hat Text, Instrument Serif or Inter Tight.
+
+Product cards keep their own settings in **Theme settings → Product cards**.
+
 ## 8. Homepage
 
 The homepage has ten sections: Shop by colour, Shop by style, Spotlight, the Promise band, the Collection grid, Reviews, Before and after, videos (**Seen on the wall**), the email signup and Customer support. Each one can be moved, hidden or removed, and more sections are under **Add section**.

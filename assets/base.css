@@ -4075,3 +4075,80 @@ a.sec-head__side--quiet {
     --frame-scale: calc(var(--card-frame-scale-mobile, 1.25) * var(--sec-art, 1));
   }
 }
+
+/* Text alignment and fonts chosen per section (Text: Text alignment, Heading font, Text font).
+   "As designed" leaves the section as it is. Product cards keep the card settings. */
+[data-align] {
+  font-family: var(--font-body);
+}
+[data-align='start'] {
+  --sec-ta: start;
+  --sec-jc: flex-start;
+  --sec-ai: flex-start;
+}
+[data-align='center'] {
+  --sec-ta: center;
+  --sec-jc: center;
+  --sec-ai: center;
+}
+[data-align='end'] {
+  --sec-ta: end;
+  --sec-jc: flex-end;
+  --sec-ai: flex-end;
+}
+[data-align]:not([data-align='default']) {
+  text-align: var(--sec-ta);
+}
+/* Text, lists and labels */
+[data-align]:not([data-align='default']) :is(h1, h2, h3, h4, h5, h6, p, blockquote, figcaption, ul, ol, li, dl, dt, dd, label, .rte, .eyebrow, .caps, [class*='heading'], [class*='title'], [class*='__text'], [class*='kicker'], [class*='caption'], [class*='__note'], [class*='__meta'], [class*='__label'], [class*='__name'], [class*='__by'], [class*='__desc'], [class*='__copy'], [class*='__body'], [class*='__quote'], [class*='__author'], [class*='__sub'], [class*='__word'], [class*='__copyright'], [class*='__brand']):not(.product-card, .product-card *, .frame *, input, select, textarea) {
+  text-align: var(--sec-ta);
+}
+/* Rows of buttons, links, prices, stars and tiles */
+[data-align]:not([data-align='default']) :is([class*='btns'], [class*='buttons'], [class*='button-row'], [class*='__actions'], [class*='__cta'], [class*='__read'], [class*='__links'], [class*='__row'], [class*='__bottom'], [class*='__policies'], [class*='__payments'], [class*='__social'], .social-icons, [class*='__tiles'], [class*='__priceline'], [class*='__stars'], .stars, [class*='__brand']):not(.product-card, .product-card *, .frame *, input, select, textarea) {
+  justify-content: var(--sec-jc);
+}
+/* Section heads: a title with a link beside it */
+[data-align='center'] :is(.sec-head, .section-header):not(.product-card, .product-card *, .frame *, input, select, textarea) {
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+[data-align='end'] :is(.sec-head, .section-header):not(.product-card, .product-card *, .frame *, input, select, textarea) {
+  flex-direction: row-reverse;
+}
+[data-align]:not([data-align='default']) :is(.section-header__titles, .section-header__main, .section-header__start, .section-header__end):not(.product-card, .product-card *, .frame *, input, select, textarea) {
+  align-items: var(--sec-ai);
+  text-align: var(--sec-ta);
+}
+/* Narrow text boxes and icons follow the text */
+[data-align]:not([data-align='default']) :is(.rte, [class*='__text'], [class*='__desc'], .spot__row):not(.product-card, .product-card *, .frame *, input, select, textarea):not(a *, button *, [class*='__read'] *) {
+  margin-inline: var(--sec-mi, 0);
+}
+/* Product cards keep their own card text setting */
+[data-align]:not([data-align='default']) .product-card {
+  text-align: start;
+}
+/* Claret's own parts: band icons, the footer name, support cards */
+[data-align]:not([data-align='default']) :is(.cband__icon, .cfoot__brand) {
+  justify-self: var(--sec-ta);
+}
+[data-align]:not([data-align='default']) .support--cards .support__card {
+  align-items: var(--sec-ai);
+}
+[data-align='start'] {
+  --sec-mi: 0 auto;
+}
+[data-align='center'] {
+  --sec-mi: auto;
+}
+[data-align='end'] {
+  --sec-mi: auto 0;
+}
+/* Product page parts: the frame and size labels follow the tiles, accordion names take the row's width */
+[data-align]:not([data-align='default']) .fopt__label {
+  justify-content: var(--sec-jc);
+}
+[data-align]:not([data-align='default']) .accordion-row__title {
+  flex: 1 1 auto;
+  justify-content: var(--sec-jc);
+}

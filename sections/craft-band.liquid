@@ -3,10 +3,10 @@
   short note. Claret uses it for seven sizes, five frames and ready to hang.
 {%- endcomment -%}
 
-<section
+<section data-align="{{ section.settings.sec_text_align }}"
   class="section cband color-{{ section.settings.color_scheme }}"
   data-pad
-  style="--pt: {{ section.settings.pad_top }}px; --pb: {{ section.settings.pad_bottom }}px; --cols: {{ section.blocks.size | at_least: 1 }}; --band-pad: {{ section.settings.inner_pad }}px;"
+  style="{%- if section.settings.sec_heading_font != 'default' %} --font-heading: var(--ff-{{ section.settings.sec_heading_font }});{% endif -%}{%- if section.settings.sec_text_font != 'default' %} --font-body: var(--ff-{{ section.settings.sec_text_font }});{% endif %} --pt: {{ section.settings.pad_top }}px; --pb: {{ section.settings.pad_bottom }}px; --cols: {{ section.blocks.size | at_least: 1 }}; --band-pad: {{ section.settings.inner_pad }}px;"
 >
   <div class="page-width">
     <ul class="cband__grid" role="list">
@@ -127,7 +127,11 @@
     { "type": "range", "id": "inner_pad", "label": "Padding inside the band", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
     { "type": "header", "content": "Padding" },
     { "type": "range", "id": "pad_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
-    { "type": "range", "id": "pad_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 }
+    { "type": "range", "id": "pad_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    {"type":"header","content":"Text"},
+    {"type":"select","id":"sec_text_align","label":"Text alignment","info":"Headings, text, labels and buttons. Mirrors on Arabic pages.","options":[{"value":"default","label":"As designed"},{"value":"start","label":"Left"},{"value":"center","label":"Center"},{"value":"end","label":"Right"}],"default":"default"},
+    {"type":"select","id":"sec_heading_font","label":"Heading font","options":[{"value":"default","label":"As designed"},{"value":"heading","label":"Theme heading font"},{"value":"body","label":"Theme body font"},{"value":"newsreader","label":"Newsreader"},{"value":"red_hat_text","label":"Red Hat Text"},{"value":"instrument_serif","label":"Instrument Serif"},{"value":"inter_tight","label":"Inter Tight"}],"default":"default"},
+    {"type":"select","id":"sec_text_font","label":"Text font","options":[{"value":"default","label":"As designed"},{"value":"heading","label":"Theme heading font"},{"value":"body","label":"Theme body font"},{"value":"newsreader","label":"Newsreader"},{"value":"red_hat_text","label":"Red Hat Text"},{"value":"instrument_serif","label":"Instrument Serif"},{"value":"inter_tight","label":"Inter Tight"}],"default":"default"}
   ],
   "presets": [
     {

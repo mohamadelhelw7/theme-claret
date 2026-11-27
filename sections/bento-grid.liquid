@@ -1,8 +1,8 @@
 {%- assign heading_id = 'BentoHeading-' | append: section.id -%}
 
-<section data-pad
+<section data-align="{{ section.settings.sec_text_align }}" data-pad
   class="section bento color-{{ section.settings.color_scheme }}"
-  style="--pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};"
+  style="{%- if section.settings.sec_heading_font != 'default' %} --font-heading: var(--ff-{{ section.settings.sec_heading_font }});{% endif -%}{%- if section.settings.sec_text_font != 'default' %} --font-body: var(--ff-{{ section.settings.sec_text_font }});{% endif %} --pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --sec-h: {{ section.settings.size_heading | divided_by: 100.0 }}; --sec-t: {{ section.settings.size_text | divided_by: 100.0 }};"
   {% if section.settings.heading != blank %}
     aria-labelledby="{{ heading_id }}"
   {% endif %}
@@ -209,7 +209,11 @@
     { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
     { "type": "header", "content": "Sizes" },
     { "type": "range", "id": "size_heading", "label": "Heading size", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
-    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 }
+    { "type": "range", "id": "size_text", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    {"type":"header","content":"Text"},
+    {"type":"select","id":"sec_text_align","label":"Text alignment","info":"Headings, text, labels and buttons. Mirrors on Arabic pages.","options":[{"value":"default","label":"As designed"},{"value":"start","label":"Left"},{"value":"center","label":"Center"},{"value":"end","label":"Right"}],"default":"default"},
+    {"type":"select","id":"sec_heading_font","label":"Heading font","options":[{"value":"default","label":"As designed"},{"value":"heading","label":"Theme heading font"},{"value":"body","label":"Theme body font"},{"value":"newsreader","label":"Newsreader"},{"value":"red_hat_text","label":"Red Hat Text"},{"value":"instrument_serif","label":"Instrument Serif"},{"value":"inter_tight","label":"Inter Tight"}],"default":"default"},
+    {"type":"select","id":"sec_text_font","label":"Text font","options":[{"value":"default","label":"As designed"},{"value":"heading","label":"Theme heading font"},{"value":"body","label":"Theme body font"},{"value":"newsreader","label":"Newsreader"},{"value":"red_hat_text","label":"Red Hat Text"},{"value":"instrument_serif","label":"Instrument Serif"},{"value":"inter_tight","label":"Inter Tight"}],"default":"default"}
   ],
   "presets": [
     {

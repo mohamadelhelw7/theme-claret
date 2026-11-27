@@ -76,6 +76,12 @@ Claret متجر لطبعات اللوحات المؤطرة يُقرأ مثل ك�
 
 وفي كل سكشن **Sizes**: سكاشن Claret الخاصة فيها شريط لكل جزء (العناوين والنص واللوحات)، والسكاشن الأخرى فيها **Heading size** و**Text size**. و**Theme settings ← Claret ← Overall size** يكبّر أو يصغّر كل شيء مرة واحدة.
 
+وفي كل سكشن فيه نص مجموعة **Text**:
+- **Text alignment**: كما في التصميم أو يسار أو وسط أو يمين. تتبعه العناوين والنصوص والعناوين الصغيرة والأزرار والأيقونات والروابط، وينعكس في الصفحات العربية.
+- **Heading font** و**Text font**: كما في التصميم، أو خط العناوين أو خط النص في الثيم (**Theme settings ← Typography**)، أو أحد الخطوط المرفقة مع Claret: Newsreader وRed Hat Text وInstrument Serif وInter Tight.
+
+كروت المنتجات تحتفظ بإعداداتها في **Theme settings ← Product cards**.
+
 ## 8. الصفحة الرئيسية
 
 في الصفحة الرئيسية عشرة سكاشن: Shop by colour وShop by style وSpotlight وPromise band وCollection grid والتقييمات وBefore and after والفيديوهات (**Seen on the wall**) والاشتراك بالبريد وخدمة العملاء. يمكن نقل أي منها أو إخفاؤه أو حذفه، وتجد سكاشن أخرى في **Add section**.

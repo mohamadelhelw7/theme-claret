@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0
+- **Text alignment on every section with text** (72 sections, under Text): As designed, Left, Center or Right. Headings, text, labels, lists, button rows, icons, links and section heads all move together; product cards keep their own card settings. Checked on Claret's homepage, footer and product page in all three positions on computers and phones.
+- **Heading font and Text font on every section with text:** As designed, the theme's heading or body font, Newsreader, Red Hat Text, Instrument Serif or Inter Tight. The Arabic font stays in each choice.
+
 ## 1.1.4
 Shop by colour on phones:
 - The colour strip sits right under the painting instead of below the words, so the painting and the colours are on screen together.
