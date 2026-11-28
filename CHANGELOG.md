@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.0
+- **Fixed: the hanging kit never reached the bag.** With the kit ticked, Add to bag (and the sticky bar) added only the painting. The form's hidden variant field is named `id`, which hides `form.id` in browsers, so the check for the main product form always failed. It now reads the form's id attribute. Buy it now was not affected.
+- **Buy 2, get 1 free bar** in the cart drawer and on the cart page, from Art Cellar's Atelier theme: the same messages and steps (1, 2, gift), counting paintings and leaving out the products you list (the hanger). Theme settings → Cart. English and Arabic.
+- **Offer popup** (Footer group), from Atelier: Buy 2, get 1 free, with three of the store's paintings in Claret's frames marked 1, 2 and Free. Opens after 40% scroll or 20 seconds, stays away 7 days, never on the cart page, a sheet on phones; `?offer-popup=1` shows it.
+- **Product page price** back to its old weight and size (300, 100%, 75% on phones), still centred.
+
 ## 1.6.0
 - **Hanging guide page** (`page.hanging-guide`, the Hanging guide section): Art Cellar's Atelier hanging tips in Claret's look. Each tip draws the mistake beside the right way with the store's own paintings in Claret's frames (too high, too small, wider than the sofa, not centred, uneven set, empty wall). Under them, a size finder: type the furniture's width and see the sizes that fill about two thirds of it, as one painting or a set of 2 or 3, drawn to scale. English and Arabic.
 - **Language selector easier to see.** On computers, a button with a globe; with two languages it names the other language and switches in one click. On phones, a globe and the language code beside the menu button (new setting **Show language selector on phones**). The phone menu's selector has a globe and an outline.

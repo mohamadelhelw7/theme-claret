@@ -164,7 +164,7 @@ The product template has three sections.
 - **The details** sit in a column that stays in view. Every part is its own block, so you can move it, hide it or set it on its own. Each block has **Text** (**Alignment**: as the section, Left, Center or Right, and **Font**) and **Padding** (**Top** and **Bottom**), and changing one never changes the others:
   - **Painting name**: with its own **Size** and **Size on phones**. The name, the artist line, the price and the stars are centred; change each block's **Alignment** to move it.
   - **Artist line**: the artist (the product's vendor, hidden when it is the store's name) and the note from the metafield **custom.artist_note**.
-  - **Painting price**: in a thin serif, with its own **Size** and **Size on phones**.
+  - **Painting price**: with its own **Size** and **Size on phones**.
   - **Star rating**: shows once your review app saves a rating on the product.
   - **Frame and size**: the frame tiles, the size dropdown with every price, and an underlined **Size guide** link that opens a popup with every size in centimetres and inches, and your tips.
   - **Stock status**: not on the page; add it under **Add block** if you want it.
@@ -185,6 +185,8 @@ The product template has three sections.
 
 - **Theme settings → Cart**: after adding to the cart, open the drawer, the cart page or checkout.
 - **Free shipping bar**: turn on **Show a free shipping bar in the cart** and enter **Free shipping from** in your store currency. It's only a message: set the real rate in **Settings → Shipping and delivery**.
+- **Buy 2, get 1 free bar** (from your Atelier theme): in the cart drawer and on the cart page, a message and a line with a step for each painting and a gift at the end: "Add 2 artworks and get 1 FREE", then "Add 1 more artwork — it's FREE", then "Your free art is unlocked!". It starts again after each free painting. Set it in **Theme settings → Cart → Buy 2, get 1 free bar**: how many paintings shoppers pay for and how many are free, whether it shows in an empty cart and on the cart page, and **Products that don't count** (product handles, for example your hanger, `double-face-hanger`). It only shows progress: create the offer itself as an automatic discount in **Discounts**.
+- **Offer popup** (from your Atelier theme): **Buy 2, get 1 free**, with three of your paintings in Claret's frames marked 1, 2 and Free, and **Shop artworks**. It opens after 40% of the page is scrolled or after 20 seconds, whichever comes first, and stays away for 7 days once seen or closed. It never opens on the cart page. Edit it in **Customize → Footer → Offer popup** (the words, the paintings, the frames, when it opens, sizes, padding, alignment and fonts). To see it any time, add `?offer-popup=1` to a page address; in the theme editor it opens while the section is selected.
 - **Cart upsells**: the cart drawer and the cart page suggest products under the cart.
 
 ## 12. Collection page

@@ -231,7 +231,20 @@
     "upsell_add": "Add",
     "free_shipping_remaining": "You're {{ amount }} away from free shipping",
     "free_shipping_unlocked": "You've unlocked free shipping",
-    "free_shipping_progress": "Free shipping progress"
+    "free_shipping_progress": "Free shipping progress",
+    "gift": {
+      "start_html": "Add <strong>[n] artworks</strong> and get [get] FREE",
+      "more_one_html": "Add <strong>1 more artwork</strong> and get [get] FREE",
+      "more_many_html": "Add <strong>[n] more artworks</strong> and get [get] FREE",
+      "more_one_again_html": "Add <strong>1 more artwork</strong> and get another one FREE",
+      "more_many_again_html": "Add <strong>[n] more artworks</strong> and get another one FREE",
+      "next_free_html": "Add <strong>1 more artwork</strong> — it’s FREE",
+      "next_free_again_html": "Add <strong>1 more artwork</strong> — it’s FREE too",
+      "unlocked_one": "Your free art is unlocked!",
+      "unlocked_many": "[n] free artworks unlocked!",
+      "badge_one": "1 free artwork unlocked",
+      "badge_many": "[n] free artworks unlocked"
+    }
   },
   "sections": {
     "bundle": {

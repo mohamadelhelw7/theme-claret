@@ -32,6 +32,8 @@
       </div>
     {%- endif -%}
 
+    {% render 'gift-progress', place: 'page' %}
+
     {%- if cart.item_count > 0 -%}
       <form action="{{ routes.cart_url }}" method="post" id="CartForm" class="main-cart">
         <div class="main-cart__items">

@@ -347,7 +347,8 @@
       if (formData.get('selling_plan')) item.selling_plan = Number(formData.get('selling_plan'));
       const items = [item];
       const info = form.closest('product-info');
-      if (info && form.id === 'ProductForm-' + info.dataset.section) {
+      // getAttribute: the form's hidden field named id hides form.id, so form.id is never the form's own id
+      if (info && form.getAttribute('id') === 'ProductForm-' + info.dataset.section) {
         info.querySelectorAll('input[data-upsell-addon]:checked').forEach((input) => {
           if (input.value) items.push({ id: Number(input.value), quantity: 1 });
         });

@@ -1,0 +1,553 @@
+{%- comment -%}
+  Offer popup, from Art Cellar's Atelier theme, in Claret's look: Buy 2, get 1 free, with three of the store's
+  paintings in Claret's frames, marked 1, 2 and Free. It opens once a shopper has scrolled part of the page or
+  after some seconds, whichever comes first, and stays away for some days once seen or closed. It never opens on
+  the cart or password page. To see it any time, open a page with ?offer-popup=1 at the end of the address. In the
+  theme editor it opens while the section is selected. The discount itself is an automatic discount in Shopify admin.
+{%- endcomment -%}
+
+{%- liquid
+  assign op_collection = section.settings.collection
+  if op_collection == blank
+    assign op_collection = collections.all
+  endif
+  assign op_woods = 'oak,espresso,umber' | split: ','
+  assign op_link = section.settings.button_link | default: routes.all_products_collection_url
+-%}
+
+{%- unless request.page_type == 'cart' or request.page_type == 'password' -%}
+  {%- if section.settings.enable or request.design_mode -%}
+    <offer-popup
+      data-section="{{ section.id }}"
+      data-enabled="{{ section.settings.enable }}"
+      data-scroll="{{ section.settings.scroll_percent }}"
+      data-seconds="{{ section.settings.seconds }}"
+      data-days="{{ section.settings.hide_days }}"
+    >
+      <dialog
+        class="ofp color-{{ section.settings.color_scheme }}"
+        aria-labelledby="OfferTitle-{{ section.id }}"
+        style="{%- if section.settings.sec_heading_font != 'default' %} --font-heading: var(--ff-{{ section.settings.sec_heading_font }});{% endif -%}{%- if section.settings.sec_text_font != 'default' %} --font-body: var(--ff-{{ section.settings.sec_text_font }});{% endif %} --pt: {{ section.settings.pad_top }}px; --pb: {{ section.settings.pad_bottom }}px; --head-scale: {{ section.settings.heading_size | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }};"
+      >
+        <div class="ofp__box" tabindex="-1">
+          <div class="ofp__art" aria-hidden="true">
+            <span class="ofp__handle"></span>
+            <div class="ofp__row">
+            {%- for i in (1..3) -%}
+              {%- liquid
+                assign op_product = op_collection.products[forloop.index0]
+                if section.settings.frame == 'mixed'
+                  assign op_wood = op_woods[forloop.index0]
+                else
+                  assign op_wood = section.settings.frame
+                endif
+              -%}
+              <div class="ofp__piece{% if forloop.index == 2 %} ofp__piece--mid{% endif %}">
+                <div class="ofp__slot">
+                  {% render 'folio-frame', image: op_product.featured_media, wood: op_wood, box_hw: 1.3333, max_w: 100, max_h: 100, sizes: '240px', index: forloop.index %}
+                </div>
+                {%- if forloop.last -%}
+                  <span class="ofp__free">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M5 12v9h14v-9"/><path d="M12 8v13"/><path d="M12 8c-1.5-3-5-4-5.5-2S9 8 12 8zM12 8c1.5-3 5-4 5.5-2S15 8 12 8z"/></svg>
+                    {{- section.settings.free_label | escape -}}
+                  </span>
+                {%- else -%}
+                  <span class="ofp__num">{{ forloop.index }}</span>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+            </div>
+          </div>
+
+          <div class="ofp__text" data-align="{{ section.settings.sec_text_align }}">
+            <button type="button" class="ofp__close" data-offer-close aria-label="{{ 'general.accessibility.close' | t }}">
+              {% render 'icon', icon: 'close' %}
+            </button>
+            {%- if section.settings.eyebrow != blank -%}
+              <p class="ofp__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+            {%- endif -%}
+            <h2 class="ofp__title" id="OfferTitle-{{ section.id }}">{% render 'accent-text', text: section.settings.heading %}</h2>
+            {%- if section.settings.text != blank -%}
+              <p class="ofp__body">{{ section.settings.text | escape }}</p>
+            {%- endif -%}
+            <div class="ofp__actions">
+              {%- if section.settings.button_label != blank -%}
+                <a class="button button--primary" href="{{ op_link }}" data-offer-shop>{{ section.settings.button_label | escape }}</a>
+              {%- endif -%}
+              {%- if section.settings.dismiss_label != blank -%}
+                <button type="button" class="ofp__no" data-offer-close>{{ section.settings.dismiss_label | escape }}</button>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      </dialog>
+    </offer-popup>
+  {%- endif -%}
+{%- endunless -%}
+
+{% javascript %}
+  (() => {
+    if (customElements.get('offer-popup')) return;
+    const KEY = 'claret:offer-popup';
+    const DAY = 864e5;
+    const read = () => {
+      try {
+        return Number(window.localStorage.getItem(KEY)) || 0;
+      } catch (error) {
+        return 0;
+      }
+    };
+    const save = () => {
+      try {
+        window.localStorage.setItem(KEY, String(Date.now()));
+      } catch (error) {
+        /* Storage can be blocked; the popup then shows once per page view at most. */
+      }
+    };
+    const designMode = () => Boolean(window.Shopify && window.Shopify.designMode);
+
+    class OfferPopup extends HTMLElement {
+      connectedCallback() {
+        this.dialog = this.querySelector('dialog');
+        if (!this.dialog || typeof this.dialog.showModal !== 'function') return;
+        const forced = /[?&]offer-popup=1/.test(window.location.search);
+        this.dialog.addEventListener('click', (event) => {
+          if (event.target === this.dialog || event.target.closest('[data-offer-close]')) this.close();
+        });
+        this.dialog.addEventListener('close', () => {
+          document.documentElement.style.overflow = '';
+        });
+        this.querySelector('[data-offer-shop]')?.addEventListener('click', save);
+
+        // Theme editor: open while the section is selected
+        if (designMode()) {
+          this.onSelect = (event) => {
+            if (event.detail && event.detail.sectionId === this.dataset.section) this.show(true);
+          };
+          this.onDeselect = (event) => {
+            if (event.detail && event.detail.sectionId === this.dataset.section) this.close();
+          };
+          document.addEventListener('shopify:section:select', this.onSelect);
+          document.addEventListener('shopify:section:deselect', this.onDeselect);
+          if (!forced) return;
+        }
+        if (forced) {
+          setTimeout(() => this.show(true), 600);
+          return;
+        }
+        if (this.dataset.enabled !== 'true') return;
+        const days = Number(this.dataset.days) || 7;
+        if (Date.now() - read() < days * DAY) return;
+
+        // After part of the page is scrolled, or after some seconds, whichever comes first
+        const target = Number(this.dataset.scroll) || 40;
+        this.onScroll = () => {
+          const room = document.documentElement.scrollHeight - window.innerHeight;
+          if (room > 0 && (window.scrollY / room) * 100 >= target) this.show();
+        };
+        this.timer = setTimeout(() => this.show(), (Number(this.dataset.seconds) || 20) * 1000);
+        window.addEventListener('scroll', this.onScroll, { passive: true });
+      }
+
+      disconnectedCallback() {
+        this.stop();
+        clearTimeout(this.retry);
+        if (this.onSelect) document.removeEventListener('shopify:section:select', this.onSelect);
+        if (this.onDeselect) document.removeEventListener('shopify:section:deselect', this.onDeselect);
+      }
+
+      stop() {
+        clearTimeout(this.timer);
+        if (this.onScroll) window.removeEventListener('scroll', this.onScroll);
+      }
+
+      show(force) {
+        if (this.dialog.open || (this.shown && !force)) return;
+        // Wait while the cart, the menu or another popup is open
+        if (!force && document.querySelector('dialog[open]')) {
+          clearTimeout(this.retry);
+          this.retry = setTimeout(() => this.show(), 4000);
+          return;
+        }
+        this.shown = true;
+        this.stop();
+        document.documentElement.style.overflow = 'hidden';
+        this.dialog.showModal();
+        this.querySelector('.ofp__box')?.focus({ preventScroll: true });
+        if (!designMode()) save();
+      }
+
+      close() {
+        if (this.dialog.open) this.dialog.close();
+      }
+    }
+    customElements.define('offer-popup', OfferPopup);
+  })();
+{% endjavascript %}
+
+{% stylesheet %}
+  .ofp {
+    width: min(880px, calc(100vw - 48px));
+    max-width: none;
+    max-height: none;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    overflow: visible;
+    background: transparent;
+    color: var(--color-text);
+    font-family: var(--font-body);
+  }
+  .ofp::backdrop {
+    background: rgb(0 0 0 / 0.45);
+  }
+  .ofp[open] {
+    animation: ofp-in 0.35s ease both;
+  }
+  .ofp[open]::backdrop {
+    animation: ofp-fade 0.35s ease both;
+  }
+  @keyframes ofp-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes ofp-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .ofp__box {
+    display: flex;
+    min-height: 520px;
+    background: var(--color-bg);
+    outline: none;
+  }
+
+  /* Three paintings on a piece of wall: 1, 2 and the free one */
+  .ofp__art {
+    position: relative;
+    flex: 0 0 52%;
+    display: grid;
+    place-items: center;
+    padding: 32px 28px;
+    background: radial-gradient(70% 60% at 50% 42%, var(--wall-hi, #f8f8f7), var(--wall, #f1f1f0));
+  }
+  .ofp__handle {
+    display: none;
+  }
+  /* The three paintings share one bottom line, so the 1, 2 and Free markers sit level */
+  .ofp__row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 5%;
+    width: 100%;
+  }
+  .ofp__piece {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 27%;
+  }
+  .ofp__piece--mid {
+    width: 33%;
+  }
+  .ofp__slot {
+    position: relative;
+    display: grid;
+    place-items: end center;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    container-type: inline-size;
+  }
+  .ofp__num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--color-text);
+    border-radius: 50%;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .ofp__free {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 12px;
+    background: var(--color-button);
+    color: var(--color-button-text);
+    font: 500 11px / 1 var(--font-body);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .ofp__free svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  /* The words */
+  .ofp__text {
+    position: relative;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: var(--sec-ai, stretch);
+    gap: 18px;
+    padding: var(--pt, 56px) 48px var(--pb, 44px);
+    text-align: var(--sec-ta, start);
+  }
+  .ofp__close {
+    position: absolute;
+    top: 12px;
+    inset-inline-end: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+  .ofp__close .icon {
+    width: 18px;
+    height: 18px;
+  }
+  .ofp__eyebrow {
+    margin: 0;
+    font: 500 calc(var(--d) * 0.64 * var(--text-scale, 1)) / 1.4 var(--font-body);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .ofp__title {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    font-style: normal;
+    font-size: calc(var(--d) * 3.3 * var(--heading-scale, 1) * var(--head-scale, 1));
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+  .ofp__title em {
+    font-style: italic;
+  }
+  .ofp__body {
+    max-width: 22em;
+    margin: 0;
+    color: var(--color-muted);
+    font-size: calc(var(--d) * 0.82 * var(--text-scale, 1));
+    line-height: 1.6;
+  }
+  .ofp__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-self: stretch;
+    margin-top: 10px;
+  }
+  .ofp__actions .button {
+    width: 100%;
+  }
+  .ofp__no {
+    min-height: 44px;
+    border: 0;
+    background: transparent;
+    color: var(--color-muted);
+    font-family: inherit;
+    font-size: calc(var(--d) * 0.74 * var(--text-scale, 1));
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .ofp__close:focus-visible,
+  .ofp__no:focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  /* Phones: a sheet that slides up from the bottom */
+  @media (max-width: 749px) {
+    .ofp {
+      width: 100vw;
+      margin: auto 0 0;
+    }
+    .ofp[open] {
+      animation: ofp-up 0.35s ease both;
+    }
+    @keyframes ofp-up {
+      from {
+        transform: translateY(100%);
+      }
+      to {
+        transform: none;
+      }
+    }
+    .ofp__box {
+      flex-direction: column;
+      min-height: 0;
+      max-height: 92vh;
+      max-height: 92dvh;
+      overflow-y: auto;
+    }
+    .ofp__art {
+      flex: none;
+      height: 236px;
+      padding: 22px 16px 14px;
+    }
+    .ofp__row {
+      gap: 4%;
+    }
+    .ofp__handle {
+      display: block;
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      width: 36px;
+      height: 3px;
+      margin-left: -18px;
+      border-radius: 2px;
+      background: rgb(0 0 0 / 0.2);
+    }
+    .ofp__piece {
+      gap: 10px;
+      width: 25%;
+    }
+    .ofp__piece--mid {
+      width: 30%;
+    }
+    .ofp__num {
+      width: 24px;
+      height: 24px;
+      font-size: 10px;
+    }
+    .ofp__free {
+      height: 24px;
+      padding: 0 10px;
+      font-size: 10px;
+    }
+    .ofp__text {
+      padding: calc(var(--pt, 56px) * 0.45) 20px calc(var(--pb, 44px) * 0.6);
+      gap: 12px;
+    }
+    .ofp__close {
+      top: 6px;
+    }
+    .ofp__title {
+      font-size: calc(var(--d) * 2.5 * var(--heading-scale, 1) * var(--head-scale, 1));
+    }
+    .ofp__body {
+      max-width: none;
+    }
+    .ofp__actions {
+      margin-top: 8px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ofp[open],
+    .ofp[open]::backdrop {
+      animation: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Offer popup",
+  "tag": "div",
+  "class": "offer-popup-section",
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    { "type": "checkbox", "id": "enable", "label": "Show the popup", "info": "The offer itself is an automatic discount in Discounts. Add ?offer-popup=1 to any page address to see the popup.", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Words" },
+    { "type": "text", "id": "eyebrow", "label": "Small title", "default": "Special offer" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "info": "Put a word between *stars* to set it in italics", "default": "Buy 2,\nget 1 free" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Choose any three artworks and the third one is on us. No code needed, it’s added automatically at checkout." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop artworks" },
+    { "type": "url", "id": "button_link", "label": "Button link", "info": "Empty: all paintings" },
+    { "type": "text", "id": "dismiss_label", "label": "Close link", "default": "No thanks" },
+    { "type": "text", "id": "free_label", "label": "Free label", "default": "Free" },
+    { "type": "header", "content": "Paintings" },
+    { "type": "collection", "id": "collection", "label": "Paintings from", "info": "The first three paintings. Empty: all paintings" },
+    {
+      "type": "select",
+      "id": "frame",
+      "label": "Frames",
+      "options": [
+        { "value": "mixed", "label": "Oak, espresso and umber" },
+        { "value": "oak", "label": "Oak" },
+        { "value": "umber", "label": "Umber" },
+        { "value": "espresso", "label": "Espresso" },
+        { "value": "black", "label": "Black" },
+        { "value": "none", "label": "No frame" }
+      ],
+      "default": "mixed"
+    },
+    { "type": "header", "content": "When it opens" },
+    { "type": "range", "id": "scroll_percent", "label": "After this much of the page is scrolled", "min": 10, "max": 90, "step": 5, "unit": "%", "default": 40 },
+    { "type": "range", "id": "seconds", "label": "Or after", "info": "Whichever comes first", "min": 5, "max": 60, "step": 1, "unit": "s", "default": 20 },
+    { "type": "range", "id": "hide_days", "label": "Then stay away for", "min": 1, "max": 30, "step": 1, "unit": "d", "default": 7 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 50, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "text_size", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "pad_top", "label": "Top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "pad_bottom", "label": "Bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 44 },
+    { "type": "header", "content": "Text" },
+    {
+      "type": "select", "id": "sec_text_align", "label": "Text alignment", "info": "Mirrors on Arabic pages.",
+      "options": [
+        { "value": "default", "label": "As designed" },
+        { "value": "start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "end", "label": "Right" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select", "id": "sec_heading_font", "label": "Heading font",
+      "options": [
+        { "value": "default", "label": "As designed" },
+        { "value": "heading", "label": "Theme heading font" },
+        { "value": "body", "label": "Theme body font" },
+        { "value": "newsreader", "label": "Newsreader" },
+        { "value": "red_hat_text", "label": "Red Hat Text" },
+        { "value": "instrument_serif", "label": "Instrument Serif" },
+        { "value": "inter_tight", "label": "Inter Tight" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select", "id": "sec_text_font", "label": "Text font",
+      "options": [
+        { "value": "default", "label": "As designed" },
+        { "value": "heading", "label": "Theme heading font" },
+        { "value": "body", "label": "Theme body font" },
+        { "value": "newsreader", "label": "Newsreader" },
+        { "value": "red_hat_text", "label": "Red Hat Text" },
+        { "value": "instrument_serif", "label": "Instrument Serif" },
+        { "value": "inter_tight", "label": "Inter Tight" }
+      ],
+      "default": "default"
+    }
+  ],
+  "presets": [{ "name": "Offer popup" }]
+}
+{% endschema %}

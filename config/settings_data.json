@@ -213,7 +213,8 @@
       "card_frame_size": 100,
       "card_title_size": 100,
       "card_price_size": 100,
-      "card_frame_size_mobile": 125
+      "card_frame_size_mobile": 125,
+      "gift_enable": true
     },
     "Gallery": {
       "type_heading_font": "newsreader_n2",

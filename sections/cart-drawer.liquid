@@ -44,6 +44,8 @@
         </div>
       {%- endif -%}
 
+      {% render 'gift-progress', place: 'drawer' %}
+
       {%- if cart.item_count > 0 -%}
         <div class="cart-drawer__body">
           <ul class="cart-drawer__items" role="list">

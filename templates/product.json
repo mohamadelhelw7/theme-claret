@@ -95,9 +95,7 @@
         "price": {
           "type": "folio-price",
           "settings": {
-            "block_align": "center",
-            "size": 85,
-            "size_mobile": 65
+            "block_align": "center"
           }
         },
         "rating": {

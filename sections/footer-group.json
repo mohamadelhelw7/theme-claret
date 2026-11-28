@@ -85,11 +85,18 @@
         "color_scheme": "scheme-2",
         "show_labels": true
       }
+    },
+    "offer": {
+      "type": "offer-popup",
+      "settings": {
+        "enable": true
+      }
     }
   },
   "order": [
     "footer",
     "popup",
+    "offer",
     "tab_bar"
   ]
 }

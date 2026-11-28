@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "Claret",
-    "theme_version": "1.6.0",
+    "theme_version": "1.7.0",
     "theme_author": "Mohamed Elhelw",
     "theme_documentation_url": "https://github.com/mohamadelhelw7/theme-claret",
     "theme_support_url": "https://github.com/mohamadelhelw7/theme-claret"
@@ -1328,6 +1328,57 @@
         "id": "free_shipping_threshold",
         "label": "Free shipping from",
         "info": "Your free shipping amount in your store currency, without decimals"
+      },
+      {
+        "type": "header",
+        "content": "Buy 2, get 1 free bar"
+      },
+      {
+        "type": "paragraph",
+        "content": "A bar in the cart drawer and on the cart page that counts the paintings in the cart toward the free one. It only shows progress: create the real offer as an automatic discount in Discounts."
+      },
+      {
+        "type": "checkbox",
+        "id": "gift_enable",
+        "label": "Show the offer bar",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "gift_buy",
+        "label": "Paintings shoppers pay for",
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "default": 2
+      },
+      {
+        "type": "range",
+        "id": "gift_get",
+        "label": "Free paintings",
+        "min": 1,
+        "max": 3,
+        "step": 1,
+        "default": 1
+      },
+      {
+        "type": "checkbox",
+        "id": "gift_show_empty",
+        "label": "Show the offer when the cart is empty",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "gift_show_page",
+        "label": "Also show on the cart page",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "gift_exclude",
+        "label": "Products that don't count",
+        "info": "Product handles separated by commas, for example a hanging kit. The handle is the last part of the product's address.",
+        "default": "double-face-hanger"
       },
       {
         "type": "header",

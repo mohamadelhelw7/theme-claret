@@ -247,7 +247,20 @@
     "upsell_add": "أضف",
     "free_shipping_remaining": "باقي {{ amount }} وتحصل على شحن مجاني",
     "free_shipping_unlocked": "مبروك! حصلت على شحن مجاني",
-    "free_shipping_progress": "التقدم نحو الشحن المجاني"
+    "free_shipping_progress": "التقدم نحو الشحن المجاني",
+    "gift": {
+      "start_html": "أضف <strong>[n] لوحة</strong> واحصل على [get] مجانًا",
+      "more_one_html": "أضف <strong>لوحة واحدة أخرى</strong> واحصل على [get] مجانًا",
+      "more_many_html": "أضف <strong>[n] لوحة أخرى</strong> واحصل على [get] مجانًا",
+      "more_one_again_html": "أضف <strong>لوحة واحدة أخرى</strong> واحصل على لوحة أخرى مجانًا",
+      "more_many_again_html": "أضف <strong>[n] لوحة أخرى</strong> واحصل على لوحة أخرى مجانًا",
+      "next_free_html": "أضف <strong>لوحة واحدة أخرى</strong>، وستكون مجانًا",
+      "next_free_again_html": "أضف <strong>لوحة واحدة أخرى</strong>، وستكون مجانًا أيضًا",
+      "unlocked_one": "حصلت على لوحتك المجانية!",
+      "unlocked_many": "حصلت على [n] لوحة مجانية!",
+      "badge_one": "لوحة مجانية واحدة",
+      "badge_many": "[n] لوحة مجانية"
+    }
   },
   "sections": {
     "bundle": {
