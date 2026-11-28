@@ -239,6 +239,12 @@ The **Claret footer**, on the wall color under a black line:
 | Reviews | `reviews` |
 | Shipping | `shipping`: the delivery areas with time and fee |
 | Build your bundle | `bundle`: the Bundle builder |
+| Size guide | `size-guide`: the Size guide and customer support |
+| Bulk orders | `bulk-orders`: the Bulk orders page with its quote form |
+
+**Size guide page.** Shoppers enter their wall and furniture sizes, pick a shape, the number of pieces and a size, and see it drawn to scale on their wall, with a custom size, a choice of artworks and Claret's five frames. Link to it from a painting with `/pages/size-guide?product=<the product's handle>`: the guide then shows that painting's own sizes (from its **Size** option) and its photo. Without a product it uses the size lists in the section. Settings: the words, custom sizes, the size lists, the hanging rules (gap, height above furniture), the wall colour, sizes, padding and alignment.
+
+**Bulk orders page.** The heading with your paintings hung on a wall, who it's for, what you get, how it works, a quote form and questions. Every word is a setting. The form sends to your store's contact email (**Settings → Store details**), with each answer labelled (ordering as, company, phone, type of space, budget, pieces, city and the project). The types of space and budgets are lists you can change, separated with |. WhatsApp buttons use the section's WhatsApp link, or the WhatsApp number in Theme settings.
 
 ## 19. Speed and accessibility
 

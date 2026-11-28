@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {}
+    },
+    "bulk": {
+      "type": "bulk-orders",
+      "settings": {
+        "eyebrow": "Bulk & trade orders",
+        "heading": "Deals for bulk orders",
+        "intro": "Fitting out an office, hotel, café or a client’s home? We print fine art on cotton canvas, stretched over wooden frames, in the sizes your walls need.",
+        "minimum_note": "Bulk orders usually start from around EGP 15,000.",
+        "whatsapp_message": "Hi Art Cellar, I'd like to ask about a bulk order.",
+        "faq_minimum": "Bulk orders usually start from around EGP 15,000. If your project is a little smaller, send it anyway and we’ll see what we can do.",
+        "faq_time": "Usually [X–Y] working days, depending on the number of pieces. We’ll confirm the date with your quote.",
+        "max_width": 1320
+      }
+    }
+  },
+  "order": [
+    "main",
+    "bulk"
+  ]
+}

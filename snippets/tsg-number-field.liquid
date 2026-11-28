@@ -1,0 +1,29 @@
+{% doc %}
+  A number field with − and + buttons and a cm unit, used by the Size guide page section.
+
+  @param {string} field - The guide's field name (wallW, wallH, furnW, customW or customH)
+  @param {string} label - The field's label
+  @param {number} min - Smallest value
+  @param {number} max - Largest value
+  @param {number} step - How much − and + change it
+  @param {string} sid - The section id, for unique ids
+
+  @example
+  {% render 'tsg-number-field', field: 'wallW', label: 'Width', min: 100, max: 800, step: 10, sid: section.id %}
+{% enddoc %}
+
+{%- liquid
+  assign input_id = 'tsg-' | append: sid | append: '-' | append: field
+  assign label_down = label | downcase
+  assign dec_label = 'sections.wall_size_guide.decrease' | t | replace: '[label]', label_down
+  assign inc_label = 'sections.wall_size_guide.increase' | t | replace: '[label]', label_down
+-%}
+<div class="tsg__field">
+  <label for="{{ input_id }}">{{ label }}</label>
+  <div class="tsg__stepper">
+    <button type="button" data-tsg-step="{{ field }}" data-tsg-delta="-{{ step }}" aria-label="{{ dec_label | escape }}">−</button>
+    <input id="{{ input_id }}" type="number" inputmode="numeric" min="{{ min }}" max="{{ max }}" step="1" data-tsg-field="{{ field }}">
+    <span class="tsg__unit">{{ 'sections.wall_size_guide.cm' | t }}</span>
+    <button type="button" data-tsg-step="{{ field }}" data-tsg-delta="{{ step }}" aria-label="{{ inc_label | escape }}">+</button>
+  </div>
+</div>

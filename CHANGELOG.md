@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0
+- **Shop by colour is the homepage hero again.** The Full painting hero stays in the theme, hidden on the homepage, for a video or photo hero.
+- **Size guide page** (`page.size-guide`, the Size guide section): the same tool as Art Cellar's Atelier size guide, in Claret's look. Wall and furniture sizes, shape, number of pieces, sizes, a custom size, artworks and Claret's five frames, drawn to scale. Opened with `?product=<handle>`, it shows that painting's own sizes and photo. All words in English and Arabic; the number fields fit narrow phones.
+- **Bulk orders page** (`page.bulk-orders`, the Bulk orders section): the same page and quote form as Art Cellar's Atelier one, in Claret's look, with the store's paintings hung on the wall at the top. Every word is a setting, the form labels are in English and Arabic, and WhatsApp falls back to the number in Theme settings.
+
 ## 1.4.0
 - **New hero: Full painting.** One painting fills the first screen and drifts slowly, with the headline and two buttons at the bottom where the thumb is and the painting's name at the top, linking to it. A new painting fades in every five seconds; shoppers tap the right side for the next, the left side to go back, swipe, pick one from the lines above the headline, or pause. Paintings come from a collection (all paintings by default) or from **Slide** blocks with your own photo, phone photo, second photo or video. Settings for motion, speed, drift, text color, shade, height on computers and phones (fill the screen by default), sizes, padding and text alignment.
 - It opens the homepage. **Shop by colour** is hidden (still in the section list, ready to show again), and the hidden Painting hero placeholder was removed, since the new hero takes a video, one photo or two photos.

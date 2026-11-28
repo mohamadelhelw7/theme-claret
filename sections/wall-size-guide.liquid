@@ -1,0 +1,922 @@
+{%- comment -%}
+  Size guide (page section), the same tool as Art Cellar's Atelier guide, in Claret's look.
+  Add it to a page template (page.size-guide). Open it from a product with /pages/size-guide?product=<handle>:
+  with a product handle, the guide reads that product's own sizes from its Size option and offers its photo
+  as the artwork; without one it uses the size sets below. The wall, furniture and art are drawn to scale.
+{%- endcomment -%}
+
+{%- liquid
+  assign sid = section.id
+-%}
+
+<tac-size-guide
+  id="tsg-{{ sid }}"
+  class="tsg color-{{ section.settings.color_scheme }}"
+  style="{%- if section.settings.sec_heading_font != 'default' %} --font-heading: var(--ff-{{ section.settings.sec_heading_font }});{% endif -%}{%- if section.settings.sec_text_font != 'default' %} --font-body: var(--ff-{{ section.settings.sec_text_font }});{% endif %} --tsg-max: {{ section.settings.max_width }}px; --pt: {{ section.settings.padding_top }}px; --pb: {{ section.settings.padding_bottom }}px; --tsg-wall-color: {{ section.settings.wall_color }}; --head-scale: {{ section.settings.heading_size | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }};"
+>
+  <script type="application/json" data-tsg-config>
+    {
+      "sizeOption": {{ section.settings.size_option_name | json }},
+      "sizeOrder": {{ section.settings.size_order | json }},
+      "square": {{ section.settings.sizes_square | json }},
+      "vertical": {{ section.settings.sizes_vertical | json }},
+      "horizontal": {{ section.settings.sizes_horizontal | json }},
+      "gap": {{ section.settings.gap_cm | json }},
+      "above": {{ section.settings.above_furniture | json }},
+      "lift": {{ section.settings.wall_lift | json }},
+      "pieces": {{ section.settings.default_pieces | plus: 0 | json }},
+      "customMin": {{ section.settings.custom_min | json }},
+      "customMax": {{ section.settings.custom_max | json }},
+      "wallH": {{ section.settings.default_wall_height | json }},
+      "root": {{ routes.root_url | json }},
+      "t": {
+        "furn": {
+          "sofa": {{ 'sections.wall_size_guide.sofa' | t | json }},
+          "bed": {{ 'sections.wall_size_guide.bed' | t | json }},
+          "console": {{ 'sections.wall_size_guide.console' | t | json }},
+          "dining": {{ 'sections.wall_size_guide.dining' | t | json }},
+          "desk": {{ 'sections.wall_size_guide.desk' | t | json }},
+          "bench": {{ 'sections.wall_size_guide.bench' | t | json }},
+          "fireplace": {{ 'sections.wall_size_guide.fireplace' | t | json }},
+          "wall": {{ 'sections.wall_size_guide.wall_only' | t | json }}
+        },
+        "tones": {
+          "soft": {{ 'sections.wall_size_guide.tone_soft' | t | json }},
+          "gold": {{ 'sections.wall_size_guide.tone_gold' | t | json }},
+          "bright": {{ 'sections.wall_size_guide.tone_bright' | t | json }},
+          "dark": {{ 'sections.wall_size_guide.tone_dark' | t | json }},
+          "light": {{ 'sections.wall_size_guide.tone_light' | t | json }},
+          "vivid": {{ 'sections.wall_size_guide.tone_vivid' | t | json }},
+          "muted": {{ 'sections.wall_size_guide.tone_muted' | t | json }},
+          "bold": {{ 'sections.wall_size_guide.tone_bold' | t | json }}
+        },
+        "itemWidth": {{ 'sections.wall_size_guide.item_width' | t | json }},
+        "cm": {{ 'sections.wall_size_guide.cm' | t | json }},
+        "thisArtwork": {{ 'sections.wall_size_guide.this_artwork' | t | json }},
+        "photo": {{ 'sections.wall_size_guide.photo' | t | json }}
+      }
+    }
+  </script>
+
+  <div class="tsg__inner">
+    <div class="tsg__head" data-align="{{ section.settings.sec_text_align }}">
+      {%- if section.settings.eyebrow != blank -%}
+        <div class="tsg__label tsg__label--muted">{{ section.settings.eyebrow | escape }}</div>
+      {%- endif -%}
+      <h1 class="tsg__title">{% render 'accent-text', text: section.settings.heading %}</h1>
+      {%- if section.settings.intro != blank -%}
+        <p class="tsg__intro">{{ section.settings.intro | escape }}</p>
+      {%- endif -%}
+      <p class="tsg__product" data-tsg-product hidden>{{ 'sections.wall_size_guide.showing_for' | t }} <strong data-tsg-product-name></strong></p>
+      {%- if section.settings.show_custom and section.settings.custom_badge != blank -%}
+        <div class="tsg__badge">{{ section.settings.custom_badge | escape }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="tsg__layout">
+      <section class="tsg__scene-col" aria-label="{{ 'sections.wall_size_guide.scale_preview' | t }}">
+        <div class="tsg__card">
+          <div class="tsg__scene-meta">
+            <div>{{ 'sections.wall_size_guide.wall' | t }} · <strong data-tsg-wall-label></strong></div>
+            <div>{{ 'sections.wall_size_guide.drawn_to_scale' | t }}</div>
+          </div>
+          <div class="tsg__scene" data-tsg-scene></div>
+          <div class="tsg__floor-dims" data-tsg-floor></div>
+        </div>
+        <div class="tsg__warn" role="status" data-tsg-warn-wide hidden>{{ 'sections.wall_size_guide.warn_wide' | t }}</div>
+        <div class="tsg__warn" role="status" data-tsg-warn-tall hidden>{{ 'sections.wall_size_guide.warn_tall' | t }}</div>
+      </section>
+
+      <section class="tsg__controls" aria-label="{{ 'sections.wall_size_guide.your_space' | t }}">
+        <div class="tsg__group">
+          <h2 class="tsg__label">{{ 'sections.wall_size_guide.your_wall' | t }}</h2>
+          <div class="tsg__fields">
+            {%- assign l_width = 'sections.wall_size_guide.width' | t -%}
+            {%- assign l_height = 'sections.wall_size_guide.height' | t -%}
+            {%- render 'tsg-number-field', field: 'wallW', label: l_width, min: 100, max: 800, step: 10, sid: sid -%}
+            {%- render 'tsg-number-field', field: 'wallH', label: l_height, min: 200, max: 400, step: 10, sid: sid -%}
+          </div>
+        </div>
+
+        <div class="tsg__group">
+          <h2 class="tsg__label">{{ 'sections.wall_size_guide.furniture' | t }}</h2>
+          <div class="tsg__grid2">
+            <button type="button" class="tsg__opt" data-tsg-furniture="sofa">{{ 'sections.wall_size_guide.sofa' | t }}</button>
+            <button type="button" class="tsg__opt" data-tsg-furniture="bed">{{ 'sections.wall_size_guide.bed' | t }}</button>
+            <button type="button" class="tsg__opt" data-tsg-furniture="wall">{{ 'sections.wall_size_guide.wall_only' | t }}</button>
+            <button type="button" class="tsg__opt" data-tsg-furniture="console">{{ 'sections.wall_size_guide.console' | t }}</button>
+            <button type="button" class="tsg__opt" data-tsg-furniture="dining">{{ 'sections.wall_size_guide.dining' | t }}</button>
+            <button type="button" class="tsg__opt" data-tsg-furniture="fireplace">{{ 'sections.wall_size_guide.fireplace' | t }}</button>
+            <button type="button" class="tsg__opt" data-tsg-furniture="desk">{{ 'sections.wall_size_guide.desk' | t }}</button>
+            <button type="button" class="tsg__opt" data-tsg-furniture="bench">{{ 'sections.wall_size_guide.bench' | t }}</button>
+          </div>
+          <div class="tsg__fields tsg__fields--top" data-tsg-furn-field>
+            {%- assign l_sofa = 'sections.wall_size_guide.sofa' | t -%}
+            {%- assign l_furn = 'sections.wall_size_guide.item_width' | t | replace: '[item]', l_sofa -%}
+            {%- render 'tsg-number-field', field: 'furnW', label: l_furn, min: 60, max: 400, step: 10, sid: sid -%}
+          </div>
+        </div>
+
+        <div class="tsg__group" data-tsg-shape-group>
+          <h2 class="tsg__label">{{ 'sections.wall_size_guide.shape' | t }}</h2>
+          <div class="tsg__pills">
+            <button type="button" class="tsg__opt tsg__opt--pill" data-tsg-shape="square"><span class="tsg__shape-icon" style="width:11px;height:11px" aria-hidden="true"></span>{{ 'sections.wall_size_guide.square' | t }}</button>
+            <button type="button" class="tsg__opt tsg__opt--pill" data-tsg-shape="vertical"><span class="tsg__shape-icon" style="width:9px;height:13px" aria-hidden="true"></span>{{ 'sections.wall_size_guide.vertical' | t }}</button>
+            <button type="button" class="tsg__opt tsg__opt--pill" data-tsg-shape="horizontal"><span class="tsg__shape-icon" style="width:13px;height:9px" aria-hidden="true"></span>{{ 'sections.wall_size_guide.horizontal' | t }}</button>
+          </div>
+        </div>
+
+        <div class="tsg__group">
+          <h2 class="tsg__label">{{ 'sections.wall_size_guide.pieces' | t }}</h2>
+          <div class="tsg__pills">
+            <button type="button" class="tsg__opt tsg__opt--pill" data-tsg-pieces="1">{{ 'sections.wall_size_guide.single' | t }}</button>
+            <button type="button" class="tsg__opt tsg__opt--pill" data-tsg-pieces="2">{{ 'sections.wall_size_guide.set_2' | t }}</button>
+            <button type="button" class="tsg__opt tsg__opt--pill" data-tsg-pieces="3">{{ 'sections.wall_size_guide.set_3' | t }}</button>
+          </div>
+        </div>
+
+        <div class="tsg__group">
+          <h2 class="tsg__label">{{ 'sections.wall_size_guide.size' | t }}</h2>
+          <div class="tsg__sizes" data-tsg-sizes></div>
+        </div>
+
+        {%- if section.settings.show_custom -%}
+          <div class="tsg__custom" data-tsg-custom-panel>
+            <div class="tsg__custom-head">
+              <div>
+                <h2 class="tsg__label">{{ section.settings.custom_title | escape }}</h2>
+                <p class="tsg__custom-text">{{ section.settings.custom_text | escape }}</p>
+              </div>
+              <span class="tsg__selected" data-tsg-custom-tag hidden>{{ 'sections.wall_size_guide.selected' | t }}</span>
+            </div>
+            <div class="tsg__fields">
+              {%- assign l_aw = 'sections.wall_size_guide.art_width' | t -%}
+              {%- assign l_ah = 'sections.wall_size_guide.art_height' | t -%}
+              {%- render 'tsg-number-field', field: 'customW', label: l_aw, min: section.settings.custom_min, max: section.settings.custom_max, step: 5, sid: sid -%}
+              {%- render 'tsg-number-field', field: 'customH', label: l_ah, min: section.settings.custom_min, max: section.settings.custom_max, step: 5, sid: sid -%}
+            </div>
+            <button type="button" class="tsg__btn tsg__btn--solid" data-tsg-custom>{{ 'sections.wall_size_guide.preview_size' | t }}</button>
+            {%- if section.settings.custom_link != blank -%}
+              <a class="tsg__custom-link" href="{{ section.settings.custom_link }}">{{ section.settings.custom_link_label | escape }}</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        <div class="tsg__group">
+          <h2 class="tsg__label">{{ 'sections.wall_size_guide.preview_art' | t }}</h2>
+          <p class="tsg__group-hint">{{ 'sections.wall_size_guide.preview_art_hint' | t }}</p>
+          <div class="tsg__arts" data-tsg-arts></div>
+        </div>
+
+        <div class="tsg__group" data-tsg-frame-group>
+          <h2 class="tsg__label">{{ 'sections.wall_size_guide.frame' | t }}</h2>
+          <div class="tsg__pills">
+            <button type="button" class="tsg__opt tsg__opt--pill" data-tsg-frame="oak"><span class="tsg__swatch tsg__frame--oak" aria-hidden="true"></span>{{ 'sections.wall_size_guide.oak' | t }}</button>
+            <button type="button" class="tsg__opt tsg__opt--pill" data-tsg-frame="umber"><span class="tsg__swatch tsg__frame--umber" aria-hidden="true"></span>{{ 'sections.wall_size_guide.umber' | t }}</button>
+            <button type="button" class="tsg__opt tsg__opt--pill" data-tsg-frame="espresso"><span class="tsg__swatch tsg__frame--espresso" aria-hidden="true"></span>{{ 'sections.wall_size_guide.espresso' | t }}</button>
+            <button type="button" class="tsg__opt tsg__opt--pill" data-tsg-frame="black"><span class="tsg__swatch tsg__frame--black" aria-hidden="true"></span>{{ 'sections.wall_size_guide.black' | t }}</button>
+            <button type="button" class="tsg__opt tsg__opt--pill" data-tsg-frame="none"><span class="tsg__swatch tsg__swatch--none" aria-hidden="true"></span>{{ 'sections.wall_size_guide.no_frame' | t }}</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</tac-size-guide>
+
+{% stylesheet %}
+  /* Claret's look: the light serif title, small spaced capitals, square corners, ink selections and the wall colour */
+  .tsg {
+    --tsg-ink: var(--color-text, #121212);
+    --tsg-bg: var(--color-bg, #ffffff);
+    --tsg-muted: var(--color-muted, #6d6d6d);
+    --tsg-line: var(--color-border, #e4e4e4);
+    --tsg-hover: color-mix(in srgb, var(--tsg-ink) 5%, var(--tsg-bg));
+    --tsg-hover-line: color-mix(in srgb, var(--tsg-ink) 35%, var(--tsg-bg));
+    --tsg-on-bg: var(--tsg-ink);
+    --tsg-on-text: var(--tsg-bg);
+    --tsg-input-line: color-mix(in srgb, var(--tsg-ink) 18%, var(--tsg-bg));
+    --tsg-wall: var(--tsg-wall-color, var(--wall, #f1f1f0));
+    --tsg-radius: var(--input-radius, 0px);
+    --tsg-btn-radius: var(--button-radius, 0px);
+
+    display: block;
+    background: var(--tsg-bg);
+    color: var(--tsg-ink);
+    padding: var(--pt, 24px) 0 var(--pb, 64px);
+    font-family: var(--font-body);
+    font-size: calc(var(--d) * 0.82 * var(--text-scale, 1));
+    line-height: 1.6;
+  }
+  .tsg *, .tsg *::before, .tsg *::after { box-sizing: border-box; }
+  .tsg [hidden] { display: none !important; }
+  .tsg button, .tsg input { font-family: inherit; font-size: inherit; letter-spacing: normal; }
+  .tsg__inner { max-width: calc(var(--tsg-max) + var(--gutter) * 2); margin: 0 auto; padding: 0 var(--gutter); }
+
+  /* small headings: Claret's spaced capitals */
+  .tsg__label {
+    margin: 0;
+    font: 500 calc(var(--d) * 0.64) / 1.4 var(--font-body);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .tsg__label--muted { color: var(--tsg-muted); }
+
+  .tsg__head { margin: 0 0 calc(var(--d) * 2.2); display: flex; flex-direction: column; gap: calc(var(--d) * 0.8); align-items: flex-start; }
+  .tsg__head[data-align='center'] { align-items: center; }
+  .tsg__head[data-align='end'] { align-items: flex-end; }
+  .tsg__title {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    font-style: normal;
+    font-size: calc(var(--d) * 3.9 * var(--heading-scale, 1) * var(--head-scale, 1));
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .tsg__title em { font-style: italic; }
+  .tsg__intro { margin: 0; max-width: 34em; color: var(--tsg-muted); }
+  .tsg__product { margin: 0; }
+  .tsg__product strong { font-weight: 500; }
+  .tsg__badge {
+    padding: 0.55em 0.9em;
+    border: 1px solid var(--tsg-ink);
+    border-radius: var(--tsg-btn-radius);
+    font: 500 calc(var(--d) * 0.6) / 1.3 var(--font-body);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .tsg__layout { display: flex; flex-wrap: wrap; gap: calc(var(--d) * 3); align-items: flex-start; }
+  .tsg__scene-col { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+  .tsg__controls { flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--d) * 1.9); }
+  .tsg__group > .tsg__label { margin-bottom: 12px; }
+
+  .tsg__card { padding: 0; }
+  .tsg__scene-meta {
+    display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;
+    font: 500 calc(var(--d) * 0.6) / 1.4 var(--font-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--tsg-muted);
+  }
+  .tsg__scene-meta strong { color: var(--tsg-ink); font-weight: 500; }
+  .tsg__scene { position: relative; width: 100%; background: radial-gradient(70% 60% at 50% 42%, color-mix(in srgb, #ffffff 45%, var(--tsg-wall)), var(--tsg-wall)); overflow: hidden; border-bottom: 1px solid var(--tsg-ink); }
+  .tsg__floor-dims { position: relative; height: 34px; }
+
+  /* frames in Claret's woods */
+  .tsg__frame {
+    position: absolute; overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.14), 4px 9px 16px -6px rgba(0, 0, 0, 0.2);
+    transition: left .22s ease, bottom .22s ease, width .22s ease, height .22s ease;
+  }
+  .tsg__frame--oak { background: #d9c09a; }
+  .tsg__frame--umber { background: #ad744a; }
+  .tsg__frame--espresso { background: #5a3e2b; }
+  .tsg__frame--black { background: #2c2c2c; }
+  .tsg__frame--photo { background: var(--tsg-bg); }
+  .tsg__frame--none { background: transparent; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.22); }
+  .tsg__swatch { display: inline-block; width: 14px; height: 14px; box-sizing: border-box; }
+  .tsg__swatch--none { border: 1px dashed currentColor; }
+  .tsg__group-hint { margin: -6px 0 12px; color: var(--tsg-muted); }
+
+  /* Starry Night */
+  .tsg__ai--starry {
+    background:
+      radial-gradient(circle at 22% 20%, #F4E27A 0 2.5%, rgba(244,226,122,.35) 3% 6%, transparent 7%),
+      radial-gradient(circle at 46% 13%, #F4E27A 0 2%, rgba(244,226,122,.35) 2.5% 5%, transparent 6%),
+      radial-gradient(circle at 60% 36%, #F4E27A 0 2.5%, rgba(244,226,122,.35) 3% 6%, transparent 7%),
+      radial-gradient(circle at 34% 42%, #F4E27A 0 2%, rgba(244,226,122,.3) 2.5% 5%, transparent 6%),
+      repeating-radial-gradient(circle at 48% 30%, rgba(130,170,230,.28) 0 2px, transparent 2px 8px),
+      linear-gradient(180deg, #172552 0%, #2A4789 60%, #1E3166 100%);
+  }
+  .tsg__s1 { right: 9%; top: 7%; width: 18%; height: 18%; border-radius: 50%; background: radial-gradient(circle, #F6D14B 0 36%, #F2C230 37% 50%, rgba(242,194,48,.3) 52% 70%, transparent 72%); }
+  .tsg__s2 { left: 8%; bottom: 0; width: 15%; height: 76%; border-radius: 50% 50% 12% 12% / 85% 85% 10% 10%; background: #1C2A19; }
+  .tsg__s3 { left: 0; right: 0; bottom: 0; height: 17%; background: radial-gradient(circle at 40% 50%, #E9C95A 0 2%, transparent 3%), radial-gradient(circle at 62% 40%, #E9C95A 0 2%, transparent 3%), radial-gradient(circle at 80% 55%, #E9C95A 0 2%, transparent 3%), linear-gradient(#22305A, #151E3C); }
+  /* The Great Wave */
+  .tsg__ai--wave { background: #EFE6D2; }
+  .tsg__g1 { left: -12%; top: 26%; width: 78%; height: 74%; border-radius: 50% 50% 0 0; background: #24426F; }
+  .tsg__g2 { left: 2%; top: 22%; width: 50%; height: 22%; border-radius: 50%; background: radial-gradient(circle at 30% 70%, #EFE6D2 0 12%, transparent 13%), radial-gradient(circle at 60% 60%, #EFE6D2 0 10%, transparent 11%), #F7F2E6; }
+  .tsg__g3 { left: 58%; top: 58%; width: 26%; height: 18%; clip-path: polygon(50% 0, 100% 100%, 0 100%); background: linear-gradient(180deg, #F7F2E6 0 30%, #4E6E98 31%); }
+  .tsg__g4 { left: 0; right: 0; bottom: 0; height: 22%; background: repeating-radial-gradient(ellipse at 50% 0, #4F73A4 0 4px, #6B8DBA 4px 8px); }
+  /* Sunflowers */
+  .tsg__ai--sun {
+    background:
+      radial-gradient(circle at 34% 30%, #6B3E12 0 5%, #F2B705 5.5% 12%, transparent 12.5%),
+      radial-gradient(circle at 62% 24%, #6B3E12 0 4.5%, #F5C211 5% 11%, transparent 11.5%),
+      radial-gradient(circle at 50% 44%, #6B3E12 0 5%, #EFA800 5.5% 12%, transparent 12.5%),
+      radial-gradient(circle at 24% 50%, #6B3E12 0 4%, #F2B705 4.5% 10%, transparent 10.5%),
+      radial-gradient(circle at 74% 46%, #6B3E12 0 4%, #F7C824 4.5% 10%, transparent 10.5%),
+      linear-gradient(180deg, #F0D35A 0 72%, #D4952A 72%);
+  }
+  .tsg__u1 { left: 36%; bottom: 20%; width: 28%; height: 26%; border-radius: 20% 20% 30% 30%; background: linear-gradient(180deg, #E8B23A 0 50%, #2F6DB5 50% 56%, #E8B23A 56%); }
+  /* Impression, Sunrise */
+  .tsg__ai--sunrise { background: linear-gradient(180deg, #A2ADB3 0%, #C3B7A6 38%, #98A3A6 52%, #7F8C92 100%); }
+  .tsg__r1 { left: 52%; top: 30%; width: 9%; height: 9%; border-radius: 50%; background: #E8692E; }
+  .tsg__r2 { left: 53%; top: 50%; width: 7%; height: 34%; background: repeating-linear-gradient(0deg, #E8692E 0 2px, transparent 2px 7px); opacity: .85; }
+  .tsg__r3 { left: 26%; top: 60%; width: 14%; height: 5%; border-radius: 0 0 50% 50%; background: #3E4A52; }
+  .tsg__r4 { left: 70%; top: 66%; width: 10%; height: 4%; border-radius: 0 0 50% 50%; background: #4A5660; }
+  .tsg__r5 { left: 10%; top: 32%; width: 22%; height: 12%; background: linear-gradient(90deg, transparent, rgba(80,90,100,.45), transparent); }
+  /* Pearl Earring */
+  .tsg__ai--pearl { background: radial-gradient(ellipse at 45% 45%, #1E1E1C 0 40%, #0E0E0D 80%); }
+  .tsg__p1 { left: 31%; top: 30%; width: 34%; height: 44%; border-radius: 48% 48% 46% 46%; background: linear-gradient(100deg, #EBCDAA, #C9A27E); }
+  .tsg__p2 { left: 27%; top: 17%; width: 44%; height: 24%; border-radius: 50% 50% 30% 30%; background: linear-gradient(180deg, #3A6CB4, #22457E); }
+  .tsg__p3 { left: 60%; top: 14%; width: 14%; height: 44%; border-radius: 30% 30% 50% 50%; background: linear-gradient(180deg, #E2BE5A, #B88F33); }
+  .tsg__p4 { left: 37%; top: 63%; width: 5%; height: 5%; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #FFFFFF 0 25%, #B9BEC4 60%); }
+  .tsg__p5 { left: 18%; bottom: 0; width: 64%; height: 24%; border-radius: 50% 50% 0 0; background: #6B4E2C; }
+  /* Composition (Mondrian) */
+  .tsg__ai--grid { background: #F4F1E8; }
+  .tsg__m1 { left: 0; top: 0; width: 32%; height: 38%; background: #D7261E; }
+  .tsg__m2 { left: 76%; top: 72%; width: 24%; height: 28%; background: #1E4E9C; }
+  .tsg__m3 { left: 0; top: 86%; width: 32%; height: 14%; background: #F2D21B; }
+  .tsg__m4 { left: 32%; top: 0; width: 3%; height: 100%; background: #111111; }
+  .tsg__m5 { left: 74%; top: 38%; width: 3%; height: 62%; background: #111111; }
+  .tsg__m6 { left: 0; top: 37%; width: 100%; height: 3%; background: #111111; }
+  .tsg__m7 { left: 0; top: 84%; width: 35%; height: 3%; background: #111111; }
+  .tsg__m8 { left: 74%; top: 70%; width: 26%; height: 3%; background: #111111; }
+  /* Minimal line art */
+  .tsg__ai--line { background: #F2EDE4; }
+  .tsg__l1 { left: 30%; top: 22%; width: 36%; height: 36%; border-radius: 50%; border: max(1px, .9cqmin) solid #1A1A1A; box-sizing: border-box; }
+  .tsg__l2 { left: 44%; top: 52%; width: 34%; height: 30%; border-radius: 50% 50% 0 0; background: #C9785A; }
+  .tsg__l3 { left: 22%; top: 70%; width: 5%; height: 5%; border-radius: 50%; background: #1A1A1A; }
+  .tsg__art { position: absolute; overflow: hidden; container-type: size; }
+  .tsg__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* artwork drawings: drawn on a square that covers the frame, so they never stretch */
+  .tsg__ai {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: max(100cqw, 100cqh); height: max(100cqw, 100cqh);
+  }
+  .tsg__ai i { position: absolute; display: block; }
+  .tsg__ai--lilies {
+    background:
+      radial-gradient(ellipse 20% 6% at 26% 22%, #B9CF7A 0 60%, transparent 64%),
+      radial-gradient(ellipse 16% 5% at 72% 34%, #A9C46B 0 60%, transparent 64%),
+      radial-gradient(ellipse 24% 6% at 50% 58%, #B7CC78 0 60%, transparent 64%),
+      radial-gradient(ellipse 16% 5% at 28% 80%, #9FBD6A 0 60%, transparent 64%),
+      radial-gradient(ellipse 14% 4% at 78% 76%, #ABC66F 0 60%, transparent 64%),
+      radial-gradient(circle at 28% 21%, #EBA3B2 0 3%, transparent 4%),
+      radial-gradient(circle at 54% 57%, #F2B6C1 0 3%, transparent 4%),
+      radial-gradient(circle at 74% 33%, #E39AA8 0 2.5%, transparent 3.5%),
+      linear-gradient(170deg, #6F8FB0 0%, #7EA0A6 38%, #5E7F93 68%, #6E8C7B 100%);
+  }
+  .tsg__ai--kiss {
+    background:
+      radial-gradient(circle at 20% 30%, #D9B85A 0 2%, transparent 3%),
+      radial-gradient(circle at 80% 70%, #C9A445 0 2%, transparent 3%),
+      radial-gradient(circle at 15% 75%, #D4B04E 0 1.5%, transparent 2.5%),
+      linear-gradient(160deg, #A8843A 0%, #C29A44 50%, #9E7B33 100%);
+  }
+  .tsg__k1 { left: 30%; top: 10%; width: 40%; height: 74%; border-radius: 48% 48% 30% 30%; background: linear-gradient(180deg, #E4BF57, #D2A93F); }
+  .tsg__k2 { left: 36%; top: 30%; width: 13%; height: 48%; background-color: #F3E8C8; background-image: repeating-conic-gradient(#2A2A2A 0 25%, #F3E8C8 0 50%); background-size: 4px 4px; }
+  .tsg__k3 { left: 53%; top: 36%; width: 12%; height: 40%; border-radius: 40%; background: radial-gradient(circle at 30% 30%, #B5543C 0 18%, transparent 20%), radial-gradient(circle at 70% 60%, #4E6FA0 0 18%, transparent 20%), #E8C866; }
+  .tsg__k4 { left: 41%; top: 12%; width: 16%; height: 16%; border-radius: 50%; background: #E9C9A8; }
+  .tsg__k5 { left: 0; right: 0; bottom: 0; height: 18%; background: radial-gradient(circle at 15% 50%, #E3A14A 0 8%, transparent 10%), radial-gradient(circle at 45% 40%, #6C9A57 0 8%, transparent 10%), radial-gradient(circle at 80% 55%, #D96A6A 0 8%, transparent 10%), #7F8F45; }
+  .tsg__ai--wheat { background: linear-gradient(180deg, #4F7FB8 0%, #7FA6CF 52%, #9DBBD8 56%); }
+  .tsg__w1 { left: 64%; top: 12%; width: 14%; height: 14%; border-radius: 50%; background: radial-gradient(circle, #F4E07A 0 45%, #E8C95A 46% 70%, transparent 72%); }
+  .tsg__w2 { left: 0; right: 0; top: 30%; height: 10%; background: radial-gradient(ellipse 30% 60% at 30% 60%, #BFD3E6 0 60%, transparent 64%), radial-gradient(ellipse 26% 50% at 78% 40%, #C9DBEC 0 60%, transparent 64%); }
+  .tsg__w3 { left: 0; right: 0; bottom: 0; height: 46%; background: repeating-linear-gradient(100deg, #DDB94A 0 3px, #C79E35 3px 6px, #E6C860 6px 8px); }
+  .tsg__w4 { left: 14%; bottom: 30%; width: 8%; height: 34%; border-radius: 50% 50% 20% 20%; background: #2F4A33; }
+
+
+  /* artwork picker */
+  .tsg__arts { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 8px; }
+  .tsg__artbtn {
+    display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px 6px;
+    border: 1px solid var(--tsg-line); border-radius: var(--tsg-radius);
+    background: var(--tsg-bg); color: var(--tsg-ink);
+    font-size: calc(var(--d) * 0.66); line-height: 1.3; text-align: center; cursor: pointer;
+    transition: border-color .15s;
+  }
+  .tsg__artbtn:hover { border-color: var(--tsg-hover-line); }
+  .tsg__artbtn[aria-pressed="true"] { border-color: var(--tsg-ink); box-shadow: inset 0 0 0 1px var(--tsg-ink); }
+  .tsg__thumb { position: relative; width: 44px; height: 56px; box-shadow: 0 2px 6px rgba(0,0,0,.12); }
+  .tsg__thumb .tsg__art { inset: 3px; }
+  .tsg__thumb.tsg__frame--none .tsg__art, .tsg__thumb.tsg__frame--photo .tsg__art { inset: 0; }
+  .tsg__arttone { font: 500 calc(var(--d) * 0.54) / 1.3 var(--font-body); letter-spacing: 0.1em; color: var(--tsg-muted); text-transform: uppercase; }
+  .tsg__artbtn[aria-pressed="true"] .tsg__arttone { color: var(--tsg-ink); }
+  .tsg__hdim { position: absolute; height: 0; border-top: 1px solid var(--tsg-ink); }
+  .tsg__hdim::before, .tsg__hdim::after { content: ""; position: absolute; top: -4px; height: 7px; border-left: 1px solid var(--tsg-ink); }
+  .tsg__hdim::before { left: 0; } .tsg__hdim::after { right: 0; }
+  .tsg__hdim span { position: absolute; left: 50%; bottom: 3px; transform: translateX(-50%); font-size: 11px; white-space: nowrap; line-height: 1.4; font-variant-numeric: tabular-nums; }
+  .tsg__hdim--below span { bottom: auto; top: 4px; }
+  .tsg__vdim { position: absolute; width: 0; border-left: 1px solid var(--tsg-ink); }
+  .tsg__vdim::before, .tsg__vdim::after { content: ""; position: absolute; left: -4px; width: 7px; border-top: 1px solid var(--tsg-ink); }
+  .tsg__vdim::before { top: 0; } .tsg__vdim::after { bottom: 0; }
+  .tsg__vdim span {
+    position: absolute; right: 4px; top: 50%; transform: translateY(-50%) rotate(180deg);
+    writing-mode: vertical-rl; font-size: 11px; white-space: nowrap; line-height: 1.4; font-variant-numeric: tabular-nums;
+  }
+  .tsg__furn { position: absolute; bottom: 0; transition: left .22s ease, width .22s ease, height .22s ease; }
+  .tsg__furn i { position: absolute; display: block; }
+
+  /* buttons: Claret's black button */
+  .tsg__btn {
+    min-height: calc(var(--d) * 2.8); padding: 0 calc(var(--d) * 1.5); border-radius: var(--tsg-btn-radius); cursor: pointer;
+    font: 600 calc(var(--d) * 0.66) / 1 var(--font-button, var(--font-body)); letter-spacing: 0.14em; text-transform: uppercase;
+    border: 1px solid var(--tsg-ink);
+  }
+  .tsg__btn--solid { width: 100%; background: var(--color-button, var(--tsg-ink)); color: var(--color-button-text, var(--tsg-bg)); }
+  .tsg__btn--solid:hover { background: color-mix(in srgb, var(--color-button, var(--tsg-ink)) 86%, var(--tsg-bg)); }
+  .tsg__warn { background: var(--tsg-wall); padding: 12px 16px; border-left: 2px solid var(--tsg-ink); }
+
+  /* number fields */
+  .tsg__fields { display: flex; flex-wrap: wrap; gap: 12px; }
+  .tsg__fields--top { margin-top: 12px; }
+  .tsg__field { flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .tsg__field label { font: 500 calc(var(--d) * 0.6) / 1.4 var(--font-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--tsg-muted); }
+  .tsg__stepper {
+    display: flex; align-items: center; overflow: hidden;
+    border: 1px solid var(--tsg-input-line); border-radius: var(--tsg-radius);
+    background: var(--tsg-bg);
+  }
+  .tsg__stepper button {
+    width: 46px; height: 46px; flex: none; border: 0; background: transparent; color: var(--tsg-ink);
+    font-size: 16px; cursor: pointer; padding: 0;
+  }
+  .tsg__stepper button:hover { background: var(--tsg-hover); }
+  .tsg__stepper input {
+    flex: 1; width: 0; min-width: 0; height: 46px; border: 0; background: transparent; text-align: center; padding: 0;
+    font-size: 16px; color: var(--tsg-ink); -moz-appearance: textfield; border-radius: 0; font-variant-numeric: tabular-nums;
+  }
+  .tsg__stepper input:focus { outline: none; }
+  .tsg__stepper:focus-within { border-color: var(--tsg-ink); }
+  .tsg__stepper input::-webkit-inner-spin-button, .tsg__stepper input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .tsg__unit { font-size: calc(var(--d) * 0.7); color: var(--tsg-muted); padding-inline-end: 8px; }
+
+  /* choice buttons */
+  .tsg__grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .tsg__pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tsg__opt, .tsg__size {
+    min-height: 44px; border: 1px solid var(--tsg-line); border-radius: var(--tsg-radius);
+    background: var(--tsg-bg); color: var(--tsg-ink);
+    font-size: calc(var(--d) * 0.76); font-weight: 400; cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .tsg__opt:hover, .tsg__size:hover { border-color: var(--tsg-hover-line); }
+  .tsg__opt--pill { padding: 0 16px; display: inline-flex; align-items: center; gap: 8px; }
+  .tsg__shape-icon { display: inline-block; border: 1px solid currentColor; }
+  .tsg__opt[aria-pressed="true"], .tsg__size[aria-pressed="true"] { background: var(--tsg-on-bg); color: var(--tsg-on-text); border-color: var(--tsg-on-bg); }
+
+  .tsg__sizes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .tsg__size { width: 100%; padding: 0 12px; font-variant-numeric: tabular-nums; }
+
+  .tsg__custom {
+    border: 1px solid var(--tsg-line); border-radius: var(--tsg-radius); padding: 16px;
+    display: flex; flex-direction: column; gap: 12px; transition: border-color .15s;
+  }
+  .tsg__custom.is-active { border-color: var(--tsg-ink); }
+  .tsg__custom-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .tsg__custom-text { margin: 6px 0 0; color: var(--tsg-muted); line-height: 1.6; }
+  .tsg__selected {
+    flex: none; padding: 3px 8px; background: var(--tsg-on-bg); color: var(--tsg-on-text);
+    font: 500 calc(var(--d) * 0.56) / 1.4 var(--font-body); letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .tsg__custom-link { color: var(--tsg-ink); text-decoration: underline; text-underline-offset: 3px; align-self: flex-start; }
+
+  @media (max-width: 749px) {
+    .tsg { padding: calc(var(--pt, 24px) * 0.6) 0 calc(var(--pb, 64px) * 0.6); }
+    .tsg__layout { gap: 32px; }
+    .tsg__title { font-size: calc(var(--d) * 2.6 * var(--heading-scale, 1) * var(--head-scale, 1)); }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+
+  (function () {
+    if (customElements.get('tac-size-guide')) return;
+
+    var FURN = {
+      sofa: { label: 'Sofa', w: 220, h: 85 },
+      bed: { label: 'Bed', w: 180, h: 110 },
+      console: { label: 'Console', w: 140, h: 80 },
+      dining: { label: 'Dining table', w: 200, h: 75 },
+      desk: { label: 'Desk', w: 120, h: 75 },
+      bench: { label: 'Bench', w: 140, h: 45 },
+      fireplace: { label: 'Fireplace', w: 150, h: 110 },
+      wall: { label: 'Wall only', w: 0, h: 0 }
+    };
+    var LIMITS = { wallW: [100, 800], wallH: [200, 400], furnW: [60, 400] };
+
+    function b(style) { return '<i style="' + style + '"></i>'; }
+    var G1 = '#EDEDED', G2 = '#E2E2E2', G3 = '#D4D4D4', G4 = '#C8C8C8', DK = '#262626';
+    var SHAPES = {
+      sofa: [
+        b('left:7%;right:7%;top:0;height:52%;background:' + G2 + ';border-radius:10px 10px 3px 3px'),
+        b('left:8%;width:41.5%;top:42%;height:30%;background:' + G1 + ';border-radius:4px'),
+        b('left:50.5%;width:41.5%;top:42%;height:30%;background:' + G1 + ';border-radius:4px'),
+        b('left:0;width:9%;top:28%;height:60%;background:' + G3 + ';border-radius:12px 12px 3px 3px'),
+        b('right:0;width:9%;top:28%;height:60%;background:' + G3 + ';border-radius:12px 12px 3px 3px'),
+        b('left:2%;right:2%;top:72%;height:16%;background:' + G3 + ';border-radius:3px'),
+        b('left:6%;width:1.5%;top:88%;height:12%;background:' + DK),
+        b('right:6%;width:1.5%;top:88%;height:12%;background:' + DK)
+      ].join(''),
+      bed: [
+        b('left:0;right:0;top:0;height:72%;background:' + G4 + ';border-radius:8px 8px 0 0'),
+        b('left:12%;width:33%;top:34%;height:16%;background:#F7F7F7;border-radius:6px'),
+        b('right:12%;width:33%;top:34%;height:16%;background:#F7F7F7;border-radius:6px'),
+        b('left:2%;right:2%;top:48%;height:14%;background:#EDEDED'),
+        b('left:0;right:0;top:58%;height:32%;background:' + G2 + ';border-radius:3px'),
+        b('left:3%;width:2.5%;top:90%;height:10%;background:' + DK),
+        b('right:3%;width:2.5%;top:90%;height:10%;background:' + DK)
+      ].join(''),
+      console: [
+        b('left:0;right:0;top:0;height:6%;background:' + DK),
+        b('left:4%;width:2%;top:6%;height:94%;background:' + DK),
+        b('right:4%;width:2%;top:6%;height:94%;background:' + DK),
+        b('left:4%;right:4%;top:76%;height:4%;background:' + DK)
+      ].join(''),
+      dining: [
+        b('left:0;right:0;top:0;height:7%;background:' + DK),
+        b('left:4%;right:4%;top:7%;height:7%;background:#9E9E9E'),
+        b('left:6%;width:3%;top:14%;height:86%;background:' + DK),
+        b('right:6%;width:3%;top:14%;height:86%;background:' + DK)
+      ].join(''),
+      desk: [
+        b('left:0;right:0;top:0;height:7%;background:' + DK),
+        b('right:5%;width:36%;top:7%;height:30%;background:' + G2),
+        b('right:19%;width:8%;top:21%;height:2px;background:' + DK),
+        b('left:3%;width:2%;top:7%;height:93%;background:' + DK),
+        b('right:3%;width:2%;top:7%;height:93%;background:' + DK)
+      ].join(''),
+      bench: [
+        b('left:0;right:0;top:0;height:32%;background:' + G2 + ';border-radius:4px'),
+        b('left:1%;right:1%;top:32%;height:8%;background:' + DK),
+        b('left:6%;width:3%;top:40%;height:60%;background:' + DK),
+        b('right:6%;width:3%;top:40%;height:60%;background:' + DK)
+      ].join(''),
+      fireplace: [
+        b('left:5%;right:5%;top:8%;bottom:0;background:#EDEDED;border:1px solid ' + G3 + ';box-sizing:border-box'),
+        b('left:0;right:0;top:0;height:8%;background:' + DK),
+        b('left:28%;right:28%;top:38%;bottom:0;background:#2B2B2B;border-radius:40% 40% 0 0 / 22% 22% 0 0')
+      ].join('')
+    };
+
+    /* artwork drawings. "frame" is the wood colour, like your frame options */
+    /* artwork drawings, from soft and light to dark and bold */
+    var ARTS = [
+      { key: 'lilies', name: 'Water Lilies', tone: 'Soft', html: '<div class="tsg__ai tsg__ai--lilies"></div>' },
+      { key: 'kiss', name: 'The Kiss', tone: 'Gold', html: '<div class="tsg__ai tsg__ai--kiss"><i class="tsg__k1"></i><i class="tsg__k2"></i><i class="tsg__k3"></i><i class="tsg__k4"></i><i class="tsg__k5"></i></div>' },
+      { key: 'wheat', name: 'Wheat Field', tone: 'Bright', html: '<div class="tsg__ai tsg__ai--wheat"><i class="tsg__w1"></i><i class="tsg__w2"></i><i class="tsg__w3"></i><i class="tsg__w4"></i></div>' },
+      { key: 'starry', name: 'Starry Night', tone: 'Dark', html: '<div class="tsg__ai tsg__ai--starry"><i class="tsg__s1"></i><i class="tsg__s2"></i><i class="tsg__s3"></i></div>' },
+      { key: 'wave', name: 'The Great Wave', tone: 'Light', html: '<div class="tsg__ai tsg__ai--wave"><i class="tsg__g4"></i><i class="tsg__g3"></i><i class="tsg__g1"></i><i class="tsg__g2"></i></div>' },
+      { key: 'sun', name: 'Sunflowers', tone: 'Vivid', html: '<div class="tsg__ai tsg__ai--sun"><i class="tsg__u1"></i></div>' },
+      { key: 'sunrise', name: 'Impression, Sunrise', tone: 'Muted', html: '<div class="tsg__ai tsg__ai--sunrise"><i class="tsg__r5"></i><i class="tsg__r1"></i><i class="tsg__r2"></i><i class="tsg__r3"></i><i class="tsg__r4"></i></div>' },
+      { key: 'pearl', name: 'Pearl Earring', tone: 'Dark', html: '<div class="tsg__ai tsg__ai--pearl"><i class="tsg__p5"></i><i class="tsg__p3"></i><i class="tsg__p1"></i><i class="tsg__p2"></i><i class="tsg__p4"></i></div>' },
+      { key: 'grid', name: 'Composition', tone: 'Bold', html: '<div class="tsg__ai tsg__ai--grid"><i class="tsg__m1"></i><i class="tsg__m2"></i><i class="tsg__m3"></i><i class="tsg__m4"></i><i class="tsg__m5"></i><i class="tsg__m6"></i><i class="tsg__m7"></i><i class="tsg__m8"></i></div>' },
+      { key: 'line', name: 'Line Art', tone: 'Light', html: '<div class="tsg__ai tsg__ai--line"><i class="tsg__l1"></i><i class="tsg__l2"></i><i class="tsg__l3"></i></div>' }
+    ];
+    var FRAME_CM = 2.5;
+
+    var SIZE_RE = /(\d+(?:\.\d+)?)\s*(?:cm)?\s*[x×X*]\s*(\d+(?:\.\d+)?)/;
+
+    function clamp(v, a, c) { v = Number(v); if (!isFinite(v)) v = a; return Math.max(a, Math.min(c, v)); }
+    function pct(v, t) { return (v / t * 100).toFixed(3) + '%'; }
+    function esc(s) { return String(s).replace(/[&<>"']/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]; }); }
+
+    function parseList(text, order) {
+      var out = [];
+      String(text || '').split(/[,\n;]+/).forEach(function (part) {
+        var m = part.match(SIZE_RE);
+        if (!m) return;
+        var a = Number(m[1]), c = Number(m[2]);
+        var pair = order === 'hw' ? [c, a] : [a, c];
+        if (!out.some(function (p) { return p[0] === pair[0] && p[1] === pair[1]; })) out.push(pair);
+      });
+      return out.sort(function (x, y) { return x[0] * x[1] - y[0] * y[1]; });
+    }
+
+    class TacSizeGuide extends HTMLElement {
+      connectedCallback() {
+        if (this._ready) return;
+        this._ready = true;
+        var cfgEl = this.querySelector('[data-tsg-config]');
+        this.cfg = cfgEl ? JSON.parse(cfgEl.textContent) : {};
+        var c = this.cfg;
+        var tt = c.t || {};
+        if (tt.furn) Object.keys(FURN).forEach(function (k) { if (tt.furn[k]) FURN[k].label = tt.furn[k]; });
+        this.sets = {
+          square: parseList(c.square, 'wh'),
+          vertical: parseList(c.vertical, 'wh'),
+          horizontal: parseList(c.horizontal, 'wh')
+        };
+        this.productSizes = null;
+        this.customLimits = [Number(c.customMin) || 20, Number(c.customMax) || 200];
+        this.state = {
+          furniture: 'sofa', furnW: 220, wallW: 360,
+          wallH: clamp(Number(c.wallH) || 230, LIMITS.wallH[0], LIMITS.wallH[1]),
+          shape: 'vertical', pieces: Number(c.pieces) || 1, sizeIdx: null,
+          custom: false, customW: 50, customH: 70, art: 0, frame: 'oak'
+        };
+        this.arts = ARTS.slice();
+        this.syncInputs();
+        this.addEventListener('click', this.onClick.bind(this));
+        this.addEventListener('input', this.onInput.bind(this));
+        this.addEventListener('change', this.onChange.bind(this));
+        this.render();
+        this.loadProduct();
+      }
+
+      q(sel) { return this.querySelector(sel); }
+      qa(sel) { return Array.prototype.slice.call(this.querySelectorAll(sel)); }
+      isCustomField(f) { return f === 'customW' || f === 'customH'; }
+      limits(f) { return this.isCustomField(f) ? this.customLimits : LIMITS[f]; }
+
+      syncInputs() {
+        var self = this;
+        this.qa('input[data-tsg-field]').forEach(function (inp) { inp.value = self.state[inp.dataset.tsgField]; });
+      }
+
+      onClick(e) {
+        var t = e.target.closest('button');
+        if (!t || !this.contains(t)) return;
+        var s = this.state, d = t.dataset;
+        if (d.tsgArt != null) {
+          s.art = Number(d.tsgArt);
+        } else if (d.tsgFrame) {
+          s.frame = d.tsgFrame;
+        } else if (d.tsgFurniture) {
+          s.furniture = d.tsgFurniture;
+          if (FURN[s.furniture].w) s.furnW = FURN[s.furniture].w;
+          s.sizeIdx = null;
+          this.syncInputs();
+        } else if (d.tsgShape) {
+          s.shape = d.tsgShape; s.sizeIdx = null; s.custom = false;
+        } else if (d.tsgPieces) {
+          s.pieces = Number(d.tsgPieces); s.sizeIdx = null;
+        } else if (d.tsgSize != null) {
+          s.sizeIdx = Number(d.tsgSize); s.custom = false;
+        } else if (t.hasAttribute('data-tsg-custom')) {
+          s.custom = true;
+        } else if (d.tsgStep) {
+          var f = d.tsgStep, lim = this.limits(f);
+          s[f] = clamp(clamp(s[f], lim[0], lim[1]) + Number(d.tsgDelta), lim[0], lim[1]);
+          if (this.isCustomField(f)) s.custom = true;
+          var inp = this.q('input[data-tsg-field="' + f + '"]');
+          if (inp) inp.value = s[f];
+        } else {
+          return;
+        }
+        this.render();
+      }
+
+      onInput(e) {
+        var f = e.target.dataset && e.target.dataset.tsgField;
+        if (!f) return;
+        this.state[f] = e.target.value === '' ? '' : Number(e.target.value);
+        if (this.isCustomField(f)) this.state.custom = true;
+        this.render();
+      }
+
+      onChange(e) {
+        var f = e.target.dataset && e.target.dataset.tsgField;
+        if (!f) return;
+        var lim = this.limits(f);
+        this.state[f] = clamp(e.target.value, lim[0], lim[1]);
+        e.target.value = this.state[f];
+        this.render();
+      }
+
+      loadProduct() {
+        var self = this;
+        var handle = new URLSearchParams(window.location.search).get('product');
+        if (!handle) return;
+        var root = this.cfg.root || '/';
+        if (root.slice(-1) !== '/') root += '/';
+        fetch(root + 'products/' + encodeURIComponent(handle) + '.js', { headers: { Accept: 'application/json' } })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (p) {
+            if (!p) return;
+            var wanted = String(self.cfg.sizeOption || 'Size').toLowerCase();
+            var opt = (p.options || []).find(function (o) {
+              var n = String(o.name || '').toLowerCase();
+              return n === wanted || n.indexOf('size') !== -1 || n.indexOf('مقاس') !== -1;
+            });
+            var sizes = parseList((opt ? opt.values : []).join(','), self.cfg.sizeOrder);
+            var img = p.featured_image || (p.images && p.images[0]);
+            if (img) {
+              if (img.indexOf('//') === 0) img = 'https:' + img;
+              img += (img.indexOf('?') === -1 ? '?' : '&') + 'width=600';
+              var tt = self.cfg.t || {};
+              self.arts = [{ key: 'product', name: tt.thisArtwork || 'This artwork', tone: tt.photo || 'Photo', photo: img }].concat(ARTS);
+              self.state.art = 0;
+            }
+            if (!sizes.length) { self.render(); return; }
+            self.productSizes = sizes;
+            self.state.sizeIdx = null;
+            self.q('[data-tsg-product]').hidden = false;
+            self.q('[data-tsg-product-name]').textContent = p.title;
+            self.render();
+          })
+          .catch(function () {});
+      }
+
+      render() {
+        var s = this.state, c = this.cfg;
+        var cm = (c.t && c.t.cm) || 'cm';
+        var tones = (c.t && c.t.tones) || {};
+        var gap = Number(c.gap) || 5, above = Number(c.above) || 20, lift = c.lift != null ? Number(c.lift) : 8;
+        var f = FURN[s.furniture];
+        var hasF = s.furniture !== 'wall';
+        var wallW = clamp(s.wallW, 100, 800);
+        var wallH = clamp(s.wallH, 200, 400);
+        var furnW = hasF ? Math.min(clamp(s.furnW, 60, 400), wallW) : 0;
+        var n = s.pieces;
+        var sizes = this.productSizes || this.sets[s.shape];
+        if (!sizes || !sizes.length) sizes = [[40, 60]];
+        var groupOf = function (p) { return n * p[0] + (n - 1) * gap; };
+        var limit = hasF ? furnW : wallW * 0.8;
+        var start = Math.floor((sizes.length - 1) / 2);
+
+        var cl = this.customLimits;
+        var hasCustomUI = !!this.q('[data-tsg-custom-panel]');
+        var isCustom = hasCustomUI && !!s.custom;
+        var sel = isCustom ? -1 : ((s.sizeIdx == null || s.sizeIdx >= sizes.length) ? start : s.sizeIdx);
+        var cur = isCustom ? [clamp(s.customW, cl[0], cl[1]), clamp(s.customH, cl[0], cl[1])] : sizes[sel];
+        var w = cur[0], h = cur[1], gW = groupOf(cur);
+
+        var floorClear = hasF ? f.h + 5 : 10;
+        var bottom = hasF ? f.h + above : wallH / 2 + lift - h / 2;
+        if (bottom + h > wallH - 8) bottom = Math.max(floorClear, wallH - 8 - h);
+        var startX = wallW / 2 - gW / 2;
+
+        /* static control states */
+        this.qa('[data-tsg-furniture]').forEach(function (el) { el.setAttribute('aria-pressed', String(el.dataset.tsgFurniture === s.furniture)); });
+        this.qa('[data-tsg-shape]').forEach(function (el) { el.setAttribute('aria-pressed', String(!isCustom && el.dataset.tsgShape === s.shape)); });
+        this.qa('[data-tsg-pieces]').forEach(function (el) { el.setAttribute('aria-pressed', String(Number(el.dataset.tsgPieces) === n)); });
+        if (hasCustomUI) {
+          this.q('[data-tsg-custom-panel]').classList.toggle('is-active', isCustom);
+          this.q('[data-tsg-custom-tag]').hidden = !isCustom;
+          this.q('[data-tsg-custom]').hidden = isCustom;
+        }
+        this.q('[data-tsg-furn-field]').hidden = !hasF;
+        var furnLabel = this.q('label[for$="-furnW"]');
+        if (furnLabel) furnLabel.textContent = ((c.t && c.t.itemWidth) || '[item] width').replace('[item]', f.label);
+        this.q('[data-tsg-shape-group]').hidden = !!this.productSizes;
+        this.q('[data-tsg-wall-label]').textContent = wallW + ' × ' + wallH + ' ' + cm;
+
+        /* artwork picker */
+        var arts = this.arts;
+        if (s.art >= arts.length) s.art = 0;
+        var artInner = function (a) {
+          return a.photo
+            ? '<img class="tsg__photo" src="' + esc(a.photo) + '" alt="" loading="lazy">'
+            : a.html;
+        };
+        var frameOf = function (a) { return a.photo ? 'photo' : s.frame; };
+        this.q('[data-tsg-arts]').innerHTML = arts.map(function (a, i) {
+          return '<button type="button" class="tsg__artbtn" data-tsg-art="' + i + '" aria-pressed="' + (i === s.art) + '">' +
+            '<span class="tsg__thumb tsg__frame--' + frameOf(a) + '"><span class="tsg__art">' + artInner(a) + '</span></span>' +
+            '<span>' + esc(a.name) + '</span><span class="tsg__arttone">' + esc(tones[String(a.tone).toLowerCase()] || a.tone) + '</span></button>';
+        }).join('');
+        /* product photos already show the frame, so the frame choice is for the drawings */
+        this.q('[data-tsg-frame-group]').hidden = !!arts[s.art].photo;
+        this.qa('[data-tsg-frame]').forEach(function (el) { el.setAttribute('aria-pressed', String(el.dataset.tsgFrame === s.frame)); });
+
+        /* size list */
+        this.q('[data-tsg-sizes]').innerHTML = sizes.map(function (p, i) {
+          var on = i === sel;
+          return '<button type="button" class="tsg__size" data-tsg-size="' + i + '" aria-pressed="' + on + '">' +
+            p[0] + ' × ' + p[1] + ' ' + cm + '</button>';
+        }).join('');
+
+        /* scene */
+        var scene = this.q('[data-tsg-scene]');
+        scene.style.aspectRatio = wallW + ' / ' + wallH;
+        var html = '';
+        var lineB = Math.min(bottom + h + 6, wallH - 16);
+        html += '<div class="tsg__hdim" style="left:' + pct(startX, wallW) + ';width:' + pct(gW, wallW) + ';bottom:' + pct(lineB, wallH) + '"><span>' + gW + ' ' + cm + '</span></div>';
+        var hx = Math.max(startX - 8, 3);
+        html += '<div class="tsg__vdim" style="left:' + pct(hx, wallW) + ';bottom:' + pct(bottom, wallH) + ';height:' + pct(h, wallH) + '"><span>' + h + ' ' + cm + '</span></div>';
+        var chosen = arts[s.art];
+        for (var i = 0; i < n; i++) {
+          /* in a set, the other pieces show the next drawings (a photo stays the same) */
+          var a = chosen.photo ? chosen : (function () {
+            var drawn = arts.filter(function (x) { return !x.photo; });
+            var k = drawn.indexOf(chosen);
+            return drawn[(k + i) % drawn.length];
+          })();
+          var noBorder = a.photo || s.frame === 'none';
+          var fx = noBorder ? 0 : Math.min(FRAME_CM, w / 6) / w * 100;
+          var fy = noBorder ? 0 : Math.min(FRAME_CM, h / 6) / h * 100;
+          html += '<div class="tsg__frame tsg__frame--' + frameOf(a) + '" style="left:' + pct(startX + i * (w + gap), wallW) + ';bottom:' + pct(bottom, wallH) +
+            ';width:' + pct(w, wallW) + ';height:' + pct(h, wallH) + '">' +
+            '<div class="tsg__art" style="left:' + fx.toFixed(3) + '%;right:' + fx.toFixed(3) + '%;top:' + fy.toFixed(3) + '%;bottom:' + fy.toFixed(3) + '%">' +
+            artInner(a) + '</div></div>';
+        }
+        var fLeft = (wallW - furnW) / 2;
+        if (hasF) {
+          html += '<div class="tsg__furn" aria-hidden="true" style="left:' + pct(fLeft, wallW) + ';width:' + pct(furnW, wallW) + ';height:' + pct(f.h, wallH) + '">' + SHAPES[s.furniture] + '</div>';
+        }
+        scene.innerHTML = html;
+
+        var floor = this.q('[data-tsg-floor]');
+        floor.innerHTML = hasF
+          ? '<div class="tsg__hdim tsg__hdim--below" style="top:10px;left:' + pct(fLeft, wallW) + ';width:' + pct(furnW, wallW) + '"><span>' + esc(f.label) + ' · ' + furnW + ' ' + cm + '</span></div>'
+          : '';
+        floor.hidden = !hasF;
+
+        /* warnings */
+        this.q('[data-tsg-warn-wide]').hidden = !(gW > limit + 0.5);
+        this.q('[data-tsg-warn-tall]').hidden = !(h > wallH - floorClear - 25);
+      }
+    }
+
+    customElements.define('tac-size-guide', TacSizeGuide);
+  })();
+
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Size guide",
+  "tag": "section",
+  "class": "section-size-guide",
+  "settings": [
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "eyebrow", "label": "Small title", "default": "Find your size" },
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Wrap a word in *asterisks* to set it in italics", "default": "Size guide" },
+    { "type": "textarea", "id": "intro", "label": "Intro", "default": "Enter your wall and furniture sizes, then try different frame sizes. The drawing is to scale, so you can see exactly how the art will look in your room." },
+    { "type": "header", "content": "Custom sizes" },
+    { "type": "checkbox", "id": "show_custom", "label": "Show custom size", "default": true },
+    { "type": "text", "id": "custom_badge", "label": "Badge under heading", "default": "Custom sizes available" },
+    { "type": "text", "id": "custom_title", "label": "Custom size title", "default": "Custom size" },
+    { "type": "textarea", "id": "custom_text", "label": "Custom size text", "default": "Don't see your size? Enter any width and height from 20 to 200 cm. We print and frame it to order." },
+    { "type": "url", "id": "custom_link", "label": "Custom order link", "info": "Optional. For example your WhatsApp link." },
+    { "type": "text", "id": "custom_link_label", "label": "Custom order link label", "default": "Ask us about a custom size" },
+    { "type": "number", "id": "custom_min", "label": "Smallest custom size (cm)", "default": 20 },
+    { "type": "number", "id": "custom_max", "label": "Largest custom size (cm)", "default": 200 },
+    { "type": "header", "content": "Sizes" },
+    { "type": "text", "id": "size_option_name", "label": "Product size option name", "default": "Size", "info": "When opened from a product, the guide reads this option's values, like 40x60." },
+    {
+      "type": "select", "id": "size_order", "label": "Size values are written as",
+      "options": [
+        { "value": "wh", "label": "Width x Height" },
+        { "value": "hw", "label": "Height x Width" }
+      ],
+      "default": "wh"
+    },
+    { "type": "text", "id": "sizes_square", "label": "Default square sizes (W x H)", "default": "30x30, 60x60" },
+    { "type": "text", "id": "sizes_vertical", "label": "Default vertical sizes (W x H)", "default": "20x30, 40x60, 50x70, 60x90, 70x100" },
+    { "type": "text", "id": "sizes_horizontal", "label": "Default horizontal sizes (W x H)", "default": "30x20, 60x40, 70x50, 90x60, 100x70" },
+    {
+      "type": "select", "id": "default_pieces", "label": "Default number of pieces",
+      "options": [
+        { "value": "1", "label": "Single" },
+        { "value": "2", "label": "Set of 2" },
+        { "value": "3", "label": "Set of 3" }
+      ],
+      "default": "1"
+    },
+    { "type": "header", "content": "Hanging rules" },
+    { "type": "range", "id": "default_wall_height", "label": "Starting wall height", "min": 200, "max": 400, "step": 5, "unit": "cm", "default": 230 },
+    { "type": "range", "id": "gap_cm", "label": "Gap between pieces", "min": 2, "max": 15, "step": 1, "unit": "cm", "default": 5 },
+    { "type": "range", "id": "above_furniture", "label": "Height above furniture", "min": 10, "max": 40, "step": 1, "unit": "cm", "default": 20 },
+    { "type": "range", "id": "wall_lift", "label": "Wall only: height above center", "info": "On an empty wall, the art is centered on the wall and lifted up by this amount.", "min": 0, "max": 30, "step": 1, "unit": "cm", "default": 8 },
+    { "type": "header", "content": "Look" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "color", "id": "wall_color", "label": "Wall color", "default": "#F1F1F0" },
+    { "type": "range", "id": "max_width", "label": "Content width", "min": 900, "max": 1600, "step": 20, "unit": "px", "default": 1440 },
+    { "type": "header", "content": "Text sizes" },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 50, "max": 160, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "text_size", "label": "Text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 64 },
+    { "type": "header", "content": "Text" },
+    {
+      "type": "select", "id": "sec_text_align", "label": "Heading alignment", "info": "The small title, heading and intro. Mirrors on Arabic pages.",
+      "options": [
+        { "value": "default", "label": "As designed" },
+        { "value": "start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "end", "label": "Right" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select", "id": "sec_heading_font", "label": "Heading font",
+      "options": [
+        { "value": "default", "label": "As designed" },
+        { "value": "heading", "label": "Theme heading font" },
+        { "value": "body", "label": "Theme body font" },
+        { "value": "newsreader", "label": "Newsreader" },
+        { "value": "red_hat_text", "label": "Red Hat Text" },
+        { "value": "instrument_serif", "label": "Instrument Serif" },
+        { "value": "inter_tight", "label": "Inter Tight" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select", "id": "sec_text_font", "label": "Text font",
+      "options": [
+        { "value": "default", "label": "As designed" },
+        { "value": "heading", "label": "Theme heading font" },
+        { "value": "body", "label": "Theme body font" },
+        { "value": "newsreader", "label": "Newsreader" },
+        { "value": "red_hat_text", "label": "Red Hat Text" },
+        { "value": "instrument_serif", "label": "Instrument Serif" },
+        { "value": "inter_tight", "label": "Inter Tight" }
+      ],
+      "default": "default"
+    }
+  ],
+  "presets": [{ "name": "Size guide" }]
+}
+{% endschema %}

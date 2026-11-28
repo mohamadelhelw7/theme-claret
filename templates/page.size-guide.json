@@ -1,0 +1,73 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {}
+    },
+    "guide": {
+      "type": "wall-size-guide",
+      "settings": {
+        "eyebrow": "Find your size",
+        "heading": "Size guide",
+        "intro": "Enter your wall and furniture sizes, then try different frame sizes. The drawing is to scale, so you can see exactly how the art will look in your room.",
+        "show_custom": true,
+        "custom_badge": "Custom sizes available",
+        "custom_title": "Custom size",
+        "custom_text": "Don't see your size? Enter any width and height from 20 to 200 cm. We print and frame it to order.",
+        "custom_link_label": "Ask us about a custom size",
+        "custom_min": 20,
+        "custom_max": 200,
+        "size_option_name": "Size",
+        "size_order": "wh",
+        "sizes_square": "30x30, 60x60",
+        "sizes_vertical": "20x30, 40x60, 50x70, 60x90, 70x100",
+        "sizes_horizontal": "30x20, 60x40, 70x50, 90x60, 100x70",
+        "default_pieces": "1",
+        "default_wall_height": 230,
+        "gap_cm": 5,
+        "above_furniture": 20,
+        "wall_lift": 8,
+        "color_scheme": "scheme-1",
+        "wall_color": "#F1F1F0",
+        "max_width": 1240,
+        "padding_top": 24,
+        "padding_bottom": 64
+      }
+    },
+    "support": {
+      "type": "customer-support",
+      "blocks": {
+        "whatsapp": {
+          "type": "_support-channel",
+          "settings": {
+            "channel": "whatsapp",
+            "title": "WhatsApp",
+            "text": "Questions about sizes, custom sizes or frames",
+            "link_label": "Chat now"
+          }
+        }
+      },
+      "block_order": [
+        "whatsapp"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "layout": "list",
+        "card_style": "plain",
+        "columns": 2,
+        "columns_mobile": "1",
+        "alignment": "start",
+        "heading": "Customer support",
+        "text": "<p>need help choosing the perfect size? looking for a custom size? want to argue about art? contact us.</p>",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    }
+  },
+  "order": [
+    "main",
+    "guide",
+    "support"
+  ]
+}
