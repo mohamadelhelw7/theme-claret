@@ -40,6 +40,11 @@
       >
         {% render 'icon', icon: 'menu' %}
       </button>
+      {%- if section.settings.show_language_mobile and localization.available_languages.size > 1 -%}
+        <div class="folio-header__locale-m">
+          {% render 'localization-form', id_prefix: 'HeaderMobile', show_language: true, show_country: false, one_tap: true, short: true %}
+        </div>
+      {%- endif -%}
       {%- if request.page_type == 'index' -%}
         <h1 class="visually-hidden">{{ shop.name | escape }}</h1>
       {%- endif -%}
@@ -91,7 +96,7 @@
     <div class="folio-header__actions">
       {%- if section.settings.show_language or section.settings.show_country -%}
         <div class="site-header__localization folio-header__locale">
-          {% render 'localization-form', id_prefix: 'Header', show_language: section.settings.show_language, show_country: section.settings.show_country %}
+          {% render 'localization-form', id_prefix: 'Header', show_language: section.settings.show_language, show_country: section.settings.show_country, one_tap: true %}
         </div>
       {%- endif -%}
 
@@ -177,7 +182,8 @@
 <dialog id="{{ drawer_id }}" class="modal drawer drawer--start menu-drawer folio-drawer color-{{ section.settings.color_scheme }}" aria-label="{{ 'general.header.menu' | t }}">
   <div class="menu-drawer__inner">
     <div class="menu-drawer__header">
-      <span class="folio-header__wordmark menu-drawer__brand">{{ section.settings.wordmark | default: shop.name | escape }}</span>
+      {%- assign drawer_wordmark = section.settings.wordmark | default: shop.name | strip -%}
+      <span class="folio-header__wordmark menu-drawer__brand">{%- render 'accent-text', text: drawer_wordmark -%}</span>
       <button type="button" class="icon-button" data-modal-close aria-label="{{ 'general.accessibility.close' | t }}">
         {% render 'icon', icon: 'close' %}
       </button>
@@ -557,11 +563,29 @@
   .folio-header--actions-icons .folio-header__count::after {
     content: none;
   }
-  .folio-header__locale .select__input,
-  .folio-header__locale select {
+  /* The language picker: a globe in a thin outline, in the same small capitals as Search and Bag */
+  .folio-header__locale .locale-pick .select,
+  .folio-header .locale-pick--switch {
+    min-height: 34px;
     font-family: var(--font-body);
-    font-size: calc(var(--d) * 0.78);
-    text-transform: none;
+    font-size: calc(var(--d) * 0.66 * var(--menu-scale, 1));
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  .folio-header .locale-pick--switch {
+    padding: 0 14px;
+  }
+  .folio-header .locale-pick--switch span,
+  .folio-header__locale .locale-pick .select {
+    letter-spacing: 0.12em;
+  }
+  /* Arabic letters join, so no spacing between them */
+  .folio-header .locale-pick--switch span:lang(ar),
+  .folio-header__locale .locale-pick .select:lang(ar) {
+    letter-spacing: 0;
+  }
+  .folio-header__locale-m {
+    display: none;
   }
   .folio-header__hints {
     display: flex;
@@ -579,6 +603,16 @@
     color: var(--color-muted);
   }
 
+  @media (max-width: 389px) {
+    .folio-header__locale-m .locale-pick--switch span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
   @media (max-width: 989px) {
     .folio-header__bar,
     .folio-header--logo-start .folio-header__bar {
@@ -624,6 +658,34 @@
     .folio-header__locale,
     .folio-header__actions .header-action--saved {
       display: none;
+    }
+    .folio-header__locale-m {
+      display: flex;
+      align-items: center;
+    }
+    /* Logo in the middle: the switch shares the first column with the menu button, just after it */
+    .folio-header--logo-center .folio-header__locale-m {
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: start;
+      margin-inline-start: 38px;
+    }
+    /* Logo at the start: the switch comes after the logo */
+    .folio-header--logo-start .folio-header__locale-m {
+      order: 2;
+    }
+    /* Phones: a globe and the language code, in the same plain words as Bag, with a full tap area */
+    .folio-header .folio-header__locale-m .locale-pick--switch {
+      gap: 5px;
+      min-height: 44px;
+      padding: 0 4px;
+      border: 0;
+      background: none;
+      color: inherit;
+    }
+    .folio-header__locale-m .locale-pick__icon {
+      width: 18px;
+      height: 18px;
     }
     .folio-header__actions {
       gap: 2px 14px;
@@ -721,7 +783,8 @@
     { "type": "text", "id": "search_hints", "label": "Typed search ideas", "info": "Separate with commas", "default": "Monet, Van Gogh, landscapes, botanical" },
     { "type": "checkbox", "id": "show_account", "label": "Show account", "default": true },
     { "type": "checkbox", "id": "show_saved", "label": "Show saved items", "info": "Needs Theme settings > Saved items", "default": false },
-    { "type": "checkbox", "id": "show_language", "label": "Show language selector on desktop", "info": "Appears when your store has more than one language", "default": true },
+    { "type": "checkbox", "id": "show_language", "label": "Show language selector on desktop", "info": "Appears when your store has more than one language. With two languages it is one button naming the other language.", "default": true },
+    { "type": "checkbox", "id": "show_language_mobile", "label": "Show language selector on phones", "info": "A small button with the language code (AR, EN) beside the menu button. Also on tablets.", "default": true },
     { "type": "checkbox", "id": "show_country", "label": "Show country and currency selector on desktop", "info": "Appears when you sell in more than one country", "default": false },
     { "type": "header", "content": "Mobile menu" },
     { "type": "checkbox", "id": "drawer_show_whatsapp", "label": "Show WhatsApp", "info": "Uses the number in Theme settings > WhatsApp", "default": true },

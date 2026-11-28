@@ -1,10 +1,14 @@
 {% doc %}
   Renders language and country selectors when the store has more than one available.
-  Changing a selector switches the storefront immediately.
+  Changing a selector switches the storefront immediately. Each selector has a globe and a clear outline,
+  so shoppers find it. With one_tap and exactly two languages (and no country selector), it is a single
+  button naming the other language, which switches in one tap.
 
   @param {string} id_prefix - Unique prefix for field ids
   @param {boolean} [show_language] - Show the language selector
   @param {boolean} [show_country] - Show the country selector
+  @param {boolean} [one_tap] - Show a one tap switch to the other language when the store has two
+  @param {boolean} [short] - The switch shows the language code (EN, AR) instead of the name, for narrow places
 
   @example
   {% render 'localization-form', id_prefix: 'Footer', show_language: true, show_country: true %}
@@ -19,30 +23,56 @@
   if show_country and localization.available_countries.size > 1
     assign has_countries = true
   endif
+  assign use_switch = false
+  if one_tap and has_languages and has_countries == false and localization.available_languages.size == 2
+    assign use_switch = true
+  endif
 -%}
 
 {%- if has_languages or has_countries -%}
   {%- assign localization_form_id = id_prefix | append: 'LocalizationForm' -%}
   {%- form 'localization', id: localization_form_id, class: 'localization-form' -%}
-    {%- if has_languages -%}
+    {%- if use_switch -%}
+      {%- for language in localization.available_languages -%}
+        {%- if language.iso_code != localization.language.iso_code -%}
+          {%- assign switch_name = language.endonym_name | capitalize -%}
+          <button
+            type="submit"
+            name="language_code"
+            value="{{ language.iso_code }}"
+            class="locale-pick locale-pick--switch"
+            aria-label="{{ 'general.localization.switch_to' | t: language: switch_name }}"
+          >
+            {% render 'icon', icon: 'globe', class: 'locale-pick__icon' %}
+            <span lang="{{ language.iso_code }}">{% if short %}{{ language.iso_code | upcase }}{% else %}{{ switch_name }}{% endif %}</span>
+          </button>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- elsif has_languages -%}
       <label class="visually-hidden" for="{{ id_prefix }}-language">{{ 'general.localization.language' | t }}</label>
-      <select id="{{ id_prefix }}-language" name="language_code" class="select" data-localization-select>
-        {%- for language in localization.available_languages -%}
-          <option value="{{ language.iso_code }}" lang="{{ language.iso_code }}" {% if language.iso_code == localization.language.iso_code %}selected{% endif %}>
-            {{- language.endonym_name | capitalize -}}
-          </option>
-        {%- endfor -%}
-      </select>
+      <span class="locale-pick">
+        {% render 'icon', icon: 'globe', class: 'locale-pick__icon' %}
+        <select id="{{ id_prefix }}-language" name="language_code" class="select" data-localization-select>
+          {%- for language in localization.available_languages -%}
+            <option value="{{ language.iso_code }}" lang="{{ language.iso_code }}" {% if language.iso_code == localization.language.iso_code %}selected{% endif %}>
+              {{- language.endonym_name | capitalize -}}
+            </option>
+          {%- endfor -%}
+        </select>
+      </span>
     {%- endif -%}
     {%- if has_countries -%}
       <label class="visually-hidden" for="{{ id_prefix }}-country">{{ 'general.localization.country' | t }}</label>
-      <select id="{{ id_prefix }}-country" name="country_code" class="select" data-localization-select>
-        {%- for country in localization.available_countries -%}
-          <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>
-            {{- country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol -}})
-          </option>
-        {%- endfor -%}
-      </select>
+      <span class="locale-pick">
+        {% render 'icon', icon: 'globe-pin', class: 'locale-pick__icon' %}
+        <select id="{{ id_prefix }}-country" name="country_code" class="select" data-localization-select>
+          {%- for country in localization.available_countries -%}
+            <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>
+              {{- country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol -}})
+            </option>
+          {%- endfor -%}
+        </select>
+      </span>
     {%- endif -%}
     <noscript><button type="submit" class="button button--secondary button--small">{{ 'general.localization.update' | t }}</button></noscript>
   {%- endform -%}

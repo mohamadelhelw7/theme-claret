@@ -80,28 +80,31 @@
             "skip_sunday": false
           }
         },
-        "stock": {
-          "type": "inventory-status",
-          "settings": {
-            "low_threshold": 5,
-            "show_count": true
-          }
-        },
         "title": {
           "type": "folio-title",
-          "settings": {}
+          "settings": {
+            "block_align": "center"
+          }
         },
         "artist": {
           "type": "folio-artist",
-          "settings": {}
+          "settings": {
+            "block_align": "center"
+          }
         },
         "price": {
           "type": "folio-price",
-          "settings": {}
+          "settings": {
+            "block_align": "center",
+            "size": 85,
+            "size_mobile": 65
+          }
         },
         "rating": {
           "type": "folio-rating",
-          "settings": {}
+          "settings": {
+            "block_align": "center"
+          }
         }
       },
       "block_order": [
@@ -110,7 +113,6 @@
         "price",
         "rating",
         "options",
-        "stock",
         "buy",
         "kit",
         "promises",
@@ -128,79 +130,8 @@
         "pad_top": 24,
         "pad_bottom": 64,
         "blocks_gap": 36,
-        "sticky_atc": "always"
-      }
-    },
-    "reviews": {
-      "type": "product-reviews",
-      "blocks": {
-        "review_1": {
-          "type": "_review",
-          "settings": {}
-        },
-        "review_2": {
-          "type": "_review",
-          "settings": {}
-        },
-        "review_3": {
-          "type": "_review",
-          "settings": {}
-        },
-        "review_4": {
-          "type": "_review",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "review_1",
-        "review_2",
-        "review_3",
-        "review_4"
-      ],
-      "settings": {
-        "color_scheme": "scheme-1",
-        "eyebrow": "Reviews",
-        "heading": "What customers say",
-        "layout": "slider",
-        "button_label": "Write a review",
-        "anchor": "reviews",
-        "padding_top": 80,
-        "padding_bottom": 80
-      }
-    },
-    "reels": {
-      "type": "reels",
-      "blocks": {
-        "r1": {
-          "type": "_reel"
-        },
-        "r2": {
-          "type": "_reel"
-        },
-        "r3": {
-          "type": "_reel"
-        },
-        "r4": {
-          "type": "_reel"
-        },
-        "r5": {
-          "type": "_reel"
-        }
-      },
-      "block_order": [
-        "r1",
-        "r2",
-        "r3",
-        "r4",
-        "r5"
-      ],
-      "settings": {
-        "color_scheme": "scheme-1",
-        "eyebrow": "In your homes",
-        "heading": "On *your* walls",
-        "padding_bottom": 80,
-        "chip_scheme": "scheme-1",
-        "padding_top": 80
+        "sticky_atc": "always",
+        "wall_gap_mobile": 20
       }
     },
     "recommendations": {
@@ -259,7 +190,7 @@
         "q_4"
       ],
       "settings": {
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-1",
         "layout": "split",
         "style": "lines",
         "heading": "Questions and answers",
@@ -272,8 +203,6 @@
   },
   "order": [
     "main",
-    "reviews",
-    "reels",
     "recommendations",
     "faq"
   ]

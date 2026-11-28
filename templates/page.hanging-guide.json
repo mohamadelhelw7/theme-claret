@@ -1,0 +1,115 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {}
+    },
+    "guide": {
+      "type": "hanging-guide",
+      "blocks": {
+        "tip_1": {
+          "type": "tip",
+          "settings": {
+            "illustration": "too_high",
+            "title": "Hung too high",
+            "mistake_text": "The art floats near the ceiling and looks disconnected from the room.",
+            "correct_text": "Hang it 15–25 cm above the sofa, so the art and sofa feel like one group.",
+            "measure": "15–25 cm"
+          }
+        },
+        "tip_2": {
+          "type": "tip",
+          "settings": {
+            "illustration": "too_small",
+            "title": "Too small for the space",
+            "mistake_text": "A small piece gets lost above a big sofa.",
+            "correct_text": "Choose art about ⅔ of the sofa's width. For bigger walls, try a set of 2 or 3.",
+            "measure": "⅔ of sofa"
+          }
+        },
+        "tip_3": {
+          "type": "tip",
+          "settings": {
+            "illustration": "too_wide",
+            "title": "Wider than the sofa",
+            "mistake_text": "Art that hangs past the sofa's edges looks heavy and crowded.",
+            "correct_text": "Keep the art narrower than the sofa, about ⅔ of its width.",
+            "measure": "⅔ of sofa"
+          }
+        },
+        "tip_4": {
+          "type": "tip",
+          "settings": {
+            "illustration": "off_center",
+            "title": "Not centered",
+            "mistake_text": "Art pushed to one side makes the whole wall feel unbalanced.",
+            "correct_text": "Center the art over the middle of the sofa, not the middle of the wall."
+          }
+        },
+        "tip_5": {
+          "type": "tip",
+          "settings": {
+            "illustration": "uneven_set",
+            "title": "Uneven gaps in a set",
+            "mistake_text": "Different gaps and heights make a set look messy.",
+            "correct_text": "Line up the pieces at the same height, with the same small gap between them.",
+            "measure": "5–8 cm"
+          }
+        },
+        "tip_6": {
+          "type": "tip",
+          "settings": {
+            "illustration": "empty_wall",
+            "title": "Too high on an empty wall",
+            "mistake_text": "With no furniture below, art hung high feels out of reach.",
+            "correct_text": "Center the art on the wall, just a little above the middle."
+          }
+        }
+      },
+      "block_order": [
+        "tip_1",
+        "tip_2",
+        "tip_3",
+        "tip_4",
+        "tip_5",
+        "tip_6"
+      ],
+      "settings": {
+        "eyebrow": "Hang it right",
+        "heading": "Hanging *guide*",
+        "intro": "<p>A few simple rules make any artwork look better on your wall. Here are the most common mistakes, and how to fix them.</p>",
+        "mistake_label": "Avoid",
+        "correct_label": "Do this",
+        "frame": "mixed",
+        "show_finder": true,
+        "finder_eyebrow": "Choose the right size",
+        "finder_heading": "About *two thirds* of the furniture",
+        "finder_text": "Type the width of the sofa, bed or table under the art. These sizes fill about two thirds of it, as one painting or a set.",
+        "default_width": 220,
+        "share": 67,
+        "gap": 5,
+        "above": 20,
+        "default_shape": "horizontal",
+        "sizes_horizontal": "30x20, 60x40, 70x50, 90x60, 100x70",
+        "sizes_vertical": "20x30, 40x60, 50x70, 60x90, 70x100",
+        "sizes_square": "30x30, 60x60",
+        "button_label": "Open the size guide",
+        "color_scheme": "scheme-1",
+        "wall_color": "#F1F1F0",
+        "max_width": 1240,
+        "heading_size": 100,
+        "text_size": 100,
+        "pad_top": 24,
+        "pad_bottom": 64,
+        "sec_text_align": "default",
+        "sec_heading_font": "default",
+        "sec_text_font": "default"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "guide"
+  ]
+}

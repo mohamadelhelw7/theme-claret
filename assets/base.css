@@ -1292,6 +1292,49 @@ cart-upsell {
   border-color: color-mix(in srgb, currentColor 25%, transparent);
 }
 
+/* Language and country pickers: a globe and a full outline, so shoppers see them at once */
+.locale-pick {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.locale-pick__icon {
+  position: absolute;
+  inset-inline-start: 13px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  translate: 0 -50%;
+  pointer-events: none;
+}
+.localization-form .locale-pick .select {
+  padding-inline-start: 38px;
+  border: 1px solid currentColor;
+}
+/* Two languages: one button naming the other language */
+.locale-pick--switch {
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid currentColor;
+  border-radius: var(--input-radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+.locale-pick--switch .locale-pick__icon {
+  position: static;
+  translate: none;
+  flex: none;
+}
+.locale-pick--switch:hover {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
 .reveal-enabled .reveal {
   opacity: 0;
   transition:

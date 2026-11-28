@@ -59,7 +59,7 @@ Claret draws a frame around each product's photo, so **one clean photo of the ar
 
 ## 6. Announcement bar
 
-The announcement bar moves as a ticker in ink. Edit the messages in **Customize → Announcement bar**. **Speed** is in pixels per second, and **Mode** switches it to rotating or static.
+The announcement bar moves as a ticker on white, with a thin line under it (**Rule under the bar**). Edit the messages in **Customize → Announcement bar**. **Speed** is in pixels per second, and **Mode** switches it to rotating or static.
 
 ## 7. Header
 
@@ -68,7 +68,7 @@ The announcement bar moves as a ticker in ink. Edit the messages in **Customize 
 - The store name as an italic serif wordmark (or your logo) at the start, the menu beside it, and Search, Account and Bag written as words at the end. **Search, account and bag** can switch to icons.
 - Menu links get a fine ink underline that draws in on hover.
 - **Dropdown style → Mega menu** (the default) opens each menu item with sub-links as a white panel, one column per sub-menu. A thin ink line draws across its top as it opens, and the columns rise into place. Create the menu in **Online Store → Navigation**, for example Paintings, Artists, Styles and Sizes.
-- **Show language selector on desktop** is on. It appears once you add a second language in **Settings → Languages**.
+- **The language selector** appears once you add a second language in **Settings → Languages**. On computers it is a button with a globe beside Search; with two languages (English and Arabic) it names the other language, and one click switches. On phones and tablets a globe with the language code (AR or EN) sits beside the menu button, and one tap switches; on the narrowest phones only the globe shows. Turn them off with **Show language selector on desktop** and **Show language selector on phones**. In the phone menu, the selector has a globe and an outline too.
 
 ## Padding
 
@@ -84,7 +84,7 @@ Product cards keep their own settings in **Theme settings → Product cards**.
 
 ## 8. Homepage
 
-The homepage opens with the **Full painting hero**, then Shop by style, Spotlight, the Promise band, the Collection grid, Reviews, Before and after, videos (**Seen on the wall**), the email signup and Customer support. **Shop by colour** is still in the list but hidden: click the eye icon beside it to show it again. Each section can be moved, hidden or removed, and more sections are under **Add section**.
+The homepage opens with **Shop by colour**, then Shop by style, Spotlight, the Promise band, the Collection grid, the email signup and Customer support. The **Full painting hero** is in the list but hidden: click the eye icon beside it to show it. Reviews, Before and after and the videos (Reels) are no longer on the homepage; they are still under **Add section**. Each section can be moved, hidden or removed, and more sections are under **Add section**.
 
 ### Full painting hero
 
@@ -135,12 +135,12 @@ Claret's sections are also included: the **Painting hero** with its art strip, *
 
 ### Before and after
 
-Two photos to compare, for example a bare wall and the same wall with the painting. Shoppers drag the line between them.
+Under **Add section**. Two photos to compare, for example a bare wall and the same wall with the painting. Shoppers drag the line between them.
 
 ### Reviews, videos and customer support
 
-- **Reviews**: paste real reviews only, one per block.
-- **On your walls**: the **Reels** section, short vertical videos of the paintings in customers' homes. Upload each video under **Content → Files** (9:16 works best).
+- **Reviews** (under **Add section**): paste real reviews only, one per block.
+- **On your walls** (under **Add section**): the **Reels** section, short vertical videos of the paintings in customers' homes. Upload each video under **Content → Files** (9:16 works best).
 - **Customer support**: each **Contact option** block opens a WhatsApp chat, a phone call, an email or a link.
 
 There is an email signup on the homepage (**Newsletter**) and one in the footer on every page.
@@ -156,18 +156,18 @@ The painting lifts a little when shoppers point at the card. Quick view and save
 
 ## 10. Product page
 
-The product template has five sections.
+The product template has three sections.
 
 ### 1. Product on the wall
 
 - **The wall**: the painting hangs in its floating frame under a soft gallery light (**Gallery light on the painting**). Picking a frame changes the wood; picking a size changes how large it hangs. The frame always keeps the painting's shape.
 - **The details** sit in a column that stays in view. Every part is its own block, so you can move it, hide it or set it on its own. Each block has **Text** (**Alignment**: as the section, Left, Center or Right, and **Font**) and **Padding** (**Top** and **Bottom**), and changing one never changes the others:
-  - **Painting name**: with its own **Size** and **Size on phones**.
+  - **Painting name**: with its own **Size** and **Size on phones**. The name, the artist line, the price and the stars are centred; change each block's **Alignment** to move it.
   - **Artist line**: the artist (the product's vendor, hidden when it is the store's name) and the note from the metafield **custom.artist_note**.
-  - **Painting price**: with its own **Size** and **Size on phones**.
+  - **Painting price**: in a thin serif, with its own **Size** and **Size on phones**.
   - **Star rating**: shows once your review app saves a rating on the product.
   - **Frame and size**: the frame tiles, the size dropdown with every price, and an underlined **Size guide** link that opens a popup with every size in centimetres and inches, and your tips.
-  - **Stock status**.
+  - **Stock status**: not on the page; add it under **Add block** if you want it.
   - **Buy buttons**: **Add to bag** with the price, and **Buy it now** in black, which goes straight to checkout.
   - **Hanging kit**: one quiet line with a small **Add** button. Pick your hanging kit product in the block. Once added, it goes to the bag with the painting and its price is added to Add to bag.
   - **Promises**: three short promises with line icons. An offer such as buy 2, get 1 free needs a matching automatic discount in **Discounts**.
@@ -175,11 +175,11 @@ The product template has five sections.
   - **Accordion** rows, for example sizes and frames, and delivery and returns.
   - **Delivery progress**: order today, we ship it and delivered, with dates counted from today. Set the days to your real times, and switch off the days you don't ship.
 - **Sticky Add to bag bar**: once a shopper scrolls past the buttons, a bar with the painting, its price and Add to bag slides up at the bottom. Choose phones and computers, phones only, or off under **Sticky Add to bag bar** in the section.
-- **Sizes on phones**: phones have their own **Wall height** and **Painting size on the wall** in the section, and the **Painting name** and **Painting price** blocks have their own **Size on phones**, so you can set the product page for phones without changing it on computers.
+- **Sizes on phones**: phones have their own **Wall height**, **Painting size on the wall** and **Space under the wall** (between the wall and the painting's name, 20px) in the section, and the **Painting name** and **Painting price** blocks have their own **Size on phones**, so you can set the product page for phones without changing it on computers.
 
-### 2–5. The other sections
+### 2–3. The other sections
 
-**Reviews**, **On your walls** (videos), **You may also like** and, at the end, **Questions and answers**.
+**You may also like** and, at the end, **Questions and answers** on white. Reviews and the videos (Reels) are under **Add section**.
 
 ## 11. Cart
 
@@ -241,10 +241,13 @@ The **Claret footer**, on the wall color under a black line:
 | Build your bundle | `bundle`: the Bundle builder |
 | Size guide | `size-guide`: the Size guide and customer support |
 | Bulk orders | `bulk-orders`: the Bulk orders page with its quote form |
+| Hanging guide | `hanging-guide`: how to hang art, and the size finder |
 
 **Size guide page.** Shoppers enter their wall and furniture sizes, pick a shape, the number of pieces and a size, and see it drawn to scale on their wall, with a custom size, a choice of artworks and Claret's five frames. Link to it from a painting with `/pages/size-guide?product=<the product's handle>`: the guide then shows that painting's own sizes (from its **Size** option) and its photo. Without a product it uses the size lists in the section. Settings: the words, custom sizes, the size lists, the hanging rules (gap, height above furniture), the wall colour, sizes, padding and alignment.
 
 **Bulk orders page.** The heading with your paintings hung on a wall, who it's for, what you get, how it works, a quote form and questions. Every word is a setting. The form sends to your store's contact email (**Settings → Store details**), with each answer labelled (ordering as, company, phone, type of space, budget, pieces, city and the project). The types of space and budgets are lists you can change, separated with |. WhatsApp buttons use the section's WhatsApp link, or the WhatsApp number in Theme settings.
+
+**Hanging guide page.** Six tips, each a drawing of the mistake beside the right way, with your own paintings in Claret's frames: hung too high, too small for the space, wider than the sofa, not centred, uneven gaps in a set, and too high on an empty wall. Each tip is a block: pick its **Drawing** (also **Too close to the sofa**), change its words and the small measurement on the drawing. Under the tips, the **size finder**: shoppers type the width of the sofa, bed or table under the art and pick a shape, and see one painting, a set of 2 and a set of 3 in the sizes that fill about two thirds of it, drawn to scale and hung 20 cm above it. Set the sizes, the share of the furniture, the gap in a set and the height above the furniture in the section, to match your shop. The button opens your Size guide page.
 
 ## 19. Speed and accessibility
 

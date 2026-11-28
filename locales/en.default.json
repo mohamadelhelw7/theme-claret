@@ -53,7 +53,8 @@
     "localization": {
       "language": "Language",
       "country": "Country or region",
-      "update": "Update"
+      "update": "Update",
+      "switch_to": "Change the language to {{ language }}"
     },
     "whatsapp": {
       "chat": "Chat with us on WhatsApp",
@@ -440,6 +441,26 @@
       "no_payment": "No payment needed. We’ll reply with ideas and a quote.",
       "thanks_title": "Thank you, your request is in.",
       "thanks_text": "We’ll get back to you with ideas and a quote."
+    },
+    "hanging_guide": {
+      "mistake": "Mistake",
+      "correct": "Right way",
+      "furniture_width": "Furniture width",
+      "decrease": "Decrease [label]",
+      "increase": "Increase [label]",
+      "cm": "cm",
+      "shape": "Shape",
+      "horizontal": "Horizontal",
+      "vertical": "Vertical",
+      "square": "Square",
+      "sizes_for_you": "Sizes for your furniture",
+      "single": "One painting",
+      "set_2": "Set of 2",
+      "set_3": "Set of 3",
+      "each": "[size] each",
+      "fills": "[percent]% of the furniture's width",
+      "summary": "[art] cm of art over [furniture] cm of furniture, hung [above] cm above it.",
+      "none": "None of the sizes fits furniture this narrow."
     }
   },
   "contact": {

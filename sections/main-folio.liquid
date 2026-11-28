@@ -15,7 +15,7 @@
 <product-info data-align="{{ section.settings.sec_text_align }}"
   class="fpro fpro--media-{{ section.settings.media_position }}{% if section.settings.sticky_info %} fpro--sticky{% endif %} color-{{ section.settings.color_scheme }}"
   data-pad
-  style="{%- if section.settings.sec_heading_font != 'default' %} --font-heading: var(--ff-{{ section.settings.sec_heading_font }});{% endif -%}{%- if section.settings.sec_text_font != 'default' %} --font-body: var(--ff-{{ section.settings.sec_text_font }});{% endif %} --pt: {{ section.settings.pad_top }}px; --pb: {{ section.settings.pad_bottom }}px; --blocks-gap: {{ section.settings.blocks_gap }}px; --stage-scale: {{ section.settings.wall_height | divided_by: 100.0 }}; --stage-scale-m: {{ section.settings.wall_height_mobile | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }};"
+  style="{%- if section.settings.sec_heading_font != 'default' %} --font-heading: var(--ff-{{ section.settings.sec_heading_font }});{% endif -%}{%- if section.settings.sec_text_font != 'default' %} --font-body: var(--ff-{{ section.settings.sec_text_font }});{% endif %} --pt: {{ section.settings.pad_top }}px; --pb: {{ section.settings.pad_bottom }}px; --blocks-gap: {{ section.settings.blocks_gap }}px; --stage-scale: {{ section.settings.wall_height | divided_by: 100.0 }}; --stage-scale-m: {{ section.settings.wall_height_mobile | divided_by: 100.0 }}; --text-scale: {{ section.settings.text_size | divided_by: 100.0 }}; --wall-gap-m: {{ section.settings.wall_gap_mobile }}px;"
   data-section="{{ section.id }}"
   data-url="{{ product.url }}"
   data-update-url="true"
@@ -414,7 +414,7 @@
     line-height: 1;
   }
   .fpro__priceline .price__current {
-    font-weight: 300;
+    font-weight: 200;
   }
   .fpro__rating {
     display: inline-flex;
@@ -584,6 +584,13 @@
     .fpro {
       --gap-now: calc(var(--blocks-gap, 35px) * 0.6);
     }
+    /* The space between the wall and the name is its own setting on phones (Sizes on phones: Space under the wall) */
+    .fpro__grid {
+      row-gap: var(--wall-gap-m, 20px);
+    }
+    .fpro__info {
+      padding-top: 0;
+    }
     /* Phones have their own title and price sizes (Title size on phones, Price size on phones) */
     .fpro__title {
       font-size: calc(var(--d) * 2.6 * var(--heading-scale, 1) * var(--sec-h, 1) * var(--title-scale-m, 0.75));
@@ -639,6 +646,7 @@
     { "type": "header", "content": "Sizes on phones" },
     { "type": "range", "id": "wall_height_mobile", "label": "Wall height on phones", "min": 60, "max": 200, "step": 5, "unit": "%", "default": 120 },
     { "type": "range", "id": "painting_size_mobile", "label": "Painting size on the wall on phones", "min": 60, "max": 122, "step": 2, "unit": "%", "default": 114 },
+    { "type": "range", "id": "wall_gap_mobile", "label": "Space under the wall on phones", "info": "Between the wall (or its photos) and the painting's name", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 20 },
     { "type": "header", "content": "Text" },
     { "type": "range", "id": "text_size", "label": "Rows text size", "min": 70, "max": 150, "step": 5, "unit": "%", "default": 100 },
     { "type": "checkbox", "id": "sticky_info", "label": "Keep the details in view while the page scrolls", "default": true },

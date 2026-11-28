@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.6.0
+- **Hanging guide page** (`page.hanging-guide`, the Hanging guide section): Art Cellar's Atelier hanging tips in Claret's look. Each tip draws the mistake beside the right way with the store's own paintings in Claret's frames (too high, too small, wider than the sofa, not centred, uneven set, empty wall). Under them, a size finder: type the furniture's width and see the sizes that fill about two thirds of it, as one painting or a set of 2 or 3, drawn to scale. English and Arabic.
+- **Language selector easier to see.** On computers, a button with a globe; with two languages it names the other language and switches in one click. On phones, a globe and the language code beside the menu button (new setting **Show language selector on phones**). The phone menu's selector has a globe and an outline.
+- **Announcement bar** is white with a line under it.
+- **Homepage:** Reviews, Before and after and the Reels videos are off the homepage (still under Add section).
+- **Product page:** Reviews, Reels and the stock line are off the page; Questions and answers is on white; the name, artist line, price and stars are centred; the price is thinner (weight 200) and smaller (85%, 65% on phones); new **Space under the wall on phones** setting, 20px (it was about 58px).
+- **Fixed:** the phone menu showed the text logo with its stars (Art \*Cellar\*) instead of the italic word.
+- Setup guide: the homepage now opens with Shop by colour (the guide still said Full painting hero).
+
 ## 1.5.0
 - **Shop by colour is the homepage hero again.** The Full painting hero stays in the theme, hidden on the homepage, for a video or photo hero.
 - **Size guide page** (`page.size-guide`, the Size guide section): the same tool as Art Cellar's Atelier size guide, in Claret's look. Wall and furniture sizes, shape, number of pieces, sizes, a custom size, artworks and Claret's five frames, drawn to scale. Opened with `?product=<handle>`, it shows that painting's own sizes and photo. All words in English and Arabic; the number fields fit narrow phones.

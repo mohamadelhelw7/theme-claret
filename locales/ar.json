@@ -57,7 +57,8 @@
     "localization": {
       "language": "اللغة",
       "country": "الدولة أو المنطقة",
-      "update": "تحديث"
+      "update": "تحديث",
+      "switch_to": "تغيير اللغة إلى {{ language }}"
     },
     "whatsapp": {
       "chat": "تواصل معنا على واتساب",
@@ -460,6 +461,26 @@
       "no_payment": "لا حاجة للدفع الآن. سنرد عليك بأفكار وعرض سعر.",
       "thanks_title": "شكرًا، وصلنا طلبك.",
       "thanks_text": "سنعود إليك بأفكار وعرض سعر."
+    },
+    "hanging_guide": {
+      "mistake": "خطأ",
+      "correct": "الطريقة الصحيحة",
+      "furniture_width": "عرض قطعة الأثاث",
+      "decrease": "إنقاص [label]",
+      "increase": "زيادة [label]",
+      "cm": "سم",
+      "shape": "الشكل",
+      "horizontal": "عرضي",
+      "vertical": "طولي",
+      "square": "مربع",
+      "sizes_for_you": "مقاسات تناسب أثاثك",
+      "single": "لوحة واحدة",
+      "set_2": "مجموعة من 2",
+      "set_3": "مجموعة من 3",
+      "each": "[size] لكل لوحة",
+      "fills": "[percent]% من عرض الأثاث",
+      "summary": "[art] سم من اللوحات فوق [furniture] سم من الأثاث، على ارتفاع [above] سم فوقه.",
+      "none": "لا يناسب أي مقاس قطعة أثاث بهذا العرض."
     }
   },
   "contact": {

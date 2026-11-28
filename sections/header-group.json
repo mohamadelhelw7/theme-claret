@@ -30,7 +30,7 @@
         "a_3"
       ],
       "settings": {
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-1",
         "show_country": false,
         "show_language": false,
         "mode": "scroll",
@@ -38,7 +38,7 @@
         "direction": "forward",
         "rotate_seconds": 4,
         "label_font": true,
-        "rule_below": false,
+        "rule_below": true,
         "text_scale": 100,
         "pad_top": 8,
         "pad_bottom": 8

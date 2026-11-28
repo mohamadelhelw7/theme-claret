@@ -101,94 +101,6 @@
         "pad_bottom": 80
       }
     },
-    "reviews": {
-      "type": "product-reviews",
-      "blocks": {
-        "review_1": {
-          "type": "_review",
-          "settings": {}
-        },
-        "review_2": {
-          "type": "_review",
-          "settings": {}
-        },
-        "review_3": {
-          "type": "_review",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "review_1",
-        "review_2",
-        "review_3"
-      ],
-      "settings": {
-        "color_scheme": "scheme-1",
-        "eyebrow": "Reviews",
-        "heading": "From *their* walls",
-        "layout": "slider",
-        "anchor": "home-reviews",
-        "padding_top": 80,
-        "padding_bottom": 80
-      }
-    },
-    "before_after": {
-      "type": "before-after",
-      "settings": {
-        "color_scheme": "scheme-1",
-        "wall_scheme": "scheme-2",
-        "before_label": "Before",
-        "after_label": "After",
-        "start": 50,
-        "ratio": "1.5",
-        "layout": "beside",
-        "eyebrow": "Before and after",
-        "heading": "The same wall, *before and after*",
-        "text": "<p>Drag the line to compare. Upload two photos taken from the same spot: the bare wall, then the wall with the painting.</p>",
-        "button_label": "Shop all paintings",
-        "button_link": "shopify://collections/all",
-        "padding_top": 80,
-        "padding_bottom": 80
-      }
-    },
-    "video": {
-      "type": "reels",
-      "blocks": {
-        "reel_1": {
-          "type": "_reel",
-          "settings": {}
-        },
-        "reel_2": {
-          "type": "_reel",
-          "settings": {}
-        },
-        "reel_3": {
-          "type": "_reel",
-          "settings": {}
-        },
-        "reel_4": {
-          "type": "_reel",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "reel_1",
-        "reel_2",
-        "reel_3",
-        "reel_4"
-      ],
-      "settings": {
-        "color_scheme": "scheme-1",
-        "eyebrow": "In your homes",
-        "heading": "Seen *on the wall*",
-        "description": "<p>Short videos of the paintings at home. Add your own or your customers’ clips.</p>",
-        "columns": 4,
-        "auto_products": true,
-        "chip_scheme": "scheme-1",
-        "padding_top": 80,
-        "padding_bottom": 80
-      }
-    },
     "newsletter": {
       "type": "newsletter",
       "settings": {
@@ -288,9 +200,6 @@
     "spotlight",
     "promises",
     "collection",
-    "reviews",
-    "before_after",
-    "video",
     "newsletter",
     "support"
   ]

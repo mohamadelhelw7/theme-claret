@@ -1,0 +1,24 @@
+{% doc %}
+  One framed painting in a Hanging guide drawing, placed by percentages of the drawing, in Claret's woods.
+  Shows the store's painting, or a drawn painting when there is none.
+
+  @param {string} box - Left, bottom, width and height in %, separated by commas, for example '40,40,20,22'
+  @param {string} wood - oak, umber, espresso, black or none
+  @param {object} [image] - The painting's image (a product's featured media)
+  @param {number} [index] - Picks the drawn painting when there is no image (1 to 4)
+
+  @example
+  {% render 'hang-frame', box: '40,40,20,22', wood: 'oak', image: product.featured_media, index: 1 %}
+{% enddoc %}
+
+{%- liquid
+  assign hf = box | split: ','
+  assign hf_index = index | default: 1 | minus: 1 | modulo: 4 | plus: 1
+-%}
+<span class="thg__frame thg__frame--{{ wood | default: 'oak' }}" style="left: {{ hf[0] }}%; bottom: {{ hf[1] }}%; width: {{ hf[2] }}%; height: {{ hf[3] }}%;">
+  {%- if image -%}
+    {{ image | image_url: width: 480 | image_tag: loading: 'lazy', alt: '', widths: '240, 360, 480', sizes: '200px', class: 'thg__art' }}
+  {%- else -%}
+    <span class="thg__art thg__art--drawn">{% render 'painting-art', variant: hf_index %}</span>
+  {%- endif -%}
+</span>
